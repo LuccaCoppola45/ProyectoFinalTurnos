@@ -1,5 +1,6 @@
-package com.example.ProyectoFinalTurnos.model.entities;
+package com.example.ProyectoFinalTurnos.features.comercio;
 
+import com.example.ProyectoFinalTurnos.features.categoria.CategoriaEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,5 +27,5 @@ public class ComercioEntity {
             joinColumns = @JoinColumn(name = "id_comercio"), // FK de esta clase
             inverseJoinColumns = @JoinColumn(name = "id_categoria") // FK de la otra clase
     )
-    private List<Categoria> categorias;
+    private List<CategoriaEntity> categorias;
 }

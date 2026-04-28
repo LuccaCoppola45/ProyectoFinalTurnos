@@ -1,4 +1,4 @@
-package com.example.ProyectoFinalTurnos.model.entities;
+package com.example.ProyectoFinalTurnos.features.categoria;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Categoria {
+public class CategoriaEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
