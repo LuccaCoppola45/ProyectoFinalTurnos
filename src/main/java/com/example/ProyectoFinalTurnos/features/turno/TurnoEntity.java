@@ -14,6 +14,8 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+@Entity
+@Table(name = "turnos")
 @Getter
 @Setter
 @NoArgsConstructor

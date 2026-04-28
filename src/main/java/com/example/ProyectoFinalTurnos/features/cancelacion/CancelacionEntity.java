@@ -1,6 +1,7 @@
 package com.example.ProyectoFinalTurnos.features.cancelacion;
 
 import com.example.ProyectoFinalTurnos.features.turno.TurnoEntity;
+import com.example.ProyectoFinalTurnos.features.usuario.UsuarioEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,8 +29,13 @@ public class CancelacionEntity {
 //    @Column(name = "monto_penalizacion")
 //    private BigDecimal montoPenalizacion;
 
+
+    @ManyToOne
+    @JoinColumn(name = "id_usuario", nullable = false)
+    private UsuarioEntity usuario;
+
     @OneToOne
-    @JoinColumn(name = "id_turno", referencedColumnName = "id")
+    @JoinColumn(name = "id_turno", referencedColumnName = "id_turno")
     private TurnoEntity turno;
 
 }
