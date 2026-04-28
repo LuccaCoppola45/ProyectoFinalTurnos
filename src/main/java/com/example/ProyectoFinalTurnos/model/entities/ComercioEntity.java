@@ -1,4 +1,4 @@
 package com.example.ProyectoFinalTurnos.model.entities;
 
-public class Comercio {
+public class ComercioEntity {
 }
