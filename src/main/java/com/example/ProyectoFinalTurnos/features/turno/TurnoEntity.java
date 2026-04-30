@@ -40,12 +40,14 @@ public class TurnoEntity {
 
     // RELACIÓN: Muchos turnos pueden ser de un Usuario
     @ManyToOne
-    @JoinColumn(name = "id_usuario")
+    @JoinColumn(name = "id_usuario",
+    foreignKey = @ForeignKey(name = "fk_turno_usuario"))
     private UsuarioEntity usuario;
 
     // RELACIÓN: Muchos turnos pueden ser para un Servicio
     @ManyToOne
-    @JoinColumn(name = "id_servicio")
+    @JoinColumn(name = "id_servicio",
+    foreignKey = @ForeignKey (name = "fk_turno_servicio"))
     private ServicioEntity servicio;
 
     // RELACIÓN 1 a 1: Un turno puede tener una cancelación
