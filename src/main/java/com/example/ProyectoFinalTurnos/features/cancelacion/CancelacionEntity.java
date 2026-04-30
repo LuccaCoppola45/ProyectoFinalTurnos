@@ -31,7 +31,9 @@ public class CancelacionEntity {
 
 
     @ManyToOne
-    @JoinColumn(name = "id_usuario", nullable = false)
+    @JoinColumn(name = "id_usuario",
+            nullable = false,
+            foreignKey = @ForeignKey(name = "fk_turno_usuario"))
     private UsuarioEntity usuario;
 
     @OneToOne
