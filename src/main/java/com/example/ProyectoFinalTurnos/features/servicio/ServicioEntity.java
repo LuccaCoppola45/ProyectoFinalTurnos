@@ -26,11 +26,11 @@ public class ServicioEntity {
     @Column(name = "id_servicio")
     private Long idServicio;
 
-    @NotBlank(message = "El nombre del servicio es obligatorio")
+    @NotNull(message = "El nombre del servicio es obligatorio")
     @Column(name = "nombre_servicio", length = 50)
     private String nombre;
 
-    @NotBlank(message = "El precio es obligatorio")
+    @NotNull(message = "El precio es obligatorio")
     private Double precio;
 
     // Relación con Comercio: Muchos servicios pertenecen a un Comercio
