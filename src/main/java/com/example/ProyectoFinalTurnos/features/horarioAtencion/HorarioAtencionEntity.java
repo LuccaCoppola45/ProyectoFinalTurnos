@@ -20,7 +20,10 @@ public class HorarioAtencionEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "id_comercio", nullable = false)
+    @JoinColumn(name = "id_comercio",
+            foreignKey = @ForeignKey(name = "FK_horario_comercio")
+            ,nullable = false)
+
     private ComercioEntity comercio;
 
     @Enumerated(EnumType.STRING)

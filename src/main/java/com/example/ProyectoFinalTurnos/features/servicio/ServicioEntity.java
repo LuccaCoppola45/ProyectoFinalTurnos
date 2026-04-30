@@ -35,7 +35,8 @@ public class ServicioEntity {
 
     // Relación con Comercio: Muchos servicios pertenecen a un Comercio
     @ManyToOne
-    @JoinColumn(name = "id_comercio")
+    @JoinColumn(name = "id_comercio",
+    foreignKey = @ForeignKey(name = "fk_servicio_comercio"))
     private ComercioEntity comercio;
 
     // 1. RELACIÓN MUCHOS A MUCHOS (Tabla Usuarios_Servicios)
