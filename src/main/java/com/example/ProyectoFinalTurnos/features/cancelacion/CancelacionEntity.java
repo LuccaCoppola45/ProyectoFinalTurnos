@@ -33,11 +33,12 @@ public class CancelacionEntity {
     @ManyToOne
     @JoinColumn(name = "id_usuario",
             nullable = false,
-            foreignKey = @ForeignKey(name = "fk_turno_usuario"))
+            foreignKey = @ForeignKey(name = "fk_cancelacion_usuario"))
     private UsuarioEntity usuario;
 
     @OneToOne
-    @JoinColumn(name = "id_turno", referencedColumnName = "id_turno")
+    @JoinColumn(name = "id_turno", referencedColumnName = "id_turno",
+    foreignKey = @ForeignKey (name = "fk_cancelacion_turno"))
     private TurnoEntity turno;
 
 }
