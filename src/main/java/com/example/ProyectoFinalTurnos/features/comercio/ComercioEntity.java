@@ -24,9 +24,15 @@ public class ComercioEntity {
 
     @ManyToMany
     @JoinTable(
-            name = "comercio_categoria", // Nombre de la tabla intermedia
-            joinColumns = @JoinColumn(name = "id_comercio"), // FK de esta clase
-            inverseJoinColumns = @JoinColumn(name = "id_categoria") // FK de la otra clase
+            name = "comercio_categoria",
+            joinColumns = @JoinColumn(
+                    name = "id_comercio",
+                    foreignKey = @ForeignKey(name = "fk_comercio_categoria_comercio")
+            ),
+            inverseJoinColumns = @JoinColumn(
+                    name = "id_categoria",
+                    foreignKey = @ForeignKey(name = "fk_comercio_categoria_categoria")
+            )
     )
     private List<CategoriaEntity> categorias;
 }
