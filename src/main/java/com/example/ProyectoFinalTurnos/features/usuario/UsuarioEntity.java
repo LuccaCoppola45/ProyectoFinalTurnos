@@ -51,9 +51,12 @@ public class UsuarioEntity {
     @JoinTable(
             name = "usuarios_servicios", // Nombre de la tabla intermedia en MySQL
             joinColumns = @JoinColumn(name = "id_usuario", // FK de esta clase
-            foreignKey = @ForeignKey(name = "FK_usuarioservicio_usuario")), // FK hacia la tabla Padre (Usuario)
-            inverseJoinColumns = @JoinColumn(name = "id_servicio"),
-            foreignKey = @ForeignKey(name = "FK_usuarioservicio_servicio") // FK hacia la tabla Hija (Servicio)// FK de la otra clase
+            foreignKey = @ForeignKey(name = "FK_usuario_servicio_usuario")
+            ), // FK hacia la tabla Padre (Usuario)
+            inverseJoinColumns = @JoinColumn(name = "id_servicio",
+            foreignKey = @ForeignKey(name = "FK_usuario_servicio_servicio") // FK hacia la tabla Hija (Servicio)// FK de la otra clase
+
+            )
     )
     private List<ServicioEntity> serviciosVinculados;
 
