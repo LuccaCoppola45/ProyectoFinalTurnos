@@ -31,24 +31,33 @@ public class UsuarioMapper
     public UsuarioResponce toResponce(UsuarioEntity usuario)
     {
         UsuarioResponce dto = modelMapper.map(usuario, UsuarioResponce.class);
-        dto.setServiciosIds(
+
+        if(usuario.getServiciosVinculados() != null){
+        dto.setServiciosId(
                 usuario.getServiciosVinculados()
                         .stream()
                         .map(ServicioEntity::getIdServicio)
                         .collect(Collectors.toList())
         );
-        dto.setTurnosIds(
-                usuario.getTurnosVinculados()
-                        .stream()
-                        .map(t -> t.getIdTurno())
-                        .collect(Collectors.toList())
-        );
-        dto.setCancelacionesIds(
-                usuario.getCancelacionesEntitiesVinculados()
-                        .stream()
-                        .map(c -> c.getIdCancelaciones())
-                        .collect(Collectors.toList())
-        );
+        }
+
+        if (usuario.getTurnosVinculados() != null) {
+            dto.setTurnosIds(
+                    usuario.getTurnosVinculados()
+                            .stream()
+                            .map(t -> t.getIdTurno())
+                            .collect(Collectors.toList())
+            );
+        }
+
+        if (usuario.getCancelacionEntitiesVinculados() != null) {
+            dto.setCancelacionesIds(
+                    usuario.getCancelacionEntitiesVinculados()
+                            .stream()
+                            .map(c -> c.getId())
+                            .collect(Collectors.toList())
+            );
+        }
         return dto;
     }
 

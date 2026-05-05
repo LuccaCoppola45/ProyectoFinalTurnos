@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Entity
@@ -69,5 +70,6 @@ public class UsuarioEntity {
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
     private List<CancelacionEntity> cancelacionEntitiesVinculados;
+
 
 }
