@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -46,7 +47,7 @@ public class CancelacionServiceImpl implements CancelacionService {
         // 4. PERSISTENCIA
         CancelacionEntity guardada = cancelacionRepository.save(cancelacionEntity);
 
-        // 5. USO DEL MAPPER (Entidad -> ResponseDTO) 👇
+        // 5. USO DEL MAPPER (Entidad -> ResponseDTO)
         String mensajeExito = "El turno ID: " + turno.getIdTurno() + " se canceló correctamente.";
         return cancelacionMapper.entitytoResponseDto(guardada, mensajeExito);
     }
@@ -58,6 +59,13 @@ public class CancelacionServiceImpl implements CancelacionService {
         return cancelaciones.stream()
                 .map(cancelacion -> cancelacionMapper.entitytoResponseDto(cancelacion, "Detalle de cancelación"))
                 .toList();
+    }
+
+    @Override
+    public CancelacionResponse obtenerCancelacionPorId(Long id){
+        CancelacionEntity cancelacion = cancelacionRepository.findById(id).
+                orElseThrow(()->new NoSuchElementException("Cancelacion no encontrada"));
+        return cancelacionMapper.entitytoResponseDto(cancelacion,"Cancelacion encontrad");
     }
 
 

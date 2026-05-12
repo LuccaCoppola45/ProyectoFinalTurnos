@@ -10,5 +10,7 @@ public interface CancelacionService {
     CancelacionResponse cancelarTurno(CancelacionRequest cancelacionRequest);
     //GET
     List<CancelacionResponse> listarCancelaciones();
+//GET id
+    CancelacionResponse obtenerCancelacionPorId(Long id);
 
 }
