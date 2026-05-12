@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -48,6 +49,15 @@ public class CancelacionServiceImpl implements CancelacionService {
         // 5. USO DEL MAPPER (Entidad -> ResponseDTO) 👇
         String mensajeExito = "El turno ID: " + turno.getIdTurno() + " se canceló correctamente.";
         return cancelacionMapper.entitytoResponseDto(guardada, mensajeExito);
+    }
+
+    @Override
+    public List<CancelacionResponse> listarCancelaciones (){
+        List <CancelacionEntity> cancelaciones = cancelacionRepository.findAll();
+
+        return cancelaciones.stream()
+                .map(cancelacion -> cancelacionMapper.entitytoResponseDto(cancelacion, "Detalle de cancelación"))
+                .toList();
     }
 
 
