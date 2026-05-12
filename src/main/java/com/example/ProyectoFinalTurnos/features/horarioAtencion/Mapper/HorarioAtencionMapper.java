@@ -4,6 +4,9 @@ import com.example.ProyectoFinalTurnos.features.horarioAtencion.Dtos.HorarioAten
 import com.example.ProyectoFinalTurnos.features.horarioAtencion.Dtos.HorarioAtencionResponse;
 import com.example.ProyectoFinalTurnos.features.horarioAtencion.HorarioAtencionEntity;
 import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Component;
+
+@Component
 
 public class HorarioAtencionMapper {
 
