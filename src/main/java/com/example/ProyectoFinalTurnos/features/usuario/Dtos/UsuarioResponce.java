@@ -1,4 +1,4 @@
-package com.example.ProyectoFinalTurnos.features.usuario.dto;
+package com.example.ProyectoFinalTurnos.features.usuario.Dtos;
 
 
 import com.example.ProyectoFinalTurnos.model.enums.Rol;

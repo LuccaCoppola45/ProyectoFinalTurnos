@@ -1,4 +1,4 @@
-package com.example.ProyectoFinalTurnos.features.usuario.dto;
+package com.example.ProyectoFinalTurnos.features.usuario.Dtos;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

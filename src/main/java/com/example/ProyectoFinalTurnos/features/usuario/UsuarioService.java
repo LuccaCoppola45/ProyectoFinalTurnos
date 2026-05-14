@@ -1,8 +1,8 @@
 package com.example.ProyectoFinalTurnos.features.usuario;
 
 
-import com.example.ProyectoFinalTurnos.features.usuario.dto.UsuarioRequest;
-import com.example.ProyectoFinalTurnos.features.usuario.dto.UsuarioResponce;
+import com.example.ProyectoFinalTurnos.features.usuario.Dtos.UsuarioRequest;
+import com.example.ProyectoFinalTurnos.features.usuario.Dtos.UsuarioResponce;
 
 import java.util.List;
 
