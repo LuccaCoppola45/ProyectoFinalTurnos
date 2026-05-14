@@ -1,6 +1,7 @@
 package com.example.ProyectoFinalTurnos.features.servicio;
 
 import com.example.ProyectoFinalTurnos.features.comercio.ComercioEntity;
+import com.example.ProyectoFinalTurnos.features.horarioAtencion.HorarioAtencionEntity;
 import com.example.ProyectoFinalTurnos.features.turno.TurnoEntity;
 import com.example.ProyectoFinalTurnos.features.usuario.UsuarioEntity;
 import jakarta.persistence.*;
@@ -48,4 +49,9 @@ public class ServicioEntity {
     // Un servicio puede estar presente en muchos turnos agendados
     @OneToMany(mappedBy = "servicio")
     private List<TurnoEntity> turnos;
+
+    @ManyToOne
+    @JoinColumn(name = "id_horario",
+            foreignKey = @ForeignKey(name = "fk_servicio_horario"))
+    private HorarioAtencionEntity horario;
 }
