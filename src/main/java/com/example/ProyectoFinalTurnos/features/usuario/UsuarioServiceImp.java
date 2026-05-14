@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class UsuarioServiceImp
+public class UsuarioServiceImp implements UsuarioService
 {
 
     private final UsuarioRepository usuarioRepository;
@@ -22,7 +22,7 @@ public class UsuarioServiceImp
     private final UsuarioMapper usuarioMapper;
 
     /// -Crear Usuario- ///
-
+    @Override
     public UsuarioResponce crearUsuario(UsuarioRequest dto)
     {
         List<ServicioEntity>servicio = servicioRepository.findAllById(dto.getServiciosIds());
@@ -33,7 +33,7 @@ public class UsuarioServiceImp
     }
 
     /// -Obtener todos los usuarios- ///
-
+    @Override
     public List<UsuarioResponce> obtenerTodos()
     {
         return usuarioRepository.findAll()
@@ -41,6 +41,29 @@ public class UsuarioServiceImp
                 .map(usuarioMapper::toResponce)
                 .collect(Collectors.toList());
     }
+
+    /// -Obtener por Id-///
+
+    @Override
+    public UsuarioResponce obtenerPorId (Long id)
+    {
+        UsuarioEntity usuario = usuarioRepository.findById(id)
+                .orElseThrow(()-> new RuntimeException("Usuario no encontrado"));
+        return usuarioMapper.toResponce(usuario);
+    }
+
+    /// -Eliminar Usuario- ///
+    @Override
+    public void eliminarUsuario (Long id)
+    {
+        if(!usuarioRepository.existsById(id))
+        {
+            throw new RuntimeException("Usuario no encontrado");
+        }
+        usuarioRepository.deleteById(id);
+    }
+
+
 
 
 
