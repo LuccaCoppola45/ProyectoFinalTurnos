@@ -27,13 +27,13 @@ public class TurnoEntity {
     @Column(name = "id_turno")
     private Long idTurno;
 
-    @NotBlank(message = "La fecha es obligatoria")
+    @NotNull(message = "La fecha es obligatoria")
     private LocalDate fecha;
 
-    @NotBlank(message = "La hora de inicio es obligatoria")
+    @NotNull(message = "La hora de inicio es obligatoria")
     private LocalTime horaInicio;
 
-    @NotBlank(message = "La hora de fin es obligatoria")
+    @NotNull(message = "La hora de fin es obligatoria")
     private LocalTime horaFin;
 
     private String estado; // Pendiente, Confirmado, etc.
@@ -54,4 +54,5 @@ public class TurnoEntity {
     // 'mappedBy' indica que la FK está en la tabla Cancelacion
     @OneToOne(mappedBy = "turno", cascade = CascadeType.ALL)
     private CancelacionEntity cancelacion;
+
 }
