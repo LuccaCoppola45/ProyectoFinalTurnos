@@ -12,5 +12,6 @@ public interface CancelacionService {
     List<CancelacionResponse> listarCancelaciones();
 //GET id
     CancelacionResponse obtenerCancelacionPorId(Long id);
-
+//DELETE id
+   void eliminarCancelacion(Long id);
 }
