@@ -54,5 +54,4 @@ public class TurnoEntity {
     // 'mappedBy' indica que la FK está en la tabla Cancelacion
     @OneToOne(mappedBy = "turno", cascade = CascadeType.ALL)
     private CancelacionEntity cancelacion;
-
 }
