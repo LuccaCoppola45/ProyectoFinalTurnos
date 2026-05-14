@@ -68,6 +68,14 @@ public class CancelacionServiceImpl implements CancelacionService {
         return cancelacionMapper.entitytoResponseDto(cancelacion,"Cancelacion encontrad");
     }
 
+    @Override
+    @Transactional
+    public void eliminarCancelacion(Long id){
+        if(!cancelacionRepository.existsById(id)){
+            throw new NoSuchElementException("No se puede eliminar. Cancelación no encontrada con ID: " + id);
+        }
+        cancelacionRepository.deleteById(id);
+    }
 
 
 }
