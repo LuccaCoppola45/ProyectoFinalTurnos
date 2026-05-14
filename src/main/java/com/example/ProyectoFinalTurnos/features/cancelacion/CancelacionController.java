@@ -14,8 +14,9 @@ import java.util.List;
 @RequestMapping("/cancelaciones")
 @RequiredArgsConstructor
 public class CancelacionController {
-private final CancelacionService cancelacionService;
-//POST: Crear una cancelacion
+    private final CancelacionService cancelacionService;
+
+    //POST: Crear una cancelacion
     @PostMapping
     public ResponseEntity<CancelacionResponse> cancelarTurno(@Valid @RequestBody CancelacionRequest requestDTO) {
         CancelacionResponse response = cancelacionService.cancelarTurno(requestDTO);
@@ -29,4 +30,15 @@ private final CancelacionService cancelacionService;
         return ResponseEntity.ok(cancelaciones);
     }
 
+    @GetMapping("/id")
+    public ResponseEntity<CancelacionResponse> buscarCancelacionId(@Valid @PathVariable long id) {
+        CancelacionResponse cancelacion = cancelacionService.obtenerCancelacionPorId(id);
+        return ResponseEntity.ok(cancelacion);
+    }
+
+    @DeleteMapping("/id")
+    public ResponseEntity<Void> eliminarCancelacion(@Valid @PathVariable long id) {
+        cancelacionService.eliminarCancelacion(id);
+        return ResponseEntity.noContent().build();
+    }
 }
