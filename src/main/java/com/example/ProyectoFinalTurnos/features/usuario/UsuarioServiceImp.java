@@ -3,9 +3,9 @@ package com.example.ProyectoFinalTurnos.features.usuario;
 
 import com.example.ProyectoFinalTurnos.features.servicio.ServicioEntity;
 import com.example.ProyectoFinalTurnos.features.servicio.ServicioRepository;
-import com.example.ProyectoFinalTurnos.features.usuario.dto.UsuarioRequest;
-import com.example.ProyectoFinalTurnos.features.usuario.dto.UsuarioResponce;
-import com.example.ProyectoFinalTurnos.features.usuario.mapper.UsuarioMapper;
+import com.example.ProyectoFinalTurnos.features.usuario.Dtos.UsuarioRequest;
+import com.example.ProyectoFinalTurnos.features.usuario.Dtos.UsuarioResponce;
+import com.example.ProyectoFinalTurnos.features.usuario.Mapper.UsuarioMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

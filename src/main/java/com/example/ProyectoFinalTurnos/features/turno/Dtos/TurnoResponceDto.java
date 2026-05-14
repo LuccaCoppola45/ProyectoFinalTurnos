@@ -1,4 +1,4 @@
-package com.example.ProyectoFinalTurnos.features.turno.dto;
+package com.example.ProyectoFinalTurnos.features.turno.Dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

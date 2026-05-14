@@ -1,10 +1,10 @@
-package com.example.ProyectoFinalTurnos.features.usuario.mapper;
+package com.example.ProyectoFinalTurnos.features.usuario.Mapper;
 
 
 import com.example.ProyectoFinalTurnos.features.servicio.ServicioEntity;
 import com.example.ProyectoFinalTurnos.features.usuario.UsuarioEntity;
-import com.example.ProyectoFinalTurnos.features.usuario.dto.UsuarioRequest;
-import com.example.ProyectoFinalTurnos.features.usuario.dto.UsuarioResponce;
+import com.example.ProyectoFinalTurnos.features.usuario.Dtos.UsuarioRequest;
+import com.example.ProyectoFinalTurnos.features.usuario.Dtos.UsuarioResponce;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
