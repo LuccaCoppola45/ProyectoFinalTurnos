@@ -7,10 +7,12 @@ import com.example.ProyectoFinalTurnos.features.horarioAtencion.HorarioAtencionR
 import com.example.ProyectoFinalTurnos.features.servicio.Dtos.ServicioRequest;
 import com.example.ProyectoFinalTurnos.features.servicio.Dtos.ServicioResponse;
 import com.example.ProyectoFinalTurnos.features.servicio.Mapper.ServicioMapper;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class ServicioService implements IServicioService{
 
     private final ServicioRepository servicioRepository;
