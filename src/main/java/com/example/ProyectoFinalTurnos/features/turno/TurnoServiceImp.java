@@ -9,6 +9,10 @@ import com.example.ProyectoFinalTurnos.features.turno.Mapper.TurnoMapper;
 import com.example.ProyectoFinalTurnos.features.usuario.UsuarioEntity;
 import com.example.ProyectoFinalTurnos.features.usuario.UsuarioRepository;
 import org.springframework.stereotype.Service;
+import org.w3c.dom.stylesheets.LinkStyle;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TurnoServiceImp implements TurnoService
@@ -42,5 +46,25 @@ public class TurnoServiceImp implements TurnoService
 
         return turnoMapper.toDto(guardado);
     }
+
+    @Override
+    public List<TurnoResponceDto> obtenerTodos ()
+    {
+        return turnoRepository.findAll()
+                .stream()
+                .map(turnoMapper :: toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public TurnoResponceDto obtenerPorId (Long id)
+    {
+        TurnoEntity turno = turnoRepository.findById(id)
+                .orElseThrow(()->new RuntimeException("Turno no encontrado"));
+
+        return turnoMapper.toDto(turno);
+    }
+
+
 
 }
