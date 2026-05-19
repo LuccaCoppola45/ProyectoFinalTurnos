@@ -9,7 +9,7 @@ import com.example.ProyectoFinalTurnos.features.turno.Mapper.TurnoMapper;
 import com.example.ProyectoFinalTurnos.features.usuario.UsuarioEntity;
 import com.example.ProyectoFinalTurnos.features.usuario.UsuarioRepository;
 import org.springframework.stereotype.Service;
-import org.w3c.dom.stylesheets.LinkStyle;
+
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -63,6 +63,17 @@ public class TurnoServiceImp implements TurnoService
                 .orElseThrow(()->new RuntimeException("Turno no encontrado"));
 
         return turnoMapper.toDto(turno);
+    }
+
+    @Override
+    public void elimirUnTurno (Long id)
+    {
+        if(!turnoRepository.existsById(id))
+        {
+            throw new RuntimeException("Turno no encontrado");
+        }
+
+        turnoRepository.deleteById(id);
     }
 
 
