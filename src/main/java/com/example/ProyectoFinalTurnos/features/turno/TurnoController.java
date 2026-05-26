@@ -37,7 +37,7 @@ public class TurnoController
         return turnoService.obtenerPorId(id);
     }
 
-    @GetMapping("/{id}")
+    @DeleteMapping("/{id}")
     public void eliminarTurno(@PathVariable Long id)
     {
         turnoService.elimirUnTurno(id);
