@@ -16,14 +16,18 @@ import java.util.List;
 public class CategoriaController {
     
     private final CategoriaService categoriaService;
-    
+
+
+
+
     // POST: Crear una categoría
     @PostMapping
     public ResponseEntity<categoriaResponse> crearCategoria(@Valid @RequestBody categoriaRequest requestDto) {
         categoriaResponse response = categoriaService.crearCategoria(requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
-    
+
+
     // GET: Listar todas las categorías
     @GetMapping
     public ResponseEntity<List<categoriaResponse>> listarCategorias() {
