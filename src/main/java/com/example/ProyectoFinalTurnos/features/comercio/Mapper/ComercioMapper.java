@@ -27,7 +27,7 @@ public class ComercioMapper {
         if (entity.getCategorias() != null) {
             response.setCategorias(
                     entity.getCategorias().stream()
-                            .map(cat -> cat.getNombre())
+                            .map(cat -> cat.getNombreCategoria())
                             .collect(Collectors.toList())
             );
         }

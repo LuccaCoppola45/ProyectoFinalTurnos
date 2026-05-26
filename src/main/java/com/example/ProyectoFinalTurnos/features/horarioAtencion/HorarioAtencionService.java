@@ -39,6 +39,7 @@ public class HorarioAtencionService implements IHorarioAtencionService{
                     .toList();
         }
 
+        //
 
         @Override
         public HorarioAtencionResponse listarHorarios(long id) {

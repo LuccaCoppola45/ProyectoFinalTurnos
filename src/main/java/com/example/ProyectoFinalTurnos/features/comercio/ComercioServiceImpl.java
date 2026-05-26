@@ -1,5 +1,7 @@
 package com.example.ProyectoFinalTurnos.features.comercio;
 
+import com.example.ProyectoFinalTurnos.features.categoria.CategoriaEntity;
+import com.example.ProyectoFinalTurnos.features.categoria.CategoriaRepository;
 import com.example.ProyectoFinalTurnos.features.comercio.Dtos.ComercioRequest;
 import com.example.ProyectoFinalTurnos.features.comercio.Dtos.ComercioResponse;
 import com.example.ProyectoFinalTurnos.features.comercio.Mapper.ComercioMapper;
@@ -14,16 +16,26 @@ public class ComercioServiceImpl implements IComercioService {
 
     private final ComercioRepository comercioRepository;
     private final ComercioMapper comercioMapper;
+    private CategoriaRepository categoriaRepository;
 
-    public ComercioServiceImpl(ComercioRepository comercioRepository, ComercioMapper comercioMapper) {
+    public ComercioServiceImpl(ComercioRepository comercioRepository, ComercioMapper comercioMapper, CategoriaRepository categoriaRepository) {
         this.comercioRepository = comercioRepository;
         this.comercioMapper = comercioMapper;
+        this.categoriaRepository = categoriaRepository;
     }
 
     @Override
     @Transactional
     public ComercioResponse crearComercio(ComercioRequest request) {
+        // 1. Mapea solo los campos básicos
         ComercioEntity entity = comercioMapper.toEntity(request);
+
+        // 2. Busca e inyecta las categorías de la BD a mano
+        if (request.getIdCategorias() != null && !request.getIdCategorias().isEmpty()) {
+            List<CategoriaEntity> categoriasReales = categoriaRepository.findAllById(request.getIdCategorias());
+            entity.setCategorias(categoriasReales);
+        }
+
         ComercioEntity saved = comercioRepository.save(entity);
         return comercioMapper.toResponse(saved);
     }
