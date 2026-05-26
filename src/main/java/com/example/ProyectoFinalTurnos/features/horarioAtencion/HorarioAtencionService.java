@@ -1,5 +1,7 @@
 package com.example.ProyectoFinalTurnos.features.horarioAtencion;
 
+import com.example.ProyectoFinalTurnos.features.comercio.ComercioEntity;
+import com.example.ProyectoFinalTurnos.features.comercio.ComercioRepository;
 import com.example.ProyectoFinalTurnos.features.horarioAtencion.Dtos.HorarioAtencionRequest;
 import com.example.ProyectoFinalTurnos.features.horarioAtencion.Dtos.HorarioAtencionResponse;
 import com.example.ProyectoFinalTurnos.features.horarioAtencion.Mapper.HorarioAtencionMapper;
@@ -13,24 +15,36 @@ public class HorarioAtencionService implements IHorarioAtencionService{
 
     private final HorarioAtencionRepository repository;
     private final HorarioAtencionMapper mapper;
+    private final ComercioRepository comercioRepository;
 
 
-    public HorarioAtencionService(HorarioAtencionRepository repository, HorarioAtencionMapper mapper) {
+    public HorarioAtencionService(HorarioAtencionRepository repository, HorarioAtencionMapper mapper, ComercioRepository comercioRepository) {
         this.repository = repository;
         this.mapper = mapper;
+        this.comercioRepository = comercioRepository;
     }
 
 
 
 
     @Override
-        public HorarioAtencionResponse crearHorariotencion(HorarioAtencionRequest request) {
-        HorarioAtencionEntity horarioAtencion = mapper.toEntity(request);
+        public HorarioAtencionResponse crearHorariotencion(HorarioAtencionRequest request) {// 1. Busca el comercio (Este es el primer SELECT de tu consola, el que SÍ tiene que estar)
+        ComercioEntity comercio = comercioRepository.findById(request.getComercioIdRequest())
+                .orElseThrow(() -> new RuntimeException("Comercio no encontrado con ID: " + request.getComercioIdRequest()));
 
-        HorarioAtencionEntity guardado = repository.save(horarioAtencion);
+        // 2. Mapea plano usando el Mapper configurado
+        HorarioAtencionEntity horarioEntity = mapper.toEntity(request);
 
+        // 3. Le asociamos el comercio real que encontramos arriba
+        horarioEntity.setComercio(comercio);
+
+        // 4. Guarda en la BD (Acá va a meter el INSERT de una)
+        HorarioAtencionEntity guardado = repository.save(horarioEntity);
+
+        // 5. Devuelve la respuesta automática con ModelMapper
         return mapper.toDto(guardado);
-        }
+    }
+
 
         @Override
         public List<HorarioAtencionResponse> ListarHorarios(){

@@ -28,6 +28,6 @@ public class ComercioRequest {
     @Positive(message = "El teléfono debe ser un número positivo")
     private Integer telefono;
     @NotEmpty(message = "Debe seleccionar al menos una categoría para el comercio")
-    private List<Long> idCategorias;
+    private List<Long> listaCategoriasIds;
 
 }

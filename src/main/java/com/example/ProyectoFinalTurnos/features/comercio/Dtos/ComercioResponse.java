@@ -11,7 +11,7 @@ public class ComercioResponse {
     private long id;
     private String nombre;
     private String direccion;
-    private int telefono;
+    private Integer telefono;
     private List<String> categorias;
 
 
