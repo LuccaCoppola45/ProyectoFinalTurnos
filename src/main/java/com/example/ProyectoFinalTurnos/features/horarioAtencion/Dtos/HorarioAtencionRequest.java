@@ -12,8 +12,6 @@ import java.time.LocalTime;
 public class HorarioAtencionRequest {
 
     @NotNull(message = "El dia  es obligatorio")
-    @Min(value = 1, message = "El dia debe ser entre 1(lunes) y 7 (domingo)")
-    @Max(value = 7, message = "El dia debe ser entre 1(lunes) y 7 (domingo)")
     private Diasemana dia;
 
     @NotNull(message = "La hora de apertura es obligatoria")
@@ -23,7 +21,7 @@ public class HorarioAtencionRequest {
     private LocalTime cierre;
 
     @NotNull(message = "El id del comercio es obligatorio")
-    private Long idComercio;
+    private Long comercioIdRequest;
 
 
 

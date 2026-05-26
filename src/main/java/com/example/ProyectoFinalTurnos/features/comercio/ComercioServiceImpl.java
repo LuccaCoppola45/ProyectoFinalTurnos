@@ -27,15 +27,16 @@ public class ComercioServiceImpl implements IComercioService {
     @Override
     @Transactional
     public ComercioResponse crearComercio(ComercioRequest request) {
-        // 1. Mapea solo los campos básicos
+        // 1. ModelMapper convierte los campos básicos sin explotar
         ComercioEntity entity = comercioMapper.toEntity(request);
 
-        // 2. Busca e inyecta las categorías de la BD a mano
-        if (request.getIdCategorias() != null && !request.getIdCategorias().isEmpty()) {
-            List<CategoriaEntity> categoriasReales = categoriaRepository.findAllById(request.getIdCategorias());
-            entity.setCategorias(categoriasReales);
-        }
+        // 2. Buscás las entidades reales en la base de datos usando la nueva lista del request
+        List<CategoriaEntity> categoriasReales = categoriaRepository.findAllById(request.getListaCategoriasIds());
 
+        // 3. Se las inyectás manualmente a la entidad antes del save
+        entity.setCategorias(categoriasReales);
+
+        // 4. Guardás en la BD y devolvés la respuesta
         ComercioEntity saved = comercioRepository.save(entity);
         return comercioMapper.toResponse(saved);
     }

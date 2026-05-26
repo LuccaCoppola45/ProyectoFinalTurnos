@@ -23,6 +23,7 @@ public class ComercioController {
             ComercioResponse response = comercioService.crearComercio(request);
             return ResponseEntity.status(HttpStatus.CREATED).body(response); // 201
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build(); // 400
         }
     }
