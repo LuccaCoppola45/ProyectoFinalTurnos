@@ -1,12 +1,14 @@
 package com.example.ProyectoFinalTurnos.features.usuario;
 
 
-import com.example.ProyectoFinalTurnos.features.servicio.ServicioEntity;
-import com.example.ProyectoFinalTurnos.features.servicio.ServicioRepository;
+import com.example.ProyectoFinalTurnos.features.usuario.Dtos.UpdateUserRequestDTO;
+import com.example.ProyectoFinalTurnos.features.usuario.Dtos.UpdateUserResponse;
 import com.example.ProyectoFinalTurnos.features.usuario.Dtos.UsuarioRequest;
 import com.example.ProyectoFinalTurnos.features.usuario.Dtos.UsuarioResponce;
 import com.example.ProyectoFinalTurnos.features.usuario.Mapper.UsuarioMapper;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,19 +20,20 @@ public class UsuarioServiceImp implements UsuarioService
 {
 
     private final UsuarioRepository usuarioRepository;
-    private final ServicioRepository servicioRepository;
     private final UsuarioMapper usuarioMapper;
+
+
 
     /// -Crear Usuario- ///
     @Override
     public UsuarioResponce crearUsuario(UsuarioRequest dto)
     {
-        List<ServicioEntity>servicio = servicioRepository.findAllById(dto.getServiciosIds());
-        UsuarioEntity usuario = usuarioMapper.toEntity(dto, servicio);
+        UsuarioEntity usuario = usuarioMapper.toEntity(dto);
         UsuarioEntity guardado = usuarioRepository.save(usuario);
-
         return usuarioMapper.toResponce(guardado);
     }
+
+
 
     /// -Obtener todos los usuarios- ///
     @Override
@@ -63,10 +66,23 @@ public class UsuarioServiceImp implements UsuarioService
         usuarioRepository.deleteById(id);
     }
 
+    @Override
+    @Transactional
+    public UpdateUserResponse actualizarUsuario(Long id, UpdateUserRequestDTO dto) {
+        UsuarioEntity user = usuarioRepository.findById(id).orElseThrow(()-> new RuntimeException("Usuario no encontrado"));
+
+        user.setNombre(dto.getNombre());
+        user.setApellido(dto.getApellido());
+        user.setEmail(dto.getEmail());
+
+        UsuarioEntity usuarioActualizado = usuarioRepository.save(user);
 
 
+        return UpdateUserResponse.builder()
+                .success(true)
+                .message("Usuario actualizado correctamente")
+                .data(usuarioMapper.toResponce(usuarioActualizado))
+                .build();
 
-
-
-
+    }
 }
