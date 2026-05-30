@@ -30,13 +30,13 @@ public class CancelacionController {
         return ResponseEntity.ok(cancelaciones);
     }
 
-    @GetMapping("/id")
+    @GetMapping("/{id}")
     public ResponseEntity<CancelacionResponse> buscarCancelacionId(@Valid @PathVariable long id) {
         CancelacionResponse cancelacion = cancelacionService.obtenerCancelacionPorId(id);
         return ResponseEntity.ok(cancelacion);
     }
 
-    @DeleteMapping("/id")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarCancelacion(@Valid @PathVariable long id) {
         cancelacionService.eliminarCancelacion(id);
         return ResponseEntity.noContent().build();
