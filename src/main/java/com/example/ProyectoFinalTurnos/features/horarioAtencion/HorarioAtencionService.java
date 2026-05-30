@@ -35,6 +35,8 @@ public class HorarioAtencionService implements IHorarioAtencionService{
         // 2. Mapea plano usando el Mapper configurado
         HorarioAtencionEntity horarioEntity = mapper.toEntity(request);
 
+        horarioEntity.setId(null); // Aseguramos que el ID sea null para que se genere uno nuevo al guardar
+
         // 3. Le asociamos el comercio real que encontramos arriba
         horarioEntity.setComercio(comercio);
 
@@ -74,9 +76,9 @@ public class HorarioAtencionService implements IHorarioAtencionService{
         public HorarioAtencionResponse ActualizarHorarioAtencion(long id, HorarioAtencionRequest request) {
         HorarioAtencionEntity horarioAtencion = repository.findById(id).
                 orElseThrow(() -> new RuntimeException("Horario de atención no encontrado con id: " + id));
-        horarioAtencion.setDiaSemana(request.getDia());
-        horarioAtencion.setHoraApertura(request.getApertura());
-        horarioAtencion.setHoraCierre(request.getCierre());
+        horarioAtencion.setDiaSemana(request.getDiaSemana());
+        horarioAtencion.setHoraApertura(request.getHoraApertura());
+        horarioAtencion.setHoraCierre(request.getHoraCierre());
 
         HorarioAtencionEntity actualizado = repository.save(horarioAtencion);
         return mapper.toDto(actualizado);

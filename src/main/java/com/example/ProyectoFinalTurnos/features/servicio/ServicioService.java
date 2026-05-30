@@ -41,6 +41,8 @@ public class ServicioService implements IServicioService{
 
         ServicioEntity servicioEntity = servicioMapper.toEntity(request);
 
+        servicioEntity.setNombre(request.getNombreServicio());
+        servicioEntity.setIdServicio(null); // Aseguramos que el ID sea null para que se genere uno nuevo al guardar
 
         servicioEntity.setComercio(comercio);
         servicioEntity.setHorario(horario);

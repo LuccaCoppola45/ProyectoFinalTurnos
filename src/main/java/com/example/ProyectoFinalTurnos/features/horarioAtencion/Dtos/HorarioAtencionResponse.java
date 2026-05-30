@@ -7,9 +7,9 @@ import java.time.LocalTime;
 
 @Data
 public class HorarioAtencionResponse {
-    private long id;
-    private Diasemana DiaSemana;
-    private LocalTime fechaApertura;
-    private LocalTime fechaCierre;
+    private Long id;
+    private Diasemana diaSemana;
+    private LocalTime horaApertura;
+    private LocalTime horaCierre;
     private Long comercioIdResponse;
 }
