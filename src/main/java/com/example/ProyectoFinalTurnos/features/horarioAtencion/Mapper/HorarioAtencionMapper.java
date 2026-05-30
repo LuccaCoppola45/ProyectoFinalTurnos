@@ -22,11 +22,11 @@ public class HorarioAtencionMapper {
     }
 
     public HorarioAtencionResponse toDto(HorarioAtencionEntity dto){
-        HorarioAtencionResponse entity = modelMapper.map(dto, HorarioAtencionResponse.class);
+        HorarioAtencionResponse response = modelMapper.map(dto, HorarioAtencionResponse.class);
 
         if(dto.getComercio() != null){
-            entity.setId(dto.getComercio().getId());
+            response.setComercioIdResponse(dto.getComercio().getId());
         }
-        return entity;
+        return response;
     }
 }

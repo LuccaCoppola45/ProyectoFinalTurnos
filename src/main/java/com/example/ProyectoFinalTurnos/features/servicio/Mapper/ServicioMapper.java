@@ -4,6 +4,7 @@ import com.example.ProyectoFinalTurnos.features.servicio.Dtos.ServicioRequest;
 import com.example.ProyectoFinalTurnos.features.servicio.Dtos.ServicioResponse;
 import com.example.ProyectoFinalTurnos.features.servicio.ServicioEntity;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -12,7 +13,9 @@ public class ServicioMapper {
 
     public ServicioMapper(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
+        this.modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
     }
+
 
     public ServicioEntity toEntity(ServicioRequest request) {
         return modelMapper.map(request, ServicioEntity.class);
