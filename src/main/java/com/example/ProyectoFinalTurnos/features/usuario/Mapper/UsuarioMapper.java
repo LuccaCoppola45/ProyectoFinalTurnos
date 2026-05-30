@@ -2,13 +2,12 @@ package com.example.ProyectoFinalTurnos.features.usuario.Mapper;
 
 
 import com.example.ProyectoFinalTurnos.features.servicio.ServicioEntity;
-import com.example.ProyectoFinalTurnos.features.usuario.UsuarioEntity;
 import com.example.ProyectoFinalTurnos.features.usuario.Dtos.UsuarioRequest;
+import com.example.ProyectoFinalTurnos.features.usuario.UsuarioEntity;
 import com.example.ProyectoFinalTurnos.features.usuario.Dtos.UsuarioResponce;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -21,11 +20,10 @@ public class UsuarioMapper
         this.modelMapper = modelMapper;
     }
 
-    public UsuarioEntity toEntity(UsuarioRequest dto, List<ServicioEntity>servicios)
+    public UsuarioEntity toEntity(UsuarioRequest dto)
     {
-        UsuarioEntity usuario = modelMapper.map(dto, UsuarioEntity.class);
-        usuario.setServiciosVinculados(servicios);
-        return usuario;
+
+        return modelMapper.map(dto, UsuarioEntity.class);
     }
 
     public UsuarioResponce toResponce(UsuarioEntity usuario)

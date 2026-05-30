@@ -11,8 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table (name = "usuarios")
@@ -21,7 +20,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class UsuarioEntity {
+public class UsuarioEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,8 +36,9 @@ public class UsuarioEntity {
     @Size(min = 3)
     private String apellido;
 
+    @Enumerated(EnumType.STRING)
     @NotNull(message = "El rol es obligatorio")
-    private Rol rol;
+    private Rol rol = Rol.CLIENTE;
 
     @NotNull(message = "El email es obligatorio")
     @Email
@@ -59,14 +59,25 @@ public class UsuarioEntity {
 
             )
     )
+
     private List<ServicioEntity> serviciosVinculados;
 
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
-    private List<TurnoEntity> turnosVinculados;
+    private Set<TurnoEntity> turnosVinculados;
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
     private List<CancelacionEntity> cancelacionEntitiesVinculados;
+
+
+    @PrePersist
+    public void init(){
+        this.serviciosVinculados = new ArrayList<>();
+        this.turnosVinculados = new HashSet<>();
+        this.cancelacionEntitiesVinculados = new ArrayList<>();
+    }
+
+
 
 
 }
