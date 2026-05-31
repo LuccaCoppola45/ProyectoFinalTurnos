@@ -1,5 +1,7 @@
 package com.example.ProyectoFinalTurnos.features.turno.Dtos;
 
+import com.example.ProyectoFinalTurnos.model.enums.EstadoTurno;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,11 +27,14 @@ public class TurnoRequestDto
     @NotNull(message = "La hora de fin es obligatoria")
     private LocalTime horaFin;
 
-    private String estado;
+    @NotBlank(message = "El estado es obligatorio")
+    private EstadoTurno estado;
 
     // Relaciones por ID
+    @NotNull(message = "El ID del usuario es obligatorio")
     private Long usuarioId;
 
+    @NotNull(message = "El ID del servicio es obligatorio")
     private Long servicioId;
 
 }

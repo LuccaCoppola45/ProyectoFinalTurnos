@@ -10,6 +10,6 @@ public interface TurnoService
     public TurnoResponceDto crearTurno(TurnoRequestDto dto);
     public List<TurnoResponceDto> obtenerTodos ();
     public TurnoResponceDto obtenerPorId (Long id);
-    public void elimirUnTurno (Long id);
+    public void eliminarUnTurno (Long id);
 
 }

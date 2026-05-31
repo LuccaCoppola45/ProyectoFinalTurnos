@@ -66,7 +66,7 @@ public class TurnoServiceImp implements TurnoService
     }
 
     @Override
-    public void elimirUnTurno (Long id)
+    public void eliminarUnTurno (Long id)
     {
         if(!turnoRepository.existsById(id))
         {
@@ -75,6 +75,8 @@ public class TurnoServiceImp implements TurnoService
 
         turnoRepository.deleteById(id);
     }
+
+
 
 
 
