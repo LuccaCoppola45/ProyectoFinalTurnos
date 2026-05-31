@@ -22,21 +22,42 @@ public class TurnoController
     }
 
     @PostMapping
-    public TurnoResponceDto crearTurno (@Valid @RequestBody TurnoRequestDto dto)
+    public ResponseEntity<TurnoResponceDto> crearTurno(@Valid @RequestBody TurnoRequestDto dto)
     {
-        return turnoService.crearTurno(dto);
+        try {
+            TurnoResponceDto response = turnoService.crearTurno(dto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response); // 201
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build(); // 400
+        }
     }
 
     @GetMapping
-    public List<TurnoResponceDto> obtenerTodosTurnos()
+    public ResponseEntity<List<TurnoResponceDto>> obtenerTodosTurnos()
     {
-        return turnoService.obtenerTodos();
+        try {
+            List<TurnoResponceDto> turnos = turnoService.obtenerTodos();
+
+            if (turnos.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); // 204
+            }
+
+            return ResponseEntity.ok(turnos); // 200
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // 500
+        }
     }
 
     @GetMapping("/{id}")
-    public TurnoResponceDto obtenerPorId(@PathVariable Long id)
+    public ResponseEntity<TurnoResponceDto> obtenerPorId(@PathVariable Long id)
     {
-        return turnoService.obtenerPorId(id);
+        try {
+            TurnoResponceDto turno = turnoService.obtenerPorId(id);
+            return ResponseEntity.ok(turno); // 200
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 404
+        }
     }
 
     @PutMapping("/{id}")
@@ -44,15 +65,20 @@ public class TurnoController
     {
         try {
             TurnoResponceDto response = turnoService.actualizarTurno(id, dto);
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(response); // 202
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 404
         }
     }
 
     @DeleteMapping("/{id}")
-    public void eliminarTurno(@PathVariable Long id)
+    public ResponseEntity<Void> eliminarTurno(@PathVariable Long id)
     {
-        turnoService.eliminarUnTurno(id);
+        try {
+            turnoService.eliminarUnTurno(id);
+            return ResponseEntity.noContent().build(); // 204
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 404
+        }
     }
 }
