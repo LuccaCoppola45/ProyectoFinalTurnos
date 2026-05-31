@@ -6,6 +6,7 @@ import com.example.ProyectoFinalTurnos.features.usuario.Dtos.UsuarioRequest;
 import com.example.ProyectoFinalTurnos.features.usuario.Dtos.UsuarioResponce;
 import jakarta.validation.Valid;
 import lombok.NonNull;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,27 +24,66 @@ public class UsuarioController
     }
 
     @PostMapping
-    public UsuarioResponce crearUsuario(@Valid @RequestBody UsuarioRequest dto)
+    public ResponseEntity<UsuarioResponce> crearUsuario(@Valid @RequestBody UsuarioRequest dto)
     {
-        return usuarioService.crearUsuario(dto);
+        try
+        {
+            UsuarioResponce usuarioResponce=usuarioService.crearUsuario(dto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(usuarioResponce);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
     }
 
     @GetMapping
-    public List<UsuarioResponce> obtenerTodos()
+    public ResponseEntity<List<UsuarioResponce>> obtenerTodos()
     {
-        return usuarioService.obtenerTodos();
+        try
+        {
+            List<UsuarioResponce> usuario = usuarioService.obtenerTodos();
+            if (usuario.isEmpty())
+            {
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            }
+            return ResponseEntity.ok(usuario);
+        } catch (Exception e)
+        {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @GetMapping("/{id}")
-    public UsuarioResponce obtenerUsuarioPorId(@PathVariable Long id)
+    public ResponseEntity<UsuarioResponce> obtenerUsuarioPorId(@PathVariable Long id)
     {
-        return usuarioService.obtenerPorId(id);
+        try
+        {
+            UsuarioResponce usuario = usuarioService.obtenerPorId(id);
+            return ResponseEntity.ok(usuario);
+        }
+        catch(RuntimeException e)
+            {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
     }
 
+
     @DeleteMapping("/{id}")
-    public void eliminarUsuario(@PathVariable Long id)
+    public ResponseEntity<Void> eliminarUsuario(@PathVariable Long id)
     {
-        usuarioService.eliminarUsuario(id);
+        try
+        {
+            usuarioService.eliminarUsuario(id);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+        catch(RuntimeException e)
+            {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+
     }
 
     @PutMapping("/update/{id}")
