@@ -66,6 +66,30 @@ public class TurnoServiceImp implements TurnoService
     }
 
     @Override
+    public TurnoResponceDto actualizarTurno(Long id, TurnoRequestDto dto)
+    {
+        TurnoEntity turno = turnoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Turno no encontrado"));
+
+        UsuarioEntity usuario = usuarioRepository.findById(dto.getUsuarioId())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        ServicioEntity servicio = servicioRepository.findById(dto.getServicioId())
+                .orElseThrow(() -> new RuntimeException("Servicio no encontrado"));
+
+        turno.setFecha(dto.getFecha());
+        turno.setHoraInicio(dto.getHoraInicio());
+        turno.setHoraFin(dto.getHoraFin());
+        turno.setEstado(dto.getEstado());
+        turno.setUsuario(usuario);
+        turno.setServicio(servicio);
+
+        TurnoEntity actualizado = turnoRepository.save(turno);
+
+        return turnoMapper.toDto(actualizado);
+    }
+
+    @Override
     public void eliminarUnTurno (Long id)
     {
         if(!turnoRepository.existsById(id))

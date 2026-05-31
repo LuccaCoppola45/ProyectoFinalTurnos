@@ -47,4 +47,20 @@ public class TurnoMapper
         return dto;
     }
 
+    public void updateEntity(
+            TurnoEntity turno,
+            TurnoRequestDto dto,
+            UsuarioEntity usuario,
+            ServicioEntity servicio)
+    {
+        turno.setFecha(dto.getFecha());
+        turno.setHoraInicio(dto.getHoraInicio());
+        turno.setHoraFin(dto.getHoraFin());
+        turno.setEstado(dto.getEstado());
+        turno.setUsuario(usuario);
+        turno.setServicio(servicio);
+    }
+
+
+
 }

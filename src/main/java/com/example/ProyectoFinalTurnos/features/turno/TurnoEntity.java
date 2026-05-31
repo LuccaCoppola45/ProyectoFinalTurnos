@@ -3,6 +3,7 @@ package com.example.ProyectoFinalTurnos.features.turno;
 import com.example.ProyectoFinalTurnos.features.cancelacion.CancelacionEntity;
 import com.example.ProyectoFinalTurnos.features.servicio.ServicioEntity;
 import com.example.ProyectoFinalTurnos.features.usuario.UsuarioEntity;
+import com.example.ProyectoFinalTurnos.model.enums.EstadoTurno;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -36,7 +37,8 @@ public class TurnoEntity {
     @NotNull(message = "La hora de fin es obligatoria")
     private LocalTime horaFin;
 
-    private String estado; // Pendiente, Confirmado, etc.
+    @NotBlank(message = "El estado es obligatorio")
+    private EstadoTurno estado; // Pendiente, Confirmado, etc.
 
     // RELACIÓN: Muchos turnos pueden ser de un Usuario
     @ManyToOne
