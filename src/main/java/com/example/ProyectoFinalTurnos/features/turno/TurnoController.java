@@ -40,6 +40,6 @@ public class TurnoController
     @DeleteMapping("/{id}")
     public void eliminarTurno(@PathVariable Long id)
     {
-        turnoService.elimirUnTurno(id);
+        turnoService.eliminarUnTurno(id);
     }
 }
