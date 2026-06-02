@@ -1,4 +1,4 @@
-package com.example.ProyectoFinalTurnos.features.comercio.Excepctions.response;
+package com.example.ProyectoFinalTurnos.exceptions.response;
 
 import lombok.*;
 import java.time.LocalDateTime;
