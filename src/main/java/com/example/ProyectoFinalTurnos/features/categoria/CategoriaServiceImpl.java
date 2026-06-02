@@ -20,6 +20,9 @@ public class CategoriaServiceImpl implements CategoriaService {
     @Override
     @Transactional
     public categoriaResponse crearCategoria(categoriaRequest requestDto) {
+        if(categoriaRepository.existsByNombreCategoria(requestDto.getNombreCategoria())) {
+            throw new RuntimeException("Ya existe una categoria con el nombre: " + requestDto.getNombreCategoria());
+        }
         // Mapear DTO a Entidad
         CategoriaEntity categoriaEntity = categoriaMapper.requestDtoToEntity(requestDto);
         
