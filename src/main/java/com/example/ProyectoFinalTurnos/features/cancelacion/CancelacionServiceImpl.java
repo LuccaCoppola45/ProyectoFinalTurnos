@@ -7,6 +7,7 @@ import com.example.ProyectoFinalTurnos.features.turno.TurnoEntity;
 import com.example.ProyectoFinalTurnos.features.turno.TurnoRepository;
 import com.example.ProyectoFinalTurnos.features.usuario.UsuarioEntity;
 import com.example.ProyectoFinalTurnos.features.usuario.UsuarioRepository;
+import com.example.ProyectoFinalTurnos.model.enums.EstadoTurno;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -42,7 +43,7 @@ public class CancelacionServiceImpl implements CancelacionService {
         cancelacionEntity.setTurno(turno);
         cancelacionEntity.setFechaCancelacion(LocalDateTime.now());
 
-        turno.setEstado("CANCELADO");
+        turno.setEstado(EstadoTurno.CANCELADO); // Acá le pasamos la constante del Enum        turnoRepository.save(turno);
         turnoRepository.save(turno);
         // 4. PERSISTENCIA
         CancelacionEntity guardada = cancelacionRepository.save(cancelacionEntity);
