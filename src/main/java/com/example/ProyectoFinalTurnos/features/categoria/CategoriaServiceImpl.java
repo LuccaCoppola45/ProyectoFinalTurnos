@@ -70,10 +70,16 @@ public class CategoriaServiceImpl implements CategoriaService {
     @Override
     @Transactional
     public void eliminarCategoria(Long id) {
-        if (!categoriaRepository.existsById(id)) {
-            throw new NoSuchElementException("No se puede eliminar. Categoría no encontrada con ID: " + id);
+        CategoriaEntity categoria = categoriaRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("No se puede eliminar. Categoría no encontrada con ID: " + id));
+
+        // Nos fijamos si la lista de comercios no es nula y si tiene elementos adentro
+        if (categoria.getComercios() != null && !categoria.getComercios().isEmpty()) {
+            throw new RuntimeException("No se puede eliminar la categoría porque está asignada a uno o más comercios. Desvincúlelos primero.");
         }
-        categoriaRepository.deleteById(id);
+
+        // Si la lista está vacía, la borramos tranquilos
+        categoriaRepository.delete(categoria);
     }
 }
 

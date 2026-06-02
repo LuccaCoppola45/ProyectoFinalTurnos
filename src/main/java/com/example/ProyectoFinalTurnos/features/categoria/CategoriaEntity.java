@@ -1,10 +1,13 @@
 package com.example.ProyectoFinalTurnos.features.categoria;
 
+import com.example.ProyectoFinalTurnos.features.comercio.ComercioEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Entity
 @Table(name = "categoria")
@@ -22,4 +25,9 @@ public class CategoriaEntity {
 
     @Column(name = "Nombre_categoria",nullable =false, length = 50)
     private String nombreCategoria;
+
+    // Relación ManyToMany para poder consultar los comercios asociados
+    // y validar antes de eliminar (Integridad referencial)
+    @ManyToMany(mappedBy = "categorias")
+    private List<ComercioEntity> comercios;
 }
