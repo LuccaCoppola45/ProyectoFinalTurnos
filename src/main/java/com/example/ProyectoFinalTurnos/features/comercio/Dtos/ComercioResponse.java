@@ -13,7 +13,6 @@ public class ComercioResponse {
     private String direccion;
     private Integer telefono;
     private List<String> categorias;
-
-
+    private Integer duracionTurnoMinutos;
 
 }

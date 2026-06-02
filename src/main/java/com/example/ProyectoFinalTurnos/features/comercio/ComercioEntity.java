@@ -22,7 +22,6 @@ public class ComercioEntity {
     private String direccion;
     private int telefono;
 
-    @ManyToMany
     @JoinTable(
             name = "comercio_categoria",
             joinColumns = @JoinColumn(
@@ -35,4 +34,6 @@ public class ComercioEntity {
             )
     )
     private List<CategoriaEntity> categorias;
+
+
 }

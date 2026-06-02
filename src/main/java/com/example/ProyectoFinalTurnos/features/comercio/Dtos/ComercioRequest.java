@@ -30,4 +30,8 @@ public class ComercioRequest {
     @NotEmpty(message = "Debe seleccionar al menos una categoría para el comercio")
     private List<Long> listaCategoriasIds;
 
+    @NotNull(message = "La duración del turno es obligatoria")
+    @Positive(message = "La duración del turno debe ser un número positivo (en minutos)")
+    private Integer duracionTurnoMinutos;
+
 }

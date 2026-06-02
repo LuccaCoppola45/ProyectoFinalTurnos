@@ -5,4 +5,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ComercioRepository extends JpaRepository<ComercioEntity, Long> {
+    boolean existsByNombreIgnoreCase(String nombre);
 }

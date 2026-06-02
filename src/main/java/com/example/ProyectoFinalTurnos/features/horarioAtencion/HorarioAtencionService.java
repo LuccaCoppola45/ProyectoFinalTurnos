@@ -1,5 +1,6 @@
 package com.example.ProyectoFinalTurnos.features.horarioAtencion;
 
+import com.example.ProyectoFinalTurnos.exceptions.catalog.ComercioNotFoundException;
 import com.example.ProyectoFinalTurnos.features.comercio.ComercioEntity;
 import com.example.ProyectoFinalTurnos.features.comercio.ComercioRepository;
 import com.example.ProyectoFinalTurnos.features.horarioAtencion.Dtos.HorarioAtencionRequest;
@@ -7,6 +8,7 @@ import com.example.ProyectoFinalTurnos.features.horarioAtencion.Dtos.HorarioAten
 import com.example.ProyectoFinalTurnos.features.horarioAtencion.Mapper.HorarioAtencionMapper;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.List;
 
 
@@ -28,22 +30,41 @@ public class HorarioAtencionService implements IHorarioAtencionService{
 
 
     @Override
-        public HorarioAtencionResponse crearHorariotencion(HorarioAtencionRequest request) {// 1. Busca el comercio (Este es el primer SELECT de tu consola, el que SÍ tiene que estar)
+    public HorarioAtencionResponse crearHorariotencion(HorarioAtencionRequest request) {
+        // Validar que el comercio exista
         ComercioEntity comercio = comercioRepository.findById(request.getComercioIdRequest())
-                .orElseThrow(() -> new RuntimeException("Comercio no encontrado con ID: " + request.getComercioIdRequest()));
+                .orElseThrow(() -> new ComercioNotFoundException("Comercio no encontrado con ID: " + request.getComercioIdRequest()));
 
-        // 2. Mapea plano usando el Mapper configurado
+        // Validar que la hora de apertura sea anterior a la de cierre
+        if (request.getHoraApertura().isAfter(request.getHoraCierre())) {
+            throw new IllegalArgumentException("La hora de apertura no puede ser posterior a la hora de cierre");
+        }
+
+        // Validar que no sean iguales
+        if (request.getHoraApertura().equals(request.getHoraCierre())) {
+            throw new IllegalArgumentException("La hora de apertura y cierre no pueden ser iguales");
+        }
+
+        // Validar que no exista un horario con solapamiento para el mismo día en el mismo comercio
+        boolean existeSolapamiento = repository.findByComercioIdAndDiaSemana(comercio.getId(), request.getDiaSemana())
+                .stream()
+                .anyMatch(horario -> {
+                    return (request.getHoraApertura().isBefore(horario.getHoraCierre()) &&
+                            request.getHoraCierre().isAfter(horario.getHoraApertura()));
+                });
+
+        if (existeSolapamiento) {
+            throw new IllegalArgumentException("Ya existe un horario que se solapa para el día " + request.getDiaSemana() + " en este comercio");
+        }
+
+
+
         HorarioAtencionEntity horarioEntity = mapper.toEntity(request);
-
-        horarioEntity.setId(null); // Aseguramos que el ID sea null para que se genere uno nuevo al guardar
-
-        // 3. Le asociamos el comercio real que encontramos arriba
+        horarioEntity.setId(null);
         horarioEntity.setComercio(comercio);
 
-        // 4. Guarda en la BD (Acá va a meter el INSERT de una)
         HorarioAtencionEntity guardado = repository.save(horarioEntity);
 
-        // 5. Devuelve la respuesta automática con ModelMapper
         return mapper.toDto(guardado);
     }
 
@@ -83,4 +104,6 @@ public class HorarioAtencionService implements IHorarioAtencionService{
         HorarioAtencionEntity actualizado = repository.save(horarioAtencion);
         return mapper.toDto(actualizado);
         }
+
+
 }
