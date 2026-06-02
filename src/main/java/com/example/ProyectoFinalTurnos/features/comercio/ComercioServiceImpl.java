@@ -1,5 +1,6 @@
 package com.example.ProyectoFinalTurnos.features.comercio;
 
+import com.example.ProyectoFinalTurnos.exceptions.catalog.ComercioNotFoundException;
 import com.example.ProyectoFinalTurnos.features.categoria.CategoriaEntity;
 import com.example.ProyectoFinalTurnos.features.categoria.CategoriaRepository;
 import com.example.ProyectoFinalTurnos.features.comercio.Dtos.ComercioRequest;
@@ -54,7 +55,7 @@ public class ComercioServiceImpl implements IComercioService {
     @Transactional(readOnly = true)
     public ComercioResponse buscarPorId(long id) {
         ComercioEntity entity = comercioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Comercio no encontrado con id: " + id));
+                .orElseThrow(() -> new ComercioNotFoundException("Comercio no encontrado con id: " + id));
         return comercioMapper.toResponse(entity);
     }
 
