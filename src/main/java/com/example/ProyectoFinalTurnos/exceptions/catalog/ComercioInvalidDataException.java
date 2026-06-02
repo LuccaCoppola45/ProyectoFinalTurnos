@@ -1,4 +1,4 @@
-package com.example.ProyectoFinalTurnos.features.comercio.Excepctions.personalizated.catalog;
+package com.example.ProyectoFinalTurnos.exceptions.catalog;
 
 public class ComercioInvalidDataException extends RuntimeException {
     public ComercioInvalidDataException(String message) {

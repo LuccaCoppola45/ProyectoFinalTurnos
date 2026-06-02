@@ -1,0 +1,12 @@
+$kind: http-request
+name: http://localhost:8080/categorias
+url: http://localhost:8080/categorias
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"nombreCategoria\": \"Tintura\"\r
+
+    }"
+order: 4107482887655316

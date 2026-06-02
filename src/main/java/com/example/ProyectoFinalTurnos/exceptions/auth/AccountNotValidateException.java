@@ -1,4 +1,4 @@
-package com.example.ProyectoFinalTurnos.features.comercio.Excepctions.personalizated.auth;
+package com.example.ProyectoFinalTurnos.exceptions.auth;
 
 public class AccountNotValidateException extends RuntimeException {
     public AccountNotValidateException(String message) {

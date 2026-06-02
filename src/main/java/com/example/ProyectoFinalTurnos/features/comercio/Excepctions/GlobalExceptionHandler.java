@@ -1,10 +1,12 @@
 package com.example.ProyectoFinalTurnos.features.comercio.Excepctions;
 
-import com.example.ProyectoFinalTurnos.features.comercio.Excepctions.personalizated.user.UserNameAlreadyInUseException;
-import com.example.ProyectoFinalTurnos.features.comercio.Excepctions.personalizated.user.UserProfileNotFoundException;
+import com.example.ProyectoFinalTurnos.exceptions.auth.*;
+import com.example.ProyectoFinalTurnos.exceptions.catalog.ComercioAlreadyExistsException;
+import com.example.ProyectoFinalTurnos.exceptions.catalog.ComercioInvalidDataException;
+import com.example.ProyectoFinalTurnos.exceptions.catalog.ComercioNotFoundException;
+import com.example.ProyectoFinalTurnos.exceptions.user.UserNameAlreadyInUseException;
+import com.example.ProyectoFinalTurnos.exceptions.user.UserProfileNotFoundException;
 import lombok.NonNull;
-import com.example.ProyectoFinalTurnos.features.comercio.Excepctions.personalizated.auth.*;
-import com.example.ProyectoFinalTurnos.features.comercio.Excepctions.personalizated.catalog.*;
 import com.example.ProyectoFinalTurnos.features.comercio.Excepctions.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

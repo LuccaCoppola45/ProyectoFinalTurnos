@@ -1,4 +1,4 @@
-package com.example.ProyectoFinalTurnos.features.comercio.Excepctions.personalizated.user;
+package com.example.ProyectoFinalTurnos.exceptions.user;
 
 public class UserProfileNotFoundException extends RuntimeException {
     public UserProfileNotFoundException(String message) {

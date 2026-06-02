@@ -1,4 +1,4 @@
-package com.example.ProyectoFinalTurnos.features.comercio.Excepctions.personalizated.auth;
+package com.example.ProyectoFinalTurnos.exceptions.auth;
 
 public class RefreshTokenExpiredException extends RuntimeException {
     public RefreshTokenExpiredException(String message) {
