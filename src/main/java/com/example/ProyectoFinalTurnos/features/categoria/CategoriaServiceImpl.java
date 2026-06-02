@@ -55,7 +55,11 @@ public class CategoriaServiceImpl implements CategoriaService {
     public categoriaResponse actualizarCategoria(Long id, categoriaRequest requestDto) {
         CategoriaEntity categoria = categoriaRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Categoría no encontrada con ID: " + id));
-        
+        if(!categoria.getNombreCategoria().equalsIgnoreCase(requestDto.getNombreCategoria())) {
+            if(categoriaRepository.existsByNombreCategoria(requestDto.getNombreCategoria())) {
+                throw new RuntimeException("Ya existe una categoria con el nombre: " + requestDto.getNombreCategoria());
+            }
+        }
         categoria.setNombreCategoria(requestDto.getNombreCategoria());
         
         CategoriaEntity actualizada = categoriaRepository.save(categoria);
