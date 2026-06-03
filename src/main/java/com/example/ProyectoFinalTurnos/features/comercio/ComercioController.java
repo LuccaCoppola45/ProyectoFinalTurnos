@@ -8,7 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/comercios")
@@ -18,13 +20,14 @@ public class ComercioController {
     private final IComercioService comercioService;
 
     @PostMapping
-    public ResponseEntity<ComercioResponse> crearComercio(@Valid @RequestBody ComercioRequest request) {
+    public ResponseEntity<?> crearComercio(@Valid @RequestBody ComercioRequest request) {
         try {
             ComercioResponse response = comercioService.crearComercio(request);
             return ResponseEntity.status(HttpStatus.CREATED).body(response); // 201
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build(); // 400
+            Map<String, Object> response = new HashMap<>();
+            response.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response); // 400
         }
     }
 
@@ -42,7 +45,7 @@ public class ComercioController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ComercioResponse> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<ComercioResponse> buscarPorId(@PathVariable long id) {
         try {
             ComercioResponse comercio = comercioService.buscarPorId(id);
             return ResponseEntity.ok(comercio); // 200
@@ -52,7 +55,7 @@ public class ComercioController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ComercioResponse> actualizarComercio(@PathVariable Long id, @Valid @RequestBody ComercioRequest request) {
+    public ResponseEntity<ComercioResponse> actualizarComercio(@PathVariable long id, @Valid @RequestBody ComercioRequest request) {
         try {
             ComercioResponse response = comercioService.actualizarComercio(id, request);
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(response); // 202
@@ -62,7 +65,7 @@ public class ComercioController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarComercio(@PathVariable Long id) {
+    public ResponseEntity<Void> eliminarComercio(@PathVariable long id) {
         try {
             comercioService.eliminarComercio(id);
             return ResponseEntity.noContent().build(); // 204

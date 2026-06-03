@@ -8,7 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/categorias")
@@ -22,9 +24,18 @@ public class CategoriaController {
 
     // POST: Crear una categoría
     @PostMapping
-    public ResponseEntity<categoriaResponse> crearCategoria(@Valid @RequestBody categoriaRequest requestDto) {
-        categoriaResponse response = categoriaService.crearCategoria(requestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    public ResponseEntity<?> crearCategoria(@Valid @RequestBody categoriaRequest requestDto) {
+        try {
+            categoriaResponse response = categoriaService.crearCategoria(requestDto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("error", e.getMessage());
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
+
     }
 
 

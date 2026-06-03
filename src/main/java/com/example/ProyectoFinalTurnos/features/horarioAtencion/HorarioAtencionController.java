@@ -9,7 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/horarios-atencion")
@@ -26,16 +28,22 @@ public class HorarioAtencionController {
      *         404 Not Found si el comercio no existe
      */
     @PostMapping
-    public ResponseEntity<HorarioAtencionResponse> crearHorarioAtencion(@Valid @RequestBody HorarioAtencionRequest request) {
+    public ResponseEntity<?> crearHorarioAtencion(@Valid @RequestBody HorarioAtencionRequest request) {
         try {
             HorarioAtencionResponse response = horarioAtencionService.crearHorariotencion(request);
             return ResponseEntity.status(HttpStatus.CREATED).body(response); // 201 Created
         } catch (ComercioNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 404 Not Found
+            Map<String, Object> response = new HashMap<>();
+            response.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response); // 404 Not Found
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build(); // 400 Bad Request
+            Map<String, Object> response = new HashMap<>();
+            response.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response); // 400 Bad Request
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // 500
+            Map<String, Object> response = new HashMap<>();
+            response.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response); // 500 Internal Server Error
         }
     }
 

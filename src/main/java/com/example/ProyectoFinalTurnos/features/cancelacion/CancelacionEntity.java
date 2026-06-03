@@ -26,9 +26,6 @@ public class CancelacionEntity {
     @Column(name = "motivo", length = 500)
     private String motivo;
 
-//    @Column(name = "monto_penalizacion")
-//    private BigDecimal montoPenalizacion;
-
 
     @ManyToOne
     @JoinColumn(name = "id_usuario",
