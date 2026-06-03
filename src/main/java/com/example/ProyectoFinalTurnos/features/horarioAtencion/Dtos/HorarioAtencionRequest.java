@@ -9,6 +9,13 @@ import java.time.LocalTime;
 @Data
 public class HorarioAtencionRequest {
 
+
+    @NotNull(message = "El ID del comercio es obligatorio")
+    private Long comercioIdRequest;
+
+    // Opcional: Si viene null, estás definiendo el horario de apertura/cierre del local.
+    // Si viene con un ID, es el horario de atención de ese peluquero.
+    private Long servicioIdRequest;
     @NotNull(message = "El dia  es obligatorio")
     private Diasemana diaSemana;
 
@@ -18,7 +25,6 @@ public class HorarioAtencionRequest {
     @NotNull(message = "La hora de cierre es obligatoria")
     private LocalTime horaCierre;
 
-    @NotNull(message = "El id del comercio es obligatorio")
-    private Long comercioIdRequest;
+
 
 }
