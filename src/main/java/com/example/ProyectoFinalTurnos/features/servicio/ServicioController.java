@@ -8,7 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/servicios")
@@ -18,13 +20,15 @@ public class ServicioController {
     private final IServicioService servicioService;
 
     @PostMapping
-    public ResponseEntity<ServicioResponse> crearServicio(@Valid @RequestBody ServicioRequest request) {
+    public ResponseEntity<?> crearServicio(@Valid @RequestBody ServicioRequest request) {
         try {
             ServicioResponse response = servicioService.crearServicio(request);
             return ResponseEntity.status(HttpStatus.CREATED).body(response); // 201
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build(); // 400
+            Map<String, Object> response = new HashMap<>();
+            response.put("error", e.getMessage());
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response); // 400
         }
     }
 

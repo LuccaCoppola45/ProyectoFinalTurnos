@@ -39,13 +39,15 @@ public class ComercioServiceImpl implements IComercioService {
             throw new IllegalArgumentException("Ya existe un comercio registrado con ese nombre en esa dirección.");
         }
 
+        ComercioEntity entity = comercioMapper.toEntity(request);
+
         // valida que las categorias existan en la base de datos
         List<CategoriaEntity> categoriasValidas = request.getListaCategoriasIds().stream()
                 .map(id -> categoriaRepository.findById(id)
                         .orElseThrow(() -> new RuntimeException("La categoría con ID " + id + " no existe.")))
                 .collect(Collectors.toList());
 
-        ComercioEntity entity = comercioMapper.toEntity(request);
+
 
         entity.setNombre(nombreLimpio);
         entity.setDireccion(direccionLimpia);

@@ -8,7 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/turnos")
@@ -22,14 +24,15 @@ public class TurnoController
     }
 
     @PostMapping
-    public ResponseEntity<TurnoResponceDto> crearTurno(@Valid @RequestBody TurnoRequestDto dto)
+    public ResponseEntity<?> crearTurno(@Valid @RequestBody TurnoRequestDto dto)
     {
         try {
             TurnoResponceDto response = turnoService.crearTurno(dto);
             return ResponseEntity.status(HttpStatus.CREATED).body(response); // 201
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build(); // 400
+            Map<String, Object> response = new HashMap<>();
+            response.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response); // 400
         }
     }
 

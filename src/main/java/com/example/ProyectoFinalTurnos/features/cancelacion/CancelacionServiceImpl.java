@@ -35,6 +35,10 @@ public class CancelacionServiceImpl implements CancelacionService {
         TurnoEntity turno = turnoRepository.findById(requestDTO.getIdTurno())
                 .orElseThrow(() -> new RuntimeException("Turno no encontrado con ID: " + requestDTO.getIdTurno()));
 
+        if (turno.getEstado() == EstadoTurno.CANCELADO) {
+            throw new IllegalArgumentException("Este turno ya se encuentra cancelado.");
+        }
+
         // 2. USO DEL MAPPER (DTO -> Entidad)
         CancelacionEntity cancelacionEntity = cancelacionMapper.requestDtotoEntity(requestDTO);
 

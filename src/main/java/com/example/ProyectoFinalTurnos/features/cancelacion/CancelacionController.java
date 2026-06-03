@@ -8,7 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/cancelaciones")
@@ -18,10 +20,18 @@ public class CancelacionController {
 
     //POST: Crear una cancelacion
     @PostMapping
-    public ResponseEntity<CancelacionResponse> cancelarTurno(@Valid @RequestBody CancelacionRequest requestDTO) {
-        CancelacionResponse response = cancelacionService.cancelarTurno(requestDTO);
+    public ResponseEntity<?> cancelarTurno(@Valid @RequestBody CancelacionRequest requestDTO) {
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+
+        try {
+            CancelacionResponse response = cancelacionService.cancelarTurno(requestDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        }catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
     }
 
     @GetMapping
