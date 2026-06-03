@@ -45,7 +45,7 @@ public class ServicioService implements IServicioService{
         servicioEntity.setIdServicio(null); // Aseguramos que el ID sea null para que se genere uno nuevo al guardar
 
         servicioEntity.setComercio(comercio);
-        servicioEntity.setHorario(horario);
+        servicioEntity.setHorarios(List.of(horario));
 
 
         ServicioEntity guardado = servicioRepository.save(servicioEntity);
@@ -87,7 +87,7 @@ public class ServicioService implements IServicioService{
         servicioEntity.setNombre(request.getNombreServicio());
         servicioEntity.setPrecio(request.getPrecio());
         servicioEntity.setComercio(comercio);
-        servicioEntity.setHorario(horario);
+        servicioEntity.setHorarios(List.of(horario));
 
         ServicioEntity actualizado = servicioRepository.save(servicioEntity);
         return servicioMapper.toDto(actualizado);

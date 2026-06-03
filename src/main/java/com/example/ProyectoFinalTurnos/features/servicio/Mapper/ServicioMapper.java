@@ -28,8 +28,8 @@ public class ServicioMapper {
         if (entity.getComercio() != null) {
             response.setIdComercio(entity.getComercio().getId());
         }
-        if (entity.getHorario() != null) {
-            response.setIdHorario(entity.getHorario().getId());
+        if (entity.getHorarios() != null) {
+            response.setHorariosAtencionIds(entity.getHorarios().stream().map(h -> h.getId()).toList());
         }
         return response;
     }
