@@ -12,16 +12,19 @@ import java.util.List;
 @Setter
 @Entity
 @NoArgsConstructor
-@Table(name = "comercio")
+@Table(name = "comercio", uniqueConstraints = {
+    @UniqueConstraint(name = "uk_comercio_nombre_direccion", columnNames = {"nombre", "direccion"})
+})
 public class ComercioEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     private String nombre;
     private String direccion;
-    private int telefono;
+    private String telefono;
 
+    @ManyToMany
     @JoinTable(
             name = "comercio_categoria",
             joinColumns = @JoinColumn(

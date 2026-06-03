@@ -17,7 +17,7 @@ public class ComercioServiceImpl implements IComercioService {
 
     private final ComercioRepository comercioRepository;
     private final ComercioMapper comercioMapper;
-    private CategoriaRepository categoriaRepository;
+    private final CategoriaRepository categoriaRepository;
 
     public ComercioServiceImpl(ComercioRepository comercioRepository, ComercioMapper comercioMapper, CategoriaRepository categoriaRepository) {
         this.comercioRepository = comercioRepository;
@@ -28,16 +28,30 @@ public class ComercioServiceImpl implements IComercioService {
     @Override
     @Transactional
     public ComercioResponse crearComercio(ComercioRequest request) {
-        // 1. ModelMapper convierte los campos básicos sin explotar
+
+        // 1. Limpiar espacios en blanco de los textos
+        String nombreLimpio = request.getNombre().trim();
+        String direccionLimpia = request.getDireccion().trim();
+
+        // 2. Validar que no exista un comercio duplicado (mismo nombre + dirección)
+        boolean existeDuplicado = comercioRepository.findByNombreIgnoreCaseAndDireccionIgnoreCase(nombreLimpio, direccionLimpia).isPresent();
+        if (existeDuplicado) {
+            throw new IllegalArgumentException("Ya existe un comercio registrado con ese nombre en esa dirección.");
+        }
+
+        // valida que las categorias existan en la base de datos
+        List<CategoriaEntity> categoriasValidas = request.getListaCategoriasIds().stream()
+                .map(id -> categoriaRepository.findById(id)
+                        .orElseThrow(() -> new RuntimeException("La categoría con ID " + id + " no existe.")))
+                .collect(Collectors.toList());
+
         ComercioEntity entity = comercioMapper.toEntity(request);
 
-        // 2. Buscás las entidades reales en la base de datos usando la nueva lista del request
-        List<CategoriaEntity> categoriasReales = categoriaRepository.findAllById(request.getListaCategoriasIds());
+        entity.setNombre(nombreLimpio);
+        entity.setDireccion(direccionLimpia);
+        entity.setCategorias(categoriasValidas);
 
-        // 3. Se las inyectás manualmente a la entidad antes del save
-        entity.setCategorias(categoriasReales);
 
-        // 4. Guardás en la BD y devolvés la respuesta
         ComercioEntity saved = comercioRepository.save(entity);
         return comercioMapper.toResponse(saved);
     }
@@ -53,7 +67,7 @@ public class ComercioServiceImpl implements IComercioService {
 
     @Override
     @Transactional(readOnly = true)
-    public ComercioResponse buscarPorId(long id) {
+    public ComercioResponse buscarPorId(Long id) {
         ComercioEntity entity = comercioRepository.findById(id)
                 .orElseThrow(() -> new ComercioNotFoundException("Comercio no encontrado con id: " + id));
         return comercioMapper.toResponse(entity);
@@ -61,17 +75,29 @@ public class ComercioServiceImpl implements IComercioService {
 
     @Override
     @Transactional
-    public ComercioResponse actualizarComercio(long id, ComercioRequest request) {
+    public ComercioResponse actualizarComercio(Long id, ComercioRequest request) {
         ComercioEntity entity = comercioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Comercio no encontrado con id: " + id));
-        comercioMapper.updateEntity(request, entity);
+        
+
+        entity.setNombre(request.getNombre().trim());
+        entity.setDireccion(request.getDireccion().trim());
+        
+
+        List<CategoriaEntity> categoriasValidas = request.getListaCategoriasIds().stream()
+                .map(idCat -> categoriaRepository.findById(idCat)
+                        .orElseThrow(() -> new RuntimeException("La categoría con ID " + idCat + " no existe.")))
+                .collect(Collectors.toList());
+        entity.setCategorias(categoriasValidas);
+        
+     
         ComercioEntity updated = comercioRepository.save(entity);
         return comercioMapper.toResponse(updated);
     }
 
     @Override
     @Transactional
-    public void eliminarComercio(long id) {
+    public void eliminarComercio(Long id) {
         ComercioEntity entity = comercioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Comercio no encontrado con id: " + id));
         comercioRepository.delete(entity);

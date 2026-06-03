@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -26,12 +27,10 @@ public class ComercioRequest {
     private String direccion;
     @NotNull(message = "El teléfono no puede ser nulo") // <-- Ahora podés usar esta validación
     @Positive(message = "El teléfono debe ser un número positivo")
-    private Integer telefono;
+    private String telefono;
     @NotEmpty(message = "Debe seleccionar al menos una categoría para el comercio")
     private List<Long> listaCategoriasIds;
 
-    @NotNull(message = "La duración del turno es obligatoria")
-    @Positive(message = "La duración del turno debe ser un número positivo (en minutos)")
-    private Integer duracionTurnoMinutos;
+
 
 }

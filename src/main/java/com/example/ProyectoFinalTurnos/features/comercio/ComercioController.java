@@ -42,7 +42,7 @@ public class ComercioController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ComercioResponse> buscarPorId(@PathVariable long id) {
+    public ResponseEntity<ComercioResponse> buscarPorId(@PathVariable Long id) {
         try {
             ComercioResponse comercio = comercioService.buscarPorId(id);
             return ResponseEntity.ok(comercio); // 200
@@ -52,7 +52,7 @@ public class ComercioController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ComercioResponse> actualizarComercio(@PathVariable long id, @Valid @RequestBody ComercioRequest request) {
+    public ResponseEntity<ComercioResponse> actualizarComercio(@PathVariable Long id, @Valid @RequestBody ComercioRequest request) {
         try {
             ComercioResponse response = comercioService.actualizarComercio(id, request);
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(response); // 202
@@ -62,7 +62,7 @@ public class ComercioController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarComercio(@PathVariable long id) {
+    public ResponseEntity<Void> eliminarComercio(@PathVariable Long id) {
         try {
             comercioService.eliminarComercio(id);
             return ResponseEntity.noContent().build(); // 204

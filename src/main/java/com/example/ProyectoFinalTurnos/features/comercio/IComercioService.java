@@ -10,10 +10,10 @@ public interface IComercioService {
 
     List<ComercioResponse> listarComercioS();
 
-    ComercioResponse buscarPorId(long id);
+    ComercioResponse buscarPorId(Long id);
 
-    ComercioResponse actualizarComercio(long id, ComercioRequest request);
+    ComercioResponse actualizarComercio(Long id, ComercioRequest request);
 
-    void eliminarComercio(long id);
+    void eliminarComercio(Long id);
 }
 
