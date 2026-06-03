@@ -50,8 +50,8 @@ public class ServicioEntity {
     @OneToMany(mappedBy = "servicio")
     private List<TurnoEntity> turnos;
 
-    @ManyToOne
-    @JoinColumn(name = "id_horario",
-            foreignKey = @ForeignKey(name = "fk_servicio_horario"))
-    private HorarioAtencionEntity horario;
+    // MODIFICADO: Cambiamos el @ManyToOne por este @OneToMany
+    // Un servicio/peluquero ahora tiene su propia lista de días y horarios de atención
+    @OneToMany(mappedBy = "servicio", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<HorarioAtencionEntity> horarios;
 }
