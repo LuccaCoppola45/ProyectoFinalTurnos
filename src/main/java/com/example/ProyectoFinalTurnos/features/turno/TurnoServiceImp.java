@@ -43,10 +43,10 @@ public class TurnoServiceImp implements TurnoService
         validarFechaYHora(dto);
 
         UsuarioEntity usuario = usuarioRepository.findById(dto.getUsuarioId())
-                .orElseThrow(()-> new RuntimeException("Usuario no encontrado"));
+                .orElseThrow(()-> new UserProfileNotFoundException("Usuario no encontrado"));
 
         ServicioEntity servicio = servicioRepository.findById(dto.getServicioId())
-                .orElseThrow(()->new RuntimeException("Servicio no encontrado"));
+                .orElseThrow(()->new ResourceNotFoundException("Servicio no encontrado"));
 
         if (turnoRepository.existsByUsuario_IdUsuarioAndFechaAndHoraInicio(
                 dto.getUsuarioId(),
