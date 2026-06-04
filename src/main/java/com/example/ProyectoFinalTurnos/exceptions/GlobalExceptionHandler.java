@@ -7,10 +7,7 @@ import com.example.ProyectoFinalTurnos.exceptions.catalog.ComercioInvalidDataExc
 import com.example.ProyectoFinalTurnos.exceptions.catalog.ComercioNotFoundException;
 import com.example.ProyectoFinalTurnos.exceptions.categoria.CategoriaAlreadyExistsException;
 import com.example.ProyectoFinalTurnos.exceptions.categoria.CategoriaInUseException;
-import com.example.ProyectoFinalTurnos.exceptions.turno.TurnoAlreadyCancelledException;
-import com.example.ProyectoFinalTurnos.exceptions.turno.TurnoNotFoundException;
-import com.example.ProyectoFinalTurnos.exceptions.turno.TurnoPastDateException;
-import com.example.ProyectoFinalTurnos.exceptions.turno.UnauthorizedTurnoAccessException;
+import com.example.ProyectoFinalTurnos.exceptions.turno.*;
 import com.example.ProyectoFinalTurnos.exceptions.user.UserNameAlreadyInUseException;
 import com.example.ProyectoFinalTurnos.exceptions.user.UserProfileNotFoundException;
 import lombok.NonNull;
@@ -289,7 +286,37 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(DuplicateTurnException.class)
+    public ResponseEntity<@NonNull ErrorResponse> handleDuplicateTurnException(
+            DuplicateTurnException ex,
+            HttpServletRequest request) {
 
+        ErrorResponse error = ErrorResponse.builder()
+                .status(HttpStatus.CONFLICT.value()) // 409
+                .error(HttpStatus.CONFLICT.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(TurnFinishedException.class)
+    public ResponseEntity<@NonNull ErrorResponse> handleTurnFinishedException(
+            TurnFinishedException ex,
+            HttpServletRequest request) {
+
+        ErrorResponse error = ErrorResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value()) // 400
+                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
 
 
 
