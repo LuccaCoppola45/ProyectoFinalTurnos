@@ -20,21 +20,22 @@ public class CancelacionEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "fecha_cancelacion", nullable = false)
+    @Column(name = "fecha_cancelacion", nullable = false, updatable = false)
     private LocalDateTime fechaCancelacion;
 
-    @Column(name = "motivo", length = 500)
+    @Column(name = "motivo", length = 500, nullable = false, updatable = false)
     private String motivo;
 
 
     @ManyToOne
     @JoinColumn(name = "id_usuario",
-            nullable = false,
+            nullable = false, updatable = false,
             foreignKey = @ForeignKey(name = "fk_cancelacion_usuario"))
     private UsuarioEntity usuario;
 
     @OneToOne
-    @JoinColumn(name = "id_turno", referencedColumnName = "id_turno",
+    @JoinColumn(name = "id_turno", referencedColumnName = "id_turno", nullable = false,
+            updatable = false,
     foreignKey = @ForeignKey (name = "fk_cancelacion_turno"))
     private TurnoEntity turno;
 
