@@ -1,5 +1,7 @@
 package com.example.ProyectoFinalTurnos.features.comercio;
 
+import com.example.ProyectoFinalTurnos.exceptions.catalog.ComercioNotFoundException;
+import com.example.ProyectoFinalTurnos.features.categoria.CategoriaEntity;
 import com.example.ProyectoFinalTurnos.features.comercio.Dtos.ComercioRequest;
 import com.example.ProyectoFinalTurnos.features.comercio.Dtos.ComercioResponse;
 import jakarta.validation.Valid;
@@ -18,18 +20,15 @@ import java.util.Map;
 public class ComercioController {
 
     private final IComercioService comercioService;
+    private final ComercioRepository comercioRepository;
 
     @PostMapping
-    public ResponseEntity<?> crearComercio(@Valid @RequestBody ComercioRequest request) {
-        try {
-            ComercioResponse response = comercioService.crearComercio(request);
-            return ResponseEntity.status(HttpStatus.CREATED).body(response); // 201
-        } catch (Exception e) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response); // 400
-        }
+    public ResponseEntity<ComercioResponse> crearComercio(@Valid @RequestBody ComercioRequest request) {
+        // Si la validación falla, Tira un error 400 automáticamente, sin necesidad de escribir código adicional.
+        ComercioResponse response = comercioService.crearComercio(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
 
     @GetMapping
     public ResponseEntity<List<ComercioResponse>> listarComercioS() {
@@ -46,22 +45,15 @@ public class ComercioController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ComercioResponse> buscarPorId(@PathVariable long id) {
-        try {
-            ComercioResponse comercio = comercioService.buscarPorId(id);
-            return ResponseEntity.ok(comercio); // 200
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 404
-        }
+            return ResponseEntity.ok(comercioService.buscarPorId(id)); // 200
+
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ComercioResponse> actualizarComercio(@PathVariable long id, @Valid @RequestBody ComercioRequest request) {
-        try {
-            ComercioResponse response = comercioService.actualizarComercio(id, request);
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(response); // 202
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 404
-        }
+        ComercioResponse response = comercioService.actualizarComercio(id, request);
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
     }
 
     @DeleteMapping("/{id}")
