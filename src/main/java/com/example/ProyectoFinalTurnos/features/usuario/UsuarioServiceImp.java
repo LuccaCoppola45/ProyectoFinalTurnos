@@ -1,6 +1,7 @@
 package com.example.ProyectoFinalTurnos.features.usuario;
 
 
+import com.example.ProyectoFinalTurnos.features.turno.TurnoRepository;
 import com.example.ProyectoFinalTurnos.features.usuario.Dtos.UpdateUserRequestDTO;
 import com.example.ProyectoFinalTurnos.features.usuario.Dtos.UpdateUserResponse;
 import com.example.ProyectoFinalTurnos.features.usuario.Dtos.UsuarioRequest;
@@ -21,7 +22,7 @@ public class UsuarioServiceImp implements UsuarioService
 
     private final UsuarioRepository usuarioRepository;
     private final UsuarioMapper usuarioMapper;
-
+    private final TurnoRepository turnoRepository;
 
 
     /// -Crear Usuario- ///
@@ -67,6 +68,11 @@ public class UsuarioServiceImp implements UsuarioService
         if(!usuarioRepository.existsById(id))
         {
             throw new RuntimeException("Usuario no encontrado");
+        }
+        if(turnoRepository.existsByUsuario_IdUsuario(id))
+        {
+            throw new RuntimeException(
+                    "No se puede eliminar un usuario con turnos asociados");
         }
 
         usuarioRepository.deleteById(id);

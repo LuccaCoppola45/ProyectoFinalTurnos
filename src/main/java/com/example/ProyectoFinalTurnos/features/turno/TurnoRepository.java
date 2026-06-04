@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 public interface TurnoRepository extends JpaRepository<TurnoEntity,Long>
 {
 
-
+    boolean existsByUsuario_IdUsuario(Long idUsuario);
 
 
 }
