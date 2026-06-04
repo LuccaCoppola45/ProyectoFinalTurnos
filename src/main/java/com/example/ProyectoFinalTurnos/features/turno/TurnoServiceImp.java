@@ -8,6 +8,7 @@ import com.example.ProyectoFinalTurnos.features.turno.Dtos.TurnoResponceDto;
 import com.example.ProyectoFinalTurnos.features.turno.Mapper.TurnoMapper;
 import com.example.ProyectoFinalTurnos.features.usuario.UsuarioEntity;
 import com.example.ProyectoFinalTurnos.features.usuario.UsuarioRepository;
+import com.example.ProyectoFinalTurnos.model.enums.EstadoTurno;
 import org.springframework.stereotype.Service;
 
 
@@ -79,10 +80,18 @@ public class TurnoServiceImp implements TurnoService
     }
 
     @Override
-    public TurnoResponceDto actualizarTurno(Long id, TurnoRequestDto dto)
-    {
+    public TurnoResponceDto actualizarTurno(Long id, TurnoRequestDto dto) {
+
         TurnoEntity turno = turnoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Turno no encontrado"));
+
+        if (turno.getEstado() == EstadoTurno.CANCELADO)
+        {
+            throw new RuntimeException(
+                    "No se puede modificar un turno cancelado");
+        }
+
+        validarFechaYHora(dto);
 
         UsuarioEntity usuario = usuarioRepository.findById(dto.getUsuarioId())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
@@ -90,9 +99,21 @@ public class TurnoServiceImp implements TurnoService
         ServicioEntity servicio = servicioRepository.findById(dto.getServicioId())
                 .orElseThrow(() -> new RuntimeException("Servicio no encontrado"));
 
+        boolean existeDuplicado =
+                turnoRepository.existsByUsuario_IdUsuarioAndFechaAndHoraInicio(
+                        dto.getUsuarioId(),
+                        dto.getFecha(),
+                        dto.getHoraInicio());
+
+        if (existeDuplicado &&
+                !turno.getUsuario().getIdUsuario().equals(dto.getUsuarioId())) {
+
+            throw new RuntimeException(
+                    "Ya existe un turno para ese usuario en ese horario");
+        }
+
         turno.setFecha(dto.getFecha());
         turno.setHoraInicio(dto.getHoraInicio());
-        turno.setHoraFin(dto.getHoraFin());
         turno.setEstado(dto.getEstado());
         turno.setUsuario(usuario);
         turno.setServicio(servicio);
