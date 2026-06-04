@@ -26,73 +26,51 @@ public class UsuarioController
     }
 
     @PostMapping
-    public ResponseEntity<?> crearUsuario(@Valid @RequestBody UsuarioRequest dto)
+    public ResponseEntity<UsuarioResponce> crearUsuario(@Valid @RequestBody UsuarioRequest dto)
     {
-        try
-        {
-            UsuarioResponce usuarioResponce=usuarioService.crearUsuario(dto);
-            return ResponseEntity.status(HttpStatus.CREATED).body(usuarioResponce);
-        }
-        catch(Exception e)
-        {
-            Map<String, Object> response = new HashMap<>();
-            response.put("error", e.getMessage());
+        UsuarioResponce usuario = usuarioService.crearUsuario(dto);
 
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
-
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(usuario);
     }
 
     @GetMapping
     public ResponseEntity<List<UsuarioResponce>> obtenerTodos()
     {
-        try
+        List<UsuarioResponce> usuarios = usuarioService.obtenerTodos();
+
+        if (usuarios.isEmpty())
         {
-            List<UsuarioResponce> usuario = usuarioService.obtenerTodos();
-            if (usuario.isEmpty())
-            {
-                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-            }
-            return ResponseEntity.ok(usuario);
-        } catch (Exception e)
-        {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.noContent().build();
         }
+
+        return ResponseEntity.ok(usuarios);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioResponce> obtenerUsuarioPorId(@PathVariable Long id)
     {
-        try
-        {
-            UsuarioResponce usuario = usuarioService.obtenerPorId(id);
-            return ResponseEntity.ok(usuario);
-        }
-        catch(RuntimeException e)
-            {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            }
-    }
+        UsuarioResponce usuario = usuarioService.obtenerPorId(id);
 
+        return ResponseEntity.ok(usuario);
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarUsuario(@PathVariable Long id)
     {
-        try
-        {
-            usuarioService.eliminarUsuario(id);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        }
-        catch(RuntimeException e)
-            {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            }
+        usuarioService.eliminarUsuario(id);
 
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<@NonNull UpdateUserResponse> updateUser(@PathVariable Long id , @Valid @RequestBody UpdateUserRequestDTO request){
-       return ResponseEntity.ok(this.usuarioService.actualizarUsuario(id, request));
+    public ResponseEntity<@NonNull UpdateUserResponse> updateUser(@PathVariable Long id, @Valid @RequestBody UpdateUserRequestDTO request)
+    {
+        UpdateUserResponse response =
+                usuarioService.actualizarUsuario(id, request);
+
+        return ResponseEntity.ok(response);
     }
 
 }
