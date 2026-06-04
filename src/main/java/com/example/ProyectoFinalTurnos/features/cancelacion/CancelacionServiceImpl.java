@@ -1,5 +1,11 @@
 package com.example.ProyectoFinalTurnos.features.cancelacion;
 
+import com.example.ProyectoFinalTurnos.exceptions.cancelacion.CancelacionNotFoundException;
+import com.example.ProyectoFinalTurnos.exceptions.turno.TurnoAlreadyCancelledException;
+import com.example.ProyectoFinalTurnos.exceptions.turno.TurnoNotFoundException;
+import com.example.ProyectoFinalTurnos.exceptions.turno.TurnoPastDateException;
+import com.example.ProyectoFinalTurnos.exceptions.turno.UnauthorizedTurnoAccessException;
+import com.example.ProyectoFinalTurnos.exceptions.user.UserProfileNotFoundException;
 import com.example.ProyectoFinalTurnos.features.cancelacion.dto.CancelacionRequest;
 import com.example.ProyectoFinalTurnos.features.cancelacion.dto.CancelacionResponse;
 import com.example.ProyectoFinalTurnos.features.cancelacion.mapper.CancelacionMapper;
@@ -30,27 +36,26 @@ public class CancelacionServiceImpl implements CancelacionService {
     @Transactional
     public CancelacionResponse cancelarTurno(CancelacionRequest requestDTO) {
         UsuarioEntity usuario = usuarioRepository.findById(requestDTO.getIdUsuario()).
-                orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                orElseThrow(() -> new UserProfileNotFoundException("Usuario no encontrado: " + requestDTO.getIdUsuario()));
 
         TurnoEntity turno = turnoRepository.findById(requestDTO.getIdTurno())
-                .orElseThrow(() -> new RuntimeException("Turno no encontrado con ID: " + requestDTO.getIdTurno()));
+                .orElseThrow(() -> new TurnoNotFoundException("Turno no encontrado con ID: " + requestDTO.getIdTurno()));
 
-        // 1. Verificar pertenencia: ¿El turno le pertenece al usuario que lo quiere cancelar?
+        // 1. ¿El turno le pertenece al usuario que lo quiere cancelar?
         if (!turno.getUsuario().getIdUsuario().equals(usuario.getIdUsuario())) {
-            throw new SecurityException("No tienes permiso para cancelar un turno que no te pertenece.");
+            throw new UnauthorizedTurnoAccessException("No tienes permiso para cancelar un turno que no te pertenece.");
         }
 
-        // 2. Verificar que el turno no sea en el pasado
-        // Unimos tu LocalDate (fecha) y tu LocalTime (horaInicio) para crear un LocalDateTime
+        // 2. Verifica que el turno no sea en el pasado
         LocalDateTime fechaHoraDelTurno = LocalDateTime.of(turno.getFecha(), turno.getHoraInicio());
 
         if (fechaHoraDelTurno.isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException("No se puede cancelar un turno cuya fecha y hora ya pasaron.");
+            throw new TurnoPastDateException("No se puede cancelar un turno cuya fecha y hora ya pasaron.");
         }
 
-        // 3. Verificar estado actual del turno usando tu Enum
+        // 3. Verifica estado actual del turno usando tu Enum
         if (turno.getEstado() == EstadoTurno.CANCELADO) {
-            throw new IllegalArgumentException("Este turno ya se encuentra cancelado.");
+            throw new TurnoAlreadyCancelledException("Este turno ya se encuentra cancelado.");
         }
 
         // 2. USO DEL MAPPER (DTO -> Entidad)
@@ -61,7 +66,7 @@ public class CancelacionServiceImpl implements CancelacionService {
         cancelacionEntity.setTurno(turno);
         cancelacionEntity.setFechaCancelacion(LocalDateTime.now());
 
-        turno.setEstado(EstadoTurno.CANCELADO); // Acá le pasamos la constante del Enum        turnoRepository.save(turno);
+        turno.setEstado(EstadoTurno.CANCELADO); // Acá le pasamos la constante del Enum
         turnoRepository.save(turno);
         // 4. PERSISTENCIA
         CancelacionEntity guardada = cancelacionRepository.save(cancelacionEntity);
@@ -83,7 +88,7 @@ public class CancelacionServiceImpl implements CancelacionService {
     @Override
     public CancelacionResponse obtenerCancelacionPorId(Long id){
         CancelacionEntity cancelacion = cancelacionRepository.findById(id).
-                orElseThrow(()->new NoSuchElementException("Cancelacion no encontrada"));
+                orElseThrow(()->new CancelacionNotFoundException("Cancelacion no encontrada con ID: " + id));
         return cancelacionMapper.entitytoResponseDto(cancelacion,"Cancelacion encontrada");
     }
 
