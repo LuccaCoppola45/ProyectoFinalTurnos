@@ -1,6 +1,10 @@
 package com.example.ProyectoFinalTurnos.features.usuario;
 
 
+import com.example.ProyectoFinalTurnos.exceptions.user.UserEmailAlreadyInUseException;
+import com.example.ProyectoFinalTurnos.exceptions.user.UserHasAssociatedTurnosException;
+import com.example.ProyectoFinalTurnos.exceptions.user.UserProfileNotFoundException;
+import com.example.ProyectoFinalTurnos.exceptions.user.UserWithoutChangesException;
 import com.example.ProyectoFinalTurnos.features.turno.TurnoRepository;
 import com.example.ProyectoFinalTurnos.features.usuario.Dtos.UpdateUserRequestDTO;
 import com.example.ProyectoFinalTurnos.features.usuario.Dtos.UpdateUserResponse;
@@ -32,7 +36,7 @@ public class UsuarioServiceImp implements UsuarioService
         String email = dto.getEmail().trim().toLowerCase();
         if (usuarioRepository.existsByEmail(email))
         {
-            throw new RuntimeException("Ya existe un usuario con ese email");
+            throw new UserEmailAlreadyInUseException("Ya existe un usuario con ese email");
         }
         UsuarioEntity usuario = usuarioMapper.toEntity(dto);
         UsuarioEntity guardado = usuarioRepository.save(usuario);
@@ -57,7 +61,7 @@ public class UsuarioServiceImp implements UsuarioService
     public UsuarioResponce obtenerPorId (Long id)
     {
         UsuarioEntity usuario = usuarioRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException("Usuario no encontrado"));
+                .orElseThrow(()-> new UserProfileNotFoundException("Usuario no encontrado"));
         return usuarioMapper.toResponce(usuario);
     }
 
@@ -67,11 +71,11 @@ public class UsuarioServiceImp implements UsuarioService
     {
         if(!usuarioRepository.existsById(id))
         {
-            throw new RuntimeException("Usuario no encontrado");
+            throw new UserProfileNotFoundException("Usuario no encontrado");
         }
         if(turnoRepository.existsByUsuario_IdUsuario(id))
         {
-            throw new RuntimeException(
+            throw new UserHasAssociatedTurnosException(
                     "No se puede eliminar un usuario con turnos asociados");
         }
 
@@ -82,21 +86,21 @@ public class UsuarioServiceImp implements UsuarioService
     @Transactional
     public UpdateUserResponse actualizarUsuario(Long id, UpdateUserRequestDTO dto) {
         UsuarioEntity user = usuarioRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException("Usuario no encontrado"));
+                .orElseThrow(()-> new UserProfileNotFoundException("Usuario no encontrado"));
 
         String nuevoEmail = dto.getEmail().trim().toLowerCase();
 
         if(!user.getEmail().equalsIgnoreCase(nuevoEmail)
                 && usuarioRepository.existsByEmail(nuevoEmail))
         {
-            throw new RuntimeException(
+            throw new UserEmailAlreadyInUseException(
                     "Ya existe un usuario con ese email");
         }
         if(user.getNombre().equals(dto.getNombre())
                 && user.getApellido().equals(dto.getApellido())
                 && user.getEmail().equalsIgnoreCase(nuevoEmail))
         {
-            throw new RuntimeException(
+            throw new UserWithoutChangesException(
                     "No se detectaron cambios para actualizar");
         }
         user.setNombre(dto.getNombre());
