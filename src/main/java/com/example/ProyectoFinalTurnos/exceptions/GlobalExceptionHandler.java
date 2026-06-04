@@ -5,6 +5,8 @@ import com.example.ProyectoFinalTurnos.exceptions.cancelacion.CancelacionNotFoun
 import com.example.ProyectoFinalTurnos.exceptions.catalog.ComercioAlreadyExistsException;
 import com.example.ProyectoFinalTurnos.exceptions.catalog.ComercioInvalidDataException;
 import com.example.ProyectoFinalTurnos.exceptions.catalog.ComercioNotFoundException;
+import com.example.ProyectoFinalTurnos.exceptions.categoria.CategoriaAlreadyExistsException;
+import com.example.ProyectoFinalTurnos.exceptions.categoria.CategoriaInUseException;
 import com.example.ProyectoFinalTurnos.exceptions.turno.TurnoAlreadyCancelledException;
 import com.example.ProyectoFinalTurnos.exceptions.turno.TurnoNotFoundException;
 import com.example.ProyectoFinalTurnos.exceptions.turno.TurnoPastDateException;
@@ -259,6 +261,32 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now())
                 .build();
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    // --- EXCEPCIONES DE CATEGORIA ---
+
+    @ExceptionHandler(CategoriaAlreadyExistsException.class)
+    public ResponseEntity<@NonNull ErrorResponse> handleCategoriaAlreadyExistsException(CategoriaAlreadyExistsException ex, HttpServletRequest request) {
+        ErrorResponse error = ErrorResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value()) // 400
+                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .timestamp(LocalDateTime.now())
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(CategoriaInUseException.class)
+    public ResponseEntity<@NonNull ErrorResponse> handleCategoriaInUseException(CategoriaInUseException ex, HttpServletRequest request) {
+        ErrorResponse error = ErrorResponse.builder()
+                .status(HttpStatus.CONFLICT.value()) // 409 CONFLICT
+                .error(HttpStatus.CONFLICT.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .timestamp(LocalDateTime.now())
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 
 
