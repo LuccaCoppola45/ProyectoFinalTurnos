@@ -28,6 +28,11 @@ public class UsuarioServiceImp implements UsuarioService
     @Override
     public UsuarioResponce crearUsuario(UsuarioRequest dto)
     {
+        String email = dto.getEmail().trim().toLowerCase();
+        if (usuarioRepository.existsByEmail(email))
+        {
+            throw new RuntimeException("Ya existe un usuario con ese email");
+        }
         UsuarioEntity usuario = usuarioMapper.toEntity(dto);
         UsuarioEntity guardado = usuarioRepository.save(usuario);
         return usuarioMapper.toResponce(guardado);
@@ -63,20 +68,36 @@ public class UsuarioServiceImp implements UsuarioService
         {
             throw new RuntimeException("Usuario no encontrado");
         }
+
         usuarioRepository.deleteById(id);
     }
 
     @Override
     @Transactional
     public UpdateUserResponse actualizarUsuario(Long id, UpdateUserRequestDTO dto) {
-        UsuarioEntity user = usuarioRepository.findById(id).orElseThrow(()-> new RuntimeException("Usuario no encontrado"));
+        UsuarioEntity user = usuarioRepository.findById(id)
+                .orElseThrow(()-> new RuntimeException("Usuario no encontrado"));
 
+        String nuevoEmail = dto.getEmail().trim().toLowerCase();
+
+        if(!user.getEmail().equalsIgnoreCase(nuevoEmail)
+                && usuarioRepository.existsByEmail(nuevoEmail))
+        {
+            throw new RuntimeException(
+                    "Ya existe un usuario con ese email");
+        }
+        if(user.getNombre().equals(dto.getNombre())
+                && user.getApellido().equals(dto.getApellido())
+                && user.getEmail().equalsIgnoreCase(nuevoEmail))
+        {
+            throw new RuntimeException(
+                    "No se detectaron cambios para actualizar");
+        }
         user.setNombre(dto.getNombre());
         user.setApellido(dto.getApellido());
         user.setEmail(dto.getEmail());
 
         UsuarioEntity usuarioActualizado = usuarioRepository.save(user);
-
 
         return UpdateUserResponse.builder()
                 .success(true)
@@ -85,4 +106,5 @@ public class UsuarioServiceImp implements UsuarioService
                 .build();
 
     }
+
 }
