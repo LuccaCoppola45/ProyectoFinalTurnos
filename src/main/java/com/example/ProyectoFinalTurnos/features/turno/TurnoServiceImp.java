@@ -124,14 +124,17 @@ public class TurnoServiceImp implements TurnoService
     }
 
     @Override
-    public void eliminarUnTurno (Long id)
-    {
-        if(!turnoRepository.existsById(id))
-        {
-            throw new RuntimeException("Turno no encontrado");
+    public void eliminarUnTurno(Long id) {
+
+        TurnoEntity turno = turnoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Turno no encontrado"));
+
+        if (turno.getEstado() == EstadoTurno.FINALIZADO) {
+            throw new RuntimeException(
+                    "No se puede eliminar un turno finalizado");
         }
 
-        turnoRepository.deleteById(id);
+        turnoRepository.delete(turno);
     }
 
 
