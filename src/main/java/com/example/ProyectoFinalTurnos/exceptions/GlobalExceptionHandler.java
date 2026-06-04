@@ -8,10 +8,7 @@ import com.example.ProyectoFinalTurnos.exceptions.catalog.ComercioNotFoundExcept
 import com.example.ProyectoFinalTurnos.exceptions.categoria.CategoriaAlreadyExistsException;
 import com.example.ProyectoFinalTurnos.exceptions.categoria.CategoriaInUseException;
 import com.example.ProyectoFinalTurnos.exceptions.turno.*;
-import com.example.ProyectoFinalTurnos.exceptions.user.UserHasAssociatedTurnosException;
-import com.example.ProyectoFinalTurnos.exceptions.user.UserNameAlreadyInUseException;
-import com.example.ProyectoFinalTurnos.exceptions.user.UserProfileNotFoundException;
-import com.example.ProyectoFinalTurnos.exceptions.user.UserWithoutChangesException;
+import com.example.ProyectoFinalTurnos.exceptions.user.*;
 import lombok.NonNull;
 import com.example.ProyectoFinalTurnos.exceptions.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
@@ -352,7 +349,21 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(UserEmailAlreadyInUseException.class)
+    public ResponseEntity<@NonNull ErrorResponse> handleUserEmailAlreadyInUseException(
+            UserEmailAlreadyInUseException ex,
+            HttpServletRequest request) {
 
+        ErrorResponse error = ErrorResponse.builder()
+                .status(HttpStatus.CONFLICT.value())
+                .error(HttpStatus.CONFLICT.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+    }
 
 
 
