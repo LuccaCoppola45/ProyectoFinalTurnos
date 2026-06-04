@@ -1,6 +1,7 @@
 package com.example.ProyectoFinalTurnos.exceptions;
 
 import com.example.ProyectoFinalTurnos.exceptions.auth.*;
+import com.example.ProyectoFinalTurnos.exceptions.cancelacion.CancelacionNotFoundException;
 import com.example.ProyectoFinalTurnos.exceptions.catalog.ComercioAlreadyExistsException;
 import com.example.ProyectoFinalTurnos.exceptions.catalog.ComercioInvalidDataException;
 import com.example.ProyectoFinalTurnos.exceptions.catalog.ComercioNotFoundException;
@@ -214,6 +215,17 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(CancelacionNotFoundException.class)
+    public ResponseEntity<@NonNull ErrorResponse> handleCancelacionNotFoundException(CancelacionNotFoundException ex, HttpServletRequest request) {
+        ErrorResponse error = ErrorResponse.builder()
+                .status(HttpStatus.NOT_FOUND.value()) // 404
+                .error(HttpStatus.NOT_FOUND.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .timestamp(LocalDateTime.now())
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
 
 
 
