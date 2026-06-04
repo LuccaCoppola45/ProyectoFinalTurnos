@@ -11,6 +11,8 @@ import com.example.ProyectoFinalTurnos.features.usuario.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,11 +36,22 @@ public class TurnoServiceImp implements TurnoService
     @Override
     public TurnoResponceDto crearTurno(TurnoRequestDto dto)
     {
+        validarFechaYHora(dto);
+
         UsuarioEntity usuario = usuarioRepository.findById(dto.getUsuarioId())
                 .orElseThrow(()-> new RuntimeException("Usuario no encontrado"));
 
         ServicioEntity servicio = servicioRepository.findById(dto.getServicioId())
                 .orElseThrow(()->new RuntimeException("Servicio no encontrado"));
+
+        if (turnoRepository.existsByUsuario_IdUsuarioAndFechaAndHoraInicio(
+                dto.getUsuarioId(),
+                dto.getFecha(),
+                dto.getHoraInicio())) {
+
+            throw new RuntimeException(
+                    "El usuario ya tiene un turno en ese horario");
+        }
 
         TurnoEntity turno = turnoMapper.toEntity(dto, usuario, servicio);
 
@@ -101,7 +114,21 @@ public class TurnoServiceImp implements TurnoService
     }
 
 
+    private void validarFechaYHora(TurnoRequestDto dto)
+    {
+        if(dto.getFecha().isBefore(LocalDate.now()))
+        {
+            throw new RuntimeException(
+                    "No se puede crear un turno en una fecha pasada");
+        }
 
+        if(dto.getFecha().equals(LocalDate.now())
+                && dto.getHoraInicio().isBefore(LocalTime.now()))
+        {
+            throw new RuntimeException(
+                    "No se puede crear un turno en una hora pasada");
+        }
+    }
 
 
 }
