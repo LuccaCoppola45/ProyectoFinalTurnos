@@ -38,7 +38,7 @@ public class TurnoEntity {
     private LocalTime horaFin;
 
     @Enumerated(EnumType.STRING)
-    @NotBlank(message = "El estado es obligatorio")
+    @NotNull(message = "El estado es obligatorio")
     private EstadoTurno estado; // Pendiente, Confirmado, etc.
 
     // RELACIÓN: Muchos turnos pueden ser de un Usuario

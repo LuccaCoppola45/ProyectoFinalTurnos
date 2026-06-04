@@ -35,6 +35,20 @@ public class CancelacionServiceImpl implements CancelacionService {
         TurnoEntity turno = turnoRepository.findById(requestDTO.getIdTurno())
                 .orElseThrow(() -> new RuntimeException("Turno no encontrado con ID: " + requestDTO.getIdTurno()));
 
+        // 1. Verificar pertenencia: ¿El turno le pertenece al usuario que lo quiere cancelar?
+        if (!turno.getUsuario().getIdUsuario().equals(usuario.getIdUsuario())) {
+            throw new SecurityException("No tienes permiso para cancelar un turno que no te pertenece.");
+        }
+
+        // 2. Verificar que el turno no sea en el pasado
+        // Unimos tu LocalDate (fecha) y tu LocalTime (horaInicio) para crear un LocalDateTime
+        LocalDateTime fechaHoraDelTurno = LocalDateTime.of(turno.getFecha(), turno.getHoraInicio());
+
+        if (fechaHoraDelTurno.isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("No se puede cancelar un turno cuya fecha y hora ya pasaron.");
+        }
+
+        // 3. Verificar estado actual del turno usando tu Enum
         if (turno.getEstado() == EstadoTurno.CANCELADO) {
             throw new IllegalArgumentException("Este turno ya se encuentra cancelado.");
         }
