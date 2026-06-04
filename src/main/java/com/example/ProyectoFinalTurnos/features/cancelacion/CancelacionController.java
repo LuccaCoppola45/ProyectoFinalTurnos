@@ -23,18 +23,9 @@ public class CancelacionController {
 
     //POST: Crear una cancelacion
     @PostMapping
-    public ResponseEntity<?> cancelarTurno(@Valid @RequestBody CancelacionRequest requestDTO) {
-
-
-        try {
-            CancelacionResponse response = cancelacionService.cancelarTurno(requestDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        }catch (Exception e) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
-
+    public ResponseEntity<CancelacionResponse> cancelarTurno(@Valid @RequestBody CancelacionRequest requestDTO) {
+        CancelacionResponse response = cancelacionService.cancelarTurno(requestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping
