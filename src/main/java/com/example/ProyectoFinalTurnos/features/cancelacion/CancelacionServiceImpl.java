@@ -84,18 +84,8 @@ public class CancelacionServiceImpl implements CancelacionService {
     public CancelacionResponse obtenerCancelacionPorId(Long id){
         CancelacionEntity cancelacion = cancelacionRepository.findById(id).
                 orElseThrow(()->new NoSuchElementException("Cancelacion no encontrada"));
-        return cancelacionMapper.entitytoResponseDto(cancelacion,"Cancelacion encontrad");
+        return cancelacionMapper.entitytoResponseDto(cancelacion,"Cancelacion encontrada");
     }
-
-    @Override
-    @Transactional
-    public void eliminarCancelacion(Long id){
-        if(!cancelacionRepository.existsById(id)){
-            throw new NoSuchElementException("No se puede eliminar. Cancelación no encontrada con ID: " + id);
-        }
-        cancelacionRepository.deleteById(id);
-    }
-
 
 }
 
