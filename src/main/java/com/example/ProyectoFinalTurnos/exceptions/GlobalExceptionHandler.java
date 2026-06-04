@@ -10,14 +10,48 @@ import lombok.NonNull;
 import com.example.ProyectoFinalTurnos.exceptions.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<@NonNull ErrorResponse> handlerResourceNotFoundException(ResourceNotFoundException ex, HttpServletRequest request){
+        ErrorResponse error = ErrorResponse.builder()
+                .status(HttpStatus.NOT_FOUND.value()) // 404
+                .error(HttpStatus.NOT_FOUND.getReasonPhrase()) // "Not Found"
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .timestamp(LocalDateTime.now())
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    //Metodo que captura las excepciones d ela dependencia de Validation que definimos en las entidades
+    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, String> errores = new HashMap<>();
+
+        // Recorremos todos los errores que saltaron en la validación
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String campo = ((FieldError) error).getField();
+            String mensaje = error.getDefaultMessage();
+            errores.put(campo, mensaje);
+        });
+
+        return new ResponseEntity<>(errores, HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(AccountLockedException.class)
     public ResponseEntity <@NonNull ErrorResponse> handleAccountLockedException(AccountLockedException ex, HttpServletRequest request) {
