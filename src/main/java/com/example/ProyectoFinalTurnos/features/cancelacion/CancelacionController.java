@@ -3,9 +3,11 @@ package com.example.ProyectoFinalTurnos.features.cancelacion;
 import com.example.ProyectoFinalTurnos.features.cancelacion.dto.CancelacionRequest;
 import com.example.ProyectoFinalTurnos.features.cancelacion.dto.CancelacionResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -15,6 +17,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/cancelaciones")
 @RequiredArgsConstructor
+@Validated
 public class CancelacionController {
     private final CancelacionService cancelacionService;
 
@@ -41,14 +44,9 @@ public class CancelacionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CancelacionResponse> buscarCancelacionId(@Valid @PathVariable long id) {
+    public ResponseEntity<CancelacionResponse> buscarCancelacionId(@Valid @PathVariable @Positive(message = "El ID debe ser mayor a 0") long id) {
         CancelacionResponse cancelacion = cancelacionService.obtenerCancelacionPorId(id);
         return ResponseEntity.ok(cancelacion);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarCancelacion(@Valid @PathVariable long id) {
-        cancelacionService.eliminarCancelacion(id);
-        return ResponseEntity.noContent().build();
-    }
 }
