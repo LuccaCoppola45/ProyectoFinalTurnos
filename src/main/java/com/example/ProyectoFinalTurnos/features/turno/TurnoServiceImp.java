@@ -1,6 +1,9 @@
 package com.example.ProyectoFinalTurnos.features.turno;
 
 
+import com.example.ProyectoFinalTurnos.exceptions.auth.ResourceNotFoundException;
+import com.example.ProyectoFinalTurnos.exceptions.turno.*;
+import com.example.ProyectoFinalTurnos.exceptions.user.UserProfileNotFoundException;
 import com.example.ProyectoFinalTurnos.features.servicio.ServicioEntity;
 import com.example.ProyectoFinalTurnos.features.servicio.ServicioRepository;
 import com.example.ProyectoFinalTurnos.features.turno.Dtos.TurnoRequestDto;
@@ -50,7 +53,7 @@ public class TurnoServiceImp implements TurnoService
                 dto.getFecha(),
                 dto.getHoraInicio())) {
 
-            throw new RuntimeException(
+            throw new DuplicateTurnException(
                     "El usuario ya tiene un turno en ese horario");
         }
 
@@ -74,7 +77,7 @@ public class TurnoServiceImp implements TurnoService
     public TurnoResponceDto obtenerPorId (Long id)
     {
         TurnoEntity turno = turnoRepository.findById(id)
-                .orElseThrow(()->new RuntimeException("Turno no encontrado"));
+                .orElseThrow(()->new TurnoNotFoundException("Turno no encontrado"));
 
         return turnoMapper.toDto(turno);
     }
@@ -83,21 +86,21 @@ public class TurnoServiceImp implements TurnoService
     public TurnoResponceDto actualizarTurno(Long id, TurnoRequestDto dto) {
 
         TurnoEntity turno = turnoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Turno no encontrado"));
+                .orElseThrow(() -> new TurnoNotFoundException("Turno no encontrado"));
 
         if (turno.getEstado() == EstadoTurno.CANCELADO)
         {
-            throw new RuntimeException(
+            throw new TurnoAlreadyCancelledException(
                     "No se puede modificar un turno cancelado");
         }
 
         validarFechaYHora(dto);
 
         UsuarioEntity usuario = usuarioRepository.findById(dto.getUsuarioId())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                .orElseThrow(() -> new UserProfileNotFoundException("Usuario no encontrado"));
 
         ServicioEntity servicio = servicioRepository.findById(dto.getServicioId())
-                .orElseThrow(() -> new RuntimeException("Servicio no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Servicio no encontrado"));
 
         boolean existeDuplicado =
                 turnoRepository.existsByUsuario_IdUsuarioAndFechaAndHoraInicio(
@@ -108,7 +111,7 @@ public class TurnoServiceImp implements TurnoService
         if (existeDuplicado &&
                 !turno.getUsuario().getIdUsuario().equals(dto.getUsuarioId())) {
 
-            throw new RuntimeException(
+            throw new DuplicateTurnException(
                     "Ya existe un turno para ese usuario en ese horario");
         }
 
@@ -127,10 +130,10 @@ public class TurnoServiceImp implements TurnoService
     public void eliminarUnTurno(Long id) {
 
         TurnoEntity turno = turnoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Turno no encontrado"));
+                .orElseThrow(() -> new TurnoNotFoundException("Turno no encontrado"));
 
         if (turno.getEstado() == EstadoTurno.FINALIZADO) {
-            throw new RuntimeException(
+            throw new TurnFinishedException(
                     "No se puede eliminar un turno finalizado");
         }
 
@@ -142,14 +145,14 @@ public class TurnoServiceImp implements TurnoService
     {
         if(dto.getFecha().isBefore(LocalDate.now()))
         {
-            throw new RuntimeException(
+            throw new TurnoPastDateException(
                     "No se puede crear un turno en una fecha pasada");
         }
 
         if(dto.getFecha().equals(LocalDate.now())
                 && dto.getHoraInicio().isBefore(LocalTime.now()))
         {
-            throw new RuntimeException(
+            throw new TurnoPastDateException(
                     "No se puede crear un turno en una hora pasada");
         }
     }
