@@ -17,4 +17,8 @@ public interface IHorarioAtencionService {
     void EliminarHorarioAtencion(long id);
 
     HorarioAtencionResponse ActualizarHorarioAtencion(long id, HorarioAtencionRequest request);
+
+    HorarioAtencionResponse ObtenerHorarioAtencion(long id);
+
+    HorarioAtencionResponse ObtenerHorarioPorId(long id);
 }
