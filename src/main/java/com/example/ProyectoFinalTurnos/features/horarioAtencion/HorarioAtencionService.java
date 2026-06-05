@@ -1,5 +1,6 @@
 package com.example.ProyectoFinalTurnos.features.horarioAtencion;
 
+import com.example.ProyectoFinalTurnos.exceptions.auth.ResourceNotFoundException;
 import com.example.ProyectoFinalTurnos.exceptions.catalog.ComercioNotFoundException;
 import com.example.ProyectoFinalTurnos.features.comercio.ComercioEntity;
 import com.example.ProyectoFinalTurnos.features.comercio.ComercioRepository;
@@ -10,7 +11,6 @@ import com.example.ProyectoFinalTurnos.features.servicio.ServicioEntity;
 import com.example.ProyectoFinalTurnos.features.servicio.ServicioRepository;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
 import java.util.List;
 
 
@@ -141,6 +141,20 @@ public class HorarioAtencionService implements IHorarioAtencionService{
         HorarioAtencionEntity actualizado = repository.save(horarioAtencion);
         return mapper.toDto(actualizado);
         }
+
+    @Override
+    public HorarioAtencionResponse ObtenerHorarioAtencion(long id) {
+        HorarioAtencionEntity horarioAtencion = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Horario de atención no encontrado con id: " + id));
+        return mapper.toDto(horarioAtencion);
+    }
+
+    @Override
+    public HorarioAtencionResponse ObtenerHorarioPorId(long id) {
+        HorarioAtencionEntity horarioAtencion = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Horario de atención no encontrado con id: " + id));
+        return mapper.toDto(horarioAtencion);
+    }
 
 
 }
