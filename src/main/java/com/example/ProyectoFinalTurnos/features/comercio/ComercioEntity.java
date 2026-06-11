@@ -1,6 +1,7 @@
 package com.example.ProyectoFinalTurnos.features.comercio;
 
 import com.example.ProyectoFinalTurnos.features.categoria.CategoriaEntity;
+import com.example.ProyectoFinalTurnos.features.servicio.ServicioEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,6 +38,9 @@ public class ComercioEntity {
             )
     )
     private List<CategoriaEntity> categorias;
+
+    @OneToMany(mappedBy = "comercio")
+    private List<ServicioEntity> servicios;
 
 
 }
