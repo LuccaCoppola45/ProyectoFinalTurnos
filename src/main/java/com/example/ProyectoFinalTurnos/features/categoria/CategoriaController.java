@@ -18,6 +18,7 @@ import java.util.Map;
 @RequestMapping("/categorias")
 @RequiredArgsConstructor
 @Validated
+@CrossOrigin(origins = "*")
 public class CategoriaController {
     
     private final CategoriaService categoriaService;
