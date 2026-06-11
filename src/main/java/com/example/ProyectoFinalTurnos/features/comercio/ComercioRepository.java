@@ -10,7 +10,8 @@ import java.util.Optional;
 @Repository
 public interface ComercioRepository extends JpaRepository<ComercioEntity, Long> {
     List<ComercioEntity> findByNombreIgnoreCase(String nombre);
+
     Optional<ComercioEntity> findByNombreIgnoreCaseAndDireccionIgnoreCase(String nombre, String direccion);
 
-    boolean existsByNombreComercio(@NotBlank(message = "El nombre del comercio no puede estar vacío") String nombre);
+    boolean existsByNombreComercio(String nombre);
 }
