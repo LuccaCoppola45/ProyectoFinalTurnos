@@ -22,15 +22,27 @@ public class ServicioMapper {
     }
 
     public ServicioResponse toDto(ServicioEntity entity) {
-        ServicioResponse response = modelMapper.map(entity, ServicioResponse.class);
+        ServicioResponse response = new ServicioResponse();
 
-        // Mapeo manual de IDs para asegurar que el Response sea limpio
+        // Mapeo de propiedades básicas
+        response.setIdServicio(entity.getIdServicio());
+        response.setNombreServicio(entity.getNombre());
+        response.setPrecio(entity.getPrecio());
+
+        // Mapeo de comercio ID
         if (entity.getComercio() != null) {
             response.setIdComercio(entity.getComercio().getId());
         }
-        if (entity.getHorarios() != null) {
-            response.setHorariosAtencionIds(entity.getHorarios().stream().map(h -> h.getId()).toList());
+
+        // Mapeo de horarios IDs
+        if (entity.getHorarios() != null && !entity.getHorarios().isEmpty()) {
+            response.setHorariosAtencionIds(
+                entity.getHorarios().stream()
+                    .map(h -> h.getId())
+                    .toList()
+            );
         }
+
         return response;
     }
 }

@@ -43,4 +43,5 @@ public class HorarioAtencionEntity {
 
     @Column(name = "hora_cierre", nullable = false)
     private LocalTime horaCierre;
+
 }

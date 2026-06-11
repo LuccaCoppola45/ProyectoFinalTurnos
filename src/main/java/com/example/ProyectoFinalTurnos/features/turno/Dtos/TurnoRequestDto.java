@@ -27,7 +27,7 @@ public class TurnoRequestDto
     @NotNull(message = "La hora de fin es obligatoria")
     private LocalTime horaFin;
 
-    @NotBlank(message = "El estado es obligatorio")
+    @NotNull(message = "El estado es obligatorio")
     private EstadoTurno estado;
 
     // Relaciones por ID

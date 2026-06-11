@@ -1,5 +1,7 @@
 package com.example.ProyectoFinalTurnos.features.servicio;
 
+import com.example.ProyectoFinalTurnos.exceptions.auth.ResourceNotFoundException;
+import com.example.ProyectoFinalTurnos.exceptions.catalog.ComercioNotFoundException;
 import com.example.ProyectoFinalTurnos.features.comercio.ComercioEntity;
 import com.example.ProyectoFinalTurnos.features.comercio.ComercioRepository;
 import com.example.ProyectoFinalTurnos.features.horarioAtencion.HorarioAtencionEntity;
@@ -32,11 +34,11 @@ public class ServicioService implements IServicioService{
     public ServicioResponse crearServicio(ServicioRequest request) {
 
         ComercioEntity comercio = comercioRepository.findById(request.getIdComercio())
-                .orElseThrow(() -> new RuntimeException("No se encontró el comercio con ID: " + request.getIdComercio()));
+                .orElseThrow(() -> new ComercioNotFoundException("No se encontró el comercio con ID: " + request.getIdComercio()));
 
 
         HorarioAtencionEntity horario = horarioAtencionRepository.findById(request.getIdHorario())
-                .orElseThrow(() -> new RuntimeException("No se encontró el horario con ID: " + request.getIdHorario()));
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontró el horario con ID: " + request.getIdHorario()));
 
 
         ServicioEntity servicioEntity = servicioMapper.toEntity(request);
