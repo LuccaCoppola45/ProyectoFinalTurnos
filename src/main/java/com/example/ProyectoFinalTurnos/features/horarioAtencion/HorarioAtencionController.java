@@ -30,53 +30,30 @@ public class HorarioAtencionController {
 
     @GetMapping
     public ResponseEntity<List<HorarioAtencionResponse>> listarHorarios() {
-        List<HorarioAtencionResponse> horarios = horarioAtencionService.listarHorarios();
+        List<HorarioAtencionResponse> horarios = horarioAtencionService.ListarHorarios();
         return ResponseEntity.ok(horarios);
     }
 
 
     @GetMapping("/{id}")
     public ResponseEntity<HorarioAtencionResponse> obtenerHorarioPorId(@PathVariable long id) {
-       HorarioAtencionResponse response = horarioAtencionService.
+       HorarioAtencionResponse response = horarioAtencionService.ObtenerHorarioPorId(id);
+       return ResponseEntity.ok(response);
     }
 
-    /**
-     * PUT - Actualizar un horario de atención
-     * @param id del horario a actualizar
-     * @param request datos actualizados
-     * @return 202 Accepted si se actualiza correctamente
-     *         400 Bad Request si los datos son inválidos o hay conflicto
-     *         404 Not Found si el horario o comercio no existe
-     */
+
     @PutMapping("/{id}")
-    public ResponseEntity<HorarioAtencionResponse> actualizarHorarioAtencion(
-            @PathVariable long id,
-            @Valid @RequestBody HorarioAtencionRequest request) {
-        try {
+    public ResponseEntity<HorarioAtencionResponse> actualizarHorarioAtencion(@PathVariable long id,@Valid @RequestBody HorarioAtencionRequest request) {
+
             HorarioAtencionResponse response = horarioAtencionService.ActualizarHorarioAtencion(id, request);
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(response); // 202 Accepted
-        } catch (ComercioNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 404 Not Found
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build(); // 400 Bad Request
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 404 Not Found
-        }
+
     }
 
-    /**
-     * DELETE - Eliminar un horario de atención
-     * @param id del horario a eliminar
-     * @return 204 No Content si se elimina correctamente
-     *         404 Not Found si el horario no existe
-     */
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarHorarioAtencion(@PathVariable long id) {
-        try {
             horarioAtencionService.EliminarHorarioAtencion(id);
-            return ResponseEntity.noContent().build(); // 204 No Content
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 404 Not Found
-        }
+            return ResponseEntity.noContent().build();
     }
 }

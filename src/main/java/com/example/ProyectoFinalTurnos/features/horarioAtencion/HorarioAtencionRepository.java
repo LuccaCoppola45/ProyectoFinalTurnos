@@ -10,5 +10,5 @@ import java.util.List;
 @Repository
 public interface HorarioAtencionRepository extends JpaRepository<HorarioAtencionEntity, Long> {
     List<HorarioAtencionEntity> findByComercioIdAndDiaSemana(Long comercioId, Diasemana diaSemana);
-    HorarioAtencionResponse findhorariobyId(Long id);
+    HorarioAtencionResponse findHorarioAtencionByid(Long id);
 }

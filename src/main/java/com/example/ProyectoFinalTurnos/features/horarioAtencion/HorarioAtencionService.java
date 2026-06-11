@@ -9,6 +9,7 @@ import com.example.ProyectoFinalTurnos.features.horarioAtencion.Dtos.HorarioAten
 import com.example.ProyectoFinalTurnos.features.horarioAtencion.Mapper.HorarioAtencionMapper;
 import com.example.ProyectoFinalTurnos.features.servicio.ServicioEntity;
 import com.example.ProyectoFinalTurnos.features.servicio.ServicioRepository;
+import com.example.ProyectoFinalTurnos.model.enums.EstadoTurno;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -142,12 +143,6 @@ public class HorarioAtencionService implements IHorarioAtencionService{
         return mapper.toDto(actualizado);
         }
 
-    @Override
-    public HorarioAtencionResponse ObtenerHorarioAtencion(long id) {
-        HorarioAtencionEntity horarioAtencion = repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Horario de atención no encontrado con id: " + id));
-        return mapper.toDto(horarioAtencion);
-    }
 
     @Override
     public HorarioAtencionResponse ObtenerHorarioPorId(long id) {
