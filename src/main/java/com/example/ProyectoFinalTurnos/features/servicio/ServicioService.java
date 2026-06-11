@@ -87,7 +87,6 @@ public class ServicioService implements IServicioService{
                 .orElseThrow(() -> new RuntimeException("No se encontró el horario con ID: " + request.getIdHorario()));
 
         servicioEntity.setNombre(request.getNombreServicio());
-        servicioEntity.setPrecio(request.getPrecio());
         servicioEntity.setComercio(comercio);
         servicioEntity.setHorarios(List.of(horario));
 

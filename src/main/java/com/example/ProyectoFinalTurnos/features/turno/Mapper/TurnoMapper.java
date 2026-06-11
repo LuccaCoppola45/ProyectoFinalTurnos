@@ -5,61 +5,30 @@ import com.example.ProyectoFinalTurnos.features.turno.TurnoEntity;
 import com.example.ProyectoFinalTurnos.features.turno.Dtos.TurnoRequestDto;
 import com.example.ProyectoFinalTurnos.features.turno.Dtos.TurnoResponceDto;
 import com.example.ProyectoFinalTurnos.features.usuario.UsuarioEntity;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class TurnoMapper
 {
     private final ModelMapper modelMapper;
 
-    public TurnoMapper(ModelMapper modelMapper)
+    public TurnoEntity toEntity(TurnoRequestDto dto)
     {
-        this.modelMapper = modelMapper;
+        return modelMapper.map(dto,TurnoEntity.class);
     }
-
-    /// -DTO -> Entity- ///
-
-    public TurnoEntity toEntity(TurnoRequestDto dto, UsuarioEntity usuario, ServicioEntity servicio)
-    {
-        TurnoEntity turno = modelMapper.map(dto, TurnoEntity.class);
-        turno.setUsuario(usuario);
-        turno.setServicio(servicio);
-        return turno;
-    }
-
-    /// -Entity -> DTO- ///
 
     public TurnoResponceDto toDto(TurnoEntity entity)
     {
-        TurnoResponceDto dto = modelMapper.map(entity, TurnoResponceDto.class);
-
-        if (entity.getUsuario() != null) {
-            dto.setUsuarioId(entity.getUsuario().getIdUsuario());
-        }
-        if (entity.getServicio() != null) {
-            dto.setServicioId(entity.getServicio().getIdServicio());
-        }
-        if (entity.getCancelacion() != null) {
-            dto.setCancelacionId(entity.getCancelacion().getId());
-        }
-
-        return dto;
+        return modelMapper.map(entity,TurnoResponceDto.class);
     }
 
-    public void updateEntity(
-            TurnoEntity turno,
-            TurnoRequestDto dto,
-            UsuarioEntity usuario,
-            ServicioEntity servicio)
-    {
-        turno.setFecha(dto.getFecha());
-        turno.setHoraInicio(dto.getHoraInicio());
-        turno.setHoraFin(dto.getHoraFin());
-        turno.setEstado(dto.getEstado());
-        turno.setUsuario(usuario);
-        turno.setServicio(servicio);
-    }
+
+
+
+
 
 
 
