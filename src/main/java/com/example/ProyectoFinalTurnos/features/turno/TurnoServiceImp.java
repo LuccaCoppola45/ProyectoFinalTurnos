@@ -11,16 +11,20 @@ import com.example.ProyectoFinalTurnos.features.turno.Dtos.TurnoResponceDto;
 import com.example.ProyectoFinalTurnos.features.turno.Mapper.TurnoMapper;
 import com.example.ProyectoFinalTurnos.features.usuario.UsuarioEntity;
 import com.example.ProyectoFinalTurnos.features.usuario.UsuarioRepository;
+import com.example.ProyectoFinalTurnos.model.enums.Diasemana;
 import com.example.ProyectoFinalTurnos.model.enums.EstadoTurno;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class TurnoServiceImp implements TurnoService
 {
 
@@ -38,28 +42,51 @@ public class TurnoServiceImp implements TurnoService
     }
 
     @Override
-    public TurnoResponceDto crearTurno(TurnoRequestDto dto)
-    {
-        validarFechaYHora(dto);
-
-        UsuarioEntity usuario = usuarioRepository.findById(dto.getUsuarioId())
-                .orElseThrow(()-> new UserProfileNotFoundException("Usuario no encontrado"));
-
-        ServicioEntity servicio = servicioRepository.findById(dto.getServicioId())
-                .orElseThrow(()->new ResourceNotFoundException("Servicio no encontrado"));
-
-        if (turnoRepository.existsByUsuario_IdUsuarioAndFechaAndHoraInicio(
-                dto.getUsuarioId(),
-                dto.getFecha(),
-                dto.getHoraInicio())) {
-
-            throw new DuplicateTurnException(
-                    "El usuario ya tiene un turno en ese horario");
+    @Transactional
+    public TurnoResponceDto crearTurno(TurnoRequestDto requestDto) {
+        // 1. Validar que la fecha y hora no sean en el pasado
+        LocalDateTime fechaHoraDelTurno = LocalDateTime.of(requestDto.getFecha(), requestDto.getHoraInicio());
+        if (fechaHoraDelTurno.isBefore(LocalDateTime.now())) {
+            throw new TurnoPastDateException("No se puede reservar un turno en una fecha u hora que ya pasaron.");
         }
 
-        TurnoEntity turno = turnoMapper.toEntity(dto, usuario, servicio);
+        // 2. Buscar el usuario y el servicio
+        UsuarioEntity usuario = usuarioRepository.findById(requestDto.getUsuarioId())
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con ID: " + requestDto.getUsuarioId()));
 
-        TurnoEntity guardado = turnoRepository.save(turno);
+        ServicioEntity servicio = servicioRepository.findById(requestDto.getServicioId())
+                .orElseThrow(() -> new ResourceNotFoundException("Servicio no encontrado con ID: " + requestDto.getServicioId()));
+
+        // 3. --- CÁLCULO DE LA HORA FIN ---
+        LocalTime horaInicio = requestDto.getHoraInicio();
+        LocalTime horaFinCalculada = horaInicio.plusMinutes(servicio.getDuracionDelServicio());
+
+        // 4. Validar Superposición (Overbooking)
+        // Buscamos si ya existe algún turno activo que se cruce con este horario
+        boolean existeSuperposicion = turnoRepository.existsSuperposicion(
+                servicio.getIdServicio(),
+                requestDto.getFecha(),
+                horaInicio,
+                horaFinCalculada
+        );
+
+        if (existeSuperposicion) {
+            throw new TurnoOutsideBusinessException("El horario seleccionado ya no se encuentra disponible. Por favor, elija otro.");
+        }
+
+        // (OPCIONAL) 5. Validar Horario de Atención del Comercio
+        // Aquí deberías traer el horario del comercio y validar que horaInicio y horaFinCalculada
+        // estén dentro del rango de apertura y cierre del local.
+
+        // 6. Mapear y Setear datos
+        TurnoEntity turnoEntity = turnoMapper.toEntity(requestDto);
+        turnoEntity.setHoraFin(horaFinCalculada);
+        turnoEntity.setUsuario(usuario);
+        turnoEntity.setServicio(servicio);
+        turnoEntity.setEstado(EstadoTurno.PENDIENTE); // El estado por defecto al crearlo
+
+        // 7. Guardar en la BD
+        TurnoEntity guardado = turnoRepository.save(turnoEntity);
 
         return turnoMapper.toDto(guardado);
     }
@@ -117,7 +144,6 @@ public class TurnoServiceImp implements TurnoService
 
         turno.setFecha(dto.getFecha());
         turno.setHoraInicio(dto.getHoraInicio());
-        turno.setEstado(dto.getEstado());
         turno.setUsuario(usuario);
         turno.setServicio(servicio);
 
@@ -156,6 +182,20 @@ public class TurnoServiceImp implements TurnoService
                     "No se puede crear un turno en una hora pasada");
         }
     }
+
+    private Diasemana mapearDiaSemana(java.time.DayOfWeek dayOfWeek) {
+        return switch (dayOfWeek) {
+            case MONDAY -> Diasemana.LUNES;
+            case TUESDAY -> Diasemana.MARTES;
+            case WEDNESDAY -> Diasemana.MIERCOLES;
+            case THURSDAY -> Diasemana.JUEVES;
+            case FRIDAY -> Diasemana.VIERNES;
+            case SATURDAY -> Diasemana.SABADO;
+            case SUNDAY -> Diasemana.DOMINGO;
+        };
+    }
+
+
 
 
 }
