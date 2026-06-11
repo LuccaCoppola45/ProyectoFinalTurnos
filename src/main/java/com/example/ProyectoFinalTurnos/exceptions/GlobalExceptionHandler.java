@@ -7,6 +7,7 @@ import com.example.ProyectoFinalTurnos.exceptions.catalog.ComercioInvalidDataExc
 import com.example.ProyectoFinalTurnos.exceptions.catalog.ComercioNotFoundException;
 import com.example.ProyectoFinalTurnos.exceptions.categoria.CategoriaAlreadyExistsException;
 import com.example.ProyectoFinalTurnos.exceptions.categoria.CategoriaInUseException;
+import com.example.ProyectoFinalTurnos.exceptions.categoria.CategoriaNoEncontradaException;
 import com.example.ProyectoFinalTurnos.exceptions.turno.TurnoAlreadyCancelledException;
 import com.example.ProyectoFinalTurnos.exceptions.turno.TurnoNotFoundException;
 import com.example.ProyectoFinalTurnos.exceptions.turno.TurnoPastDateException;
@@ -287,6 +288,18 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now())
                 .build();
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler (CategoriaNoEncontradaException.class)
+    public ResponseEntity<@NonNull ErrorResponse> handleCategoriaNoEncontradaException(CategoriaNoEncontradaException ex, HttpServletRequest request) {
+        ErrorResponse error = ErrorResponse.builder()
+                .status(HttpStatus.NOT_FOUND.value()) // 404
+                .error(HttpStatus.NOT_FOUND.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .timestamp(LocalDateTime.now())
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
 
