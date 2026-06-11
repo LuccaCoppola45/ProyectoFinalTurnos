@@ -5,9 +5,11 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class ServicioResponse {
+public class ServicioResponse
+{
     private Long idServicio;
     private String nombreServicio;
+    private Integer duracionDelServicio;
     private Double precio;
     private Long idComercio;
     private List<Long> HorariosAtencionIds;

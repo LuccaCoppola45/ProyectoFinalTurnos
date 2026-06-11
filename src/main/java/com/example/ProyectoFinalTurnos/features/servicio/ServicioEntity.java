@@ -31,8 +31,12 @@ public class ServicioEntity {
     @Column(name = "nombre_servicio", length = 50)
     private String nombre;
 
+    @Column(name = "duracion_servicio", nullable = false)
+    private Integer duracionDelServicio;
+
     @NotNull(message = "El precio es obligatorio")
     private Double precio;
+
 
     // Relación con Comercio: Muchos servicios pertenecen a un Comercio
     @ManyToOne
