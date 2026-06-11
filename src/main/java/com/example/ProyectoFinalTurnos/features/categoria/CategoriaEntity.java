@@ -28,6 +28,6 @@ public class CategoriaEntity {
 
     // Relación ManyToMany para poder consultar los comercios asociados
     // y validar antes de eliminar (Integridad referencial)
-    @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL) // <-- Le sacamos la "s"
+    @ManyToMany(mappedBy = "categorias")
     private List<ComercioEntity> comercios;
 }

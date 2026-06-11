@@ -42,11 +42,11 @@ public class ComercioServiceImpl implements IComercioService {
         CategoriaEntity categoria = categoriaRepository.findById(requestDto.getIdCategoria())
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró la categoría con ID: " + requestDto.getIdCategoria()));
 
-        ComercioEntity comercioEntity = comercioMapper.requestDtoToEntity(requestDto);
+        ComercioEntity comercioEntity = comercioMapper.toEntity(requestDto);
         comercioEntity.setCategoria(categoria);
 
         ComercioEntity guardado = comercioRepository.save(comercioEntity);
-        return comercioMapper.entityToResponseDto(guardado);
+        return comercioMapper.toResponse(guardado);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class ComercioServiceImpl implements IComercioService {
     public List<ComercioResponse> listarComercioS() {
         return comercioRepository.findAll()
                 .stream()
-                .map(comercioMapper::entityToResponseDto)
+                .map(comercioMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
@@ -63,7 +63,7 @@ public class ComercioServiceImpl implements IComercioService {
     public ComercioResponse buscarPorId(Long id) {
         ComercioEntity entity = comercioRepository.findById(id)
                 .orElseThrow(() -> new ComercioNotFoundException("Comercio no encontrado con id: " + id));
-        return comercioMapper.entityToResponseDto(entity);
+        return comercioMapper.toResponse(entity);
     }
 
 //    @Override
@@ -121,7 +121,7 @@ public class ComercioServiceImpl implements IComercioService {
         // 5. Guardamos en la base de datos
         ComercioEntity actualizado = comercioRepository.save(comercio);
 
-        return comercioMapper.entityToResponseDto(actualizado);
+        return comercioMapper.toResponse(actualizado);
     }
 
     @Override
