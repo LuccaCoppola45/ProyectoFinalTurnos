@@ -1,6 +1,5 @@
 package com.example.ProyectoFinalTurnos.features.comercio;
 
-import jakarta.validation.constraints.NotBlank;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,6 +10,4 @@ import java.util.Optional;
 public interface ComercioRepository extends JpaRepository<ComercioEntity, Long> {
     List<ComercioEntity> findByNombreIgnoreCase(String nombre);
     Optional<ComercioEntity> findByNombreIgnoreCaseAndDireccionIgnoreCase(String nombre, String direccion);
-
-    boolean existsByNombreComercio(@NotBlank(message = "El nombre del comercio no puede estar vacío") String nombre);
 }
