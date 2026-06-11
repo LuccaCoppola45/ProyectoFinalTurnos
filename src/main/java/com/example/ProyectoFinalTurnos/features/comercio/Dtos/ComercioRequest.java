@@ -28,8 +28,10 @@ public class ComercioRequest {
     @NotNull(message = "El teléfono no puede ser nulo") // <-- Ahora podés usar esta validación
     @Positive(message = "El teléfono debe ser un número positivo")
     private String telefono;
-    @NotEmpty(message = "Debe seleccionar al menos una categoría para el comercio")
-    private List<Long> listaCategoriasIds;
+    // Relación con Categoría
+    @NotNull(message = "El ID de la categoría es obligatorio")
+    @Positive(message = "El ID de la categoría debe ser mayor a 0")
+    private Long idCategoria;
 
 
 

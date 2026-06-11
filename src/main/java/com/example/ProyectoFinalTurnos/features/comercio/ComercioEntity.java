@@ -25,21 +25,12 @@ public class ComercioEntity {
     private String direccion;
     private String telefono;
 
-    @ManyToMany
-    @JoinTable(
-            name = "comercio_categoria",
-            joinColumns = @JoinColumn(
-                    name = "id_comercio",
-                    foreignKey = @ForeignKey(name = "fk_comercio_categoria_comercio")
-            ),
-            inverseJoinColumns = @JoinColumn(
-                    name = "id_categoria",
-                    foreignKey = @ForeignKey(name = "fk_comercio_categoria_categoria")
-            )
-    )
-    private List<CategoriaEntity> categorias;
+    @ManyToOne
+    @JoinColumn(name = "id_categoria", nullable = false, foreignKey = @ForeignKey(name = "fk_comercio_categoria"))
+    private CategoriaEntity categoria;
 
-    @OneToMany(mappedBy = "comercio")
+    // Relación con servicios (Un comercio tiene muchos servicios)
+    @OneToMany(mappedBy = "comercio", cascade = CascadeType.ALL)
     private List<ServicioEntity> servicios;
 
 
