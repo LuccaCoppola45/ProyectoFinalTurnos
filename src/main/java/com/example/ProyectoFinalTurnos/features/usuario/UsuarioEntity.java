@@ -31,21 +31,20 @@ public class UsuarioEntity implements UserDetails {
     private Long idUsuario;
 
 
-
+    @Column(nullable = false)
     private String nombre;
 
-
-
+    @Column(nullable = false)
     private String apellido;
 
     @Enumerated(EnumType.STRING)
-    @NotNull(message = "El rol es obligatorio")
+    @NotBlank(message = "El rol es obligatorio")
     private Rol rol = Rol.CLIENTE;
 
-
+    @Column(unique = true)
     private String email;
 
-
+    @Column(nullable = false)
     private String password;
 
     @ManyToMany
