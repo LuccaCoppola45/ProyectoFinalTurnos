@@ -25,9 +25,11 @@ public class ComercioRequest {
 
     @NotBlank(message = "La dirección del comercio no puede estar vacía")
     private String direccion;
+
     @NotNull(message = "El teléfono no puede ser nulo") // <-- Ahora podés usar esta validación
     @Positive(message = "El teléfono debe ser un número positivo")
     private String telefono;
+
     @NotEmpty(message = "Debe seleccionar al menos una categoría para el comercio")
     private List<Long> listaCategoriasIds;
 

@@ -10,6 +10,7 @@ public class ServicioRequest {
 
     @NotBlank(message = "El nombre del servicio no puede estar vacio")
     private String nombreServicio;
+
     @Positive(message = "El precio debe ser un numero positivo")
     @NotNull(message = "El precio es obligatorio")
     private double precio;
@@ -17,6 +18,7 @@ public class ServicioRequest {
 
     @NotNull(message = "La duracion del servicio es obligatorio")
     private Integer duracionDelServicio;
+
 
     private Long idComercio;
 
