@@ -29,11 +29,10 @@ public class TurnoEntity {
     @Column(name = "id_turno")
     private Long idTurno;
 
-    @NotNull(message = "La fecha es obligatoria")
     @Column(nullable = false)
     private LocalDate fecha;
 
-    @NotNull(message = "La hora de inicio es obligatoria")
+
     @Column(nullable = false)
     private LocalTime horaInicio;
 
