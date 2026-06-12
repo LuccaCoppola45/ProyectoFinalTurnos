@@ -1,5 +1,6 @@
 package com.example.ProyectoFinalTurnos.features.turno.Dtos;
 
+import com.example.ProyectoFinalTurnos.model.enums.EstadoTurno;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +19,7 @@ public class TurnoResponceDto
     private LocalDate fecha;
     private LocalTime horaInicio;
     private LocalTime horaFin;
-    private String estado;
+    private EstadoTurno estado;
     private Long usuarioId;
     private Long servicioId;
     private Long cancelacionId;

@@ -29,26 +29,25 @@ public class TurnoEntity {
     private Long idTurno;
 
     @NotNull(message = "La fecha es obligatoria")
+    @Column(nullable = false)
     private LocalDate fecha;
 
     @NotNull(message = "La hora de inicio es obligatoria")
+    @Column(nullable = false)
     private LocalTime horaInicio;
 
-    @NotNull(message = "La hora de fin es obligatoria")
-    private LocalTime horaFin;
-
     @Enumerated(EnumType.STRING)
-    @NotNull(message = "El estado es obligatorio")
+    @Column(nullable = false)
     private EstadoTurno estado; // Pendiente, Confirmado, etc.
 
     // RELACIÓN: Muchos turnos pueden ser de un Usuario
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_usuario",
     foreignKey = @ForeignKey(name = "fk_turno_usuario"))
     private UsuarioEntity usuario;
 
     // RELACIÓN: Muchos turnos pueden ser para un Servicio
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_servicio",
     foreignKey = @ForeignKey (name = "fk_turno_servicio"))
     private ServicioEntity servicio;
