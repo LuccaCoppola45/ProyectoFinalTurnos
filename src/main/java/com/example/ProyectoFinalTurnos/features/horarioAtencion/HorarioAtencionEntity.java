@@ -2,6 +2,7 @@ package com.example.ProyectoFinalTurnos.features.horarioAtencion;
 
 import com.example.ProyectoFinalTurnos.features.comercio.ComercioEntity;
 import com.example.ProyectoFinalTurnos.features.servicio.ServicioEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.example.ProyectoFinalTurnos.model.enums.Diasemana;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -25,6 +26,7 @@ public class HorarioAtencionEntity {
     @JoinColumn(name = "id_comercio",
             foreignKey = @ForeignKey(name = "FK_horario_comercio"),
             nullable = true)
+    @JsonIgnore
     private ComercioEntity comercio;
 
     // AGREGADO: Relación con el servicio/peluquero (nullable = true para cuando sea el horario del local)
@@ -32,6 +34,7 @@ public class HorarioAtencionEntity {
     @JoinColumn(name = "id_servicio",
             foreignKey = @ForeignKey(name = "FK_horario_servicio"),
             nullable = true)
+    @JsonIgnore
     private ServicioEntity servicio;
 
     @Enumerated(EnumType.STRING)

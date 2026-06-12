@@ -2,6 +2,7 @@ package com.example.ProyectoFinalTurnos.features.cancelacion;
 
 import com.example.ProyectoFinalTurnos.features.turno.TurnoEntity;
 import com.example.ProyectoFinalTurnos.features.usuario.UsuarioEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,12 +32,14 @@ public class CancelacionEntity {
     @JoinColumn(name = "id_usuario",
             nullable = false, updatable = false,
             foreignKey = @ForeignKey(name = "fk_cancelacion_usuario"))
+    @JsonIgnore
     private UsuarioEntity usuario;
 
     @OneToOne
     @JoinColumn(name = "id_turno", referencedColumnName = "id_turno", nullable = false,
             updatable = false,
     foreignKey = @ForeignKey (name = "fk_cancelacion_turno"))
+    @JsonIgnore
     private TurnoEntity turno;
 
 }

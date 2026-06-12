@@ -1,6 +1,7 @@
 package com.example.ProyectoFinalTurnos.features.categoria;
 
 import com.example.ProyectoFinalTurnos.features.comercio.ComercioEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,5 +30,6 @@ public class CategoriaEntity {
     // Relación ManyToMany para poder consultar los comercios asociados
     // y validar antes de eliminar (Integridad referencial)
     @ManyToMany(mappedBy = "categorias")
+    @JsonIgnore
     private List<ComercioEntity> comercios;
 }

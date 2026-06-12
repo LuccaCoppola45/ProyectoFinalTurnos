@@ -1,6 +1,7 @@
 package com.example.ProyectoFinalTurnos.features.servicio;
 
 import com.example.ProyectoFinalTurnos.features.comercio.ComercioEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.example.ProyectoFinalTurnos.features.horarioAtencion.HorarioAtencionEntity;
 import com.example.ProyectoFinalTurnos.features.turno.TurnoEntity;
 import com.example.ProyectoFinalTurnos.features.usuario.UsuarioEntity;
@@ -42,11 +43,13 @@ public class ServicioEntity {
     @ManyToOne
     @JoinColumn(name = "id_comercio",
     foreignKey = @ForeignKey(name = "fk_servicio_comercio"))
+    @JsonIgnore
     private ComercioEntity comercio;
 
     // 1. RELACIÓN MUCHOS A MUCHOS (Tabla Usuarios_Servicios)
     // Es el "espejo" de la relación que definimos en Usuario
     @ManyToMany(mappedBy = "serviciosVinculados")
+    @JsonIgnore
     private List<UsuarioEntity> usuariosVinculados;
 
     // 2. RELACIÓN CON TURNOS (Tabla intermedia con datos)

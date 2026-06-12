@@ -2,6 +2,7 @@ package com.example.ProyectoFinalTurnos.features.usuario;
 
 import com.example.ProyectoFinalTurnos.features.cancelacion.CancelacionEntity;
 import com.example.ProyectoFinalTurnos.features.servicio.ServicioEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.example.ProyectoFinalTurnos.features.turno.TurnoEntity;
 import com.example.ProyectoFinalTurnos.model.enums.Rol;
 import jakarta.persistence.*;
@@ -60,6 +61,7 @@ public class UsuarioEntity{
             )
     )
 
+    @JsonIgnore
     private List<ServicioEntity> serviciosVinculados;
 
 
