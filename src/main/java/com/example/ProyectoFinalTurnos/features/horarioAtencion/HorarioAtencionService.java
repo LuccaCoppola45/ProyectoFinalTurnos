@@ -2,6 +2,7 @@ package com.example.ProyectoFinalTurnos.features.horarioAtencion;
 
 import com.example.ProyectoFinalTurnos.exceptions.auth.ResourceNotFoundException;
 import com.example.ProyectoFinalTurnos.exceptions.catalog.ComercioNotFoundException;
+import com.example.ProyectoFinalTurnos.exceptions.servicio.ServicioNotFoundException;
 import com.example.ProyectoFinalTurnos.features.comercio.ComercioEntity;
 import com.example.ProyectoFinalTurnos.features.comercio.ComercioRepository;
 import com.example.ProyectoFinalTurnos.features.horarioAtencion.Dtos.HorarioAtencionRequest;
@@ -47,7 +48,7 @@ public class HorarioAtencionService implements IHorarioAtencionService{
         // 2. Si viene un ID de servicio, es horario de un PELUQUERO
         if (request.getServicioIdRequest() != null) {
             servicio = servicioRepository.findById(request.getServicioIdRequest())
-                    .orElseThrow(() -> new RuntimeException("Servicio no encontrado con ID: " + request.getServicioIdRequest()));
+                    .orElseThrow(() -> new ServicioNotFoundException("Servicio no encontrado con ID: " + request.getServicioIdRequest()));
 
             comercio = servicio.getComercio();
 
@@ -119,7 +120,7 @@ public class HorarioAtencionService implements IHorarioAtencionService{
         @Override
         public HorarioAtencionResponse listarHorarios(long id) {
         HorarioAtencionEntity horarioAtencion = repository.findById(id).
-                orElseThrow(() -> new RuntimeException("Horario de atención no encontrado con id: " + id));
+                orElseThrow(() -> new ResourceNotFoundException("Horario de atención no encontrado con id: " + id));
         return mapper.toDto(horarioAtencion);
         }
 
@@ -127,14 +128,14 @@ public class HorarioAtencionService implements IHorarioAtencionService{
         @Override
         public void EliminarHorarioAtencion(long id) {
         HorarioAtencionEntity horarioAtencion = repository.findById(id).
-                orElseThrow(() -> new RuntimeException("Horario de atención no encontrado con id: " + id));
+                orElseThrow(() -> new ResourceNotFoundException("Horario de atención no encontrado con id: " + id));
         repository.delete(horarioAtencion);
         }
 
         @Override
         public HorarioAtencionResponse ActualizarHorarioAtencion(long id, HorarioAtencionRequest request) {
         HorarioAtencionEntity horarioAtencion = repository.findById(id).
-                orElseThrow(() -> new RuntimeException("Horario de atención no encontrado con id: " + id));
+                orElseThrow(() -> new ResourceNotFoundException("Horario de atención no encontrado con id: " + id));
         horarioAtencion.setDiaSemana(request.getDiaSemana());
         horarioAtencion.setHoraApertura(request.getHoraApertura());
         horarioAtencion.setHoraCierre(request.getHoraCierre());

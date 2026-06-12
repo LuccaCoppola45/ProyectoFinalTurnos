@@ -2,6 +2,7 @@ package com.example.ProyectoFinalTurnos.features.servicio;
 
 import com.example.ProyectoFinalTurnos.exceptions.auth.ResourceNotFoundException;
 import com.example.ProyectoFinalTurnos.exceptions.catalog.ComercioNotFoundException;
+import com.example.ProyectoFinalTurnos.exceptions.servicio.ServicioNotFoundException;
 import com.example.ProyectoFinalTurnos.features.comercio.ComercioEntity;
 import com.example.ProyectoFinalTurnos.features.comercio.ComercioRepository;
 import com.example.ProyectoFinalTurnos.features.horarioAtencion.HorarioAtencionEntity;
@@ -64,27 +65,27 @@ public class ServicioService implements IServicioService{
     @Override
     public ServicioResponse BuscarporId(long id) {
         ServicioEntity servicioEntity = servicioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("No se encontró el servicio con ID: " + id));
+                .orElseThrow(() -> new ServicioNotFoundException("No se encontró el servicio con ID: " + id));
         return servicioMapper.toDto(servicioEntity);
     }
 
     @Override
     public void eliminarServicio(long id) {
         ServicioEntity servicioEntity = servicioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("No se encontró el servicio con ID: " + id));
+                .orElseThrow(() -> new ServicioNotFoundException("No se encontró el servicio con ID: " + id));
         servicioRepository.delete(servicioEntity);
     }
 
     @Override
     public ServicioResponse ActualizarServicio(long id, ServicioRequest request) {
         ServicioEntity servicioEntity = servicioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("No se encontró el servicio con ID: " + id));
+                .orElseThrow(() -> new ServicioNotFoundException("No se encontró el servicio con ID: " + id));
 
         ComercioEntity comercio = comercioRepository.findById(request.getIdComercio())
-                .orElseThrow(() -> new RuntimeException("No se encontró el comercio con ID: " + request.getIdComercio()));
+                .orElseThrow(() -> new ComercioNotFoundException("No se encontró el comercio con ID: " + request.getIdComercio()));
 
         HorarioAtencionEntity horario = horarioAtencionRepository.findById(request.getIdHorario())
-                .orElseThrow(() -> new RuntimeException("No se encontró el horario con ID: " + request.getIdHorario()));
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontró el horario con ID: " + request.getIdHorario()));
 
         servicioEntity.setNombre(request.getNombreServicio());
         servicioEntity.setComercio(comercio);
