@@ -35,7 +35,7 @@ public class ServicioEntity {
     @Column(name = "duracion_servicio", nullable = false)
     private Integer duracionDelServicio;
 
-
+    @Column(nullable = false)
     private Double precio;
 
 

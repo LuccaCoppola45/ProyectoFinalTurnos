@@ -16,6 +16,7 @@ public class HorarioAtencionRequest {
     // Opcional: Si viene null, estás definiendo el horario de apertura/cierre del local.
     // Si viene con un ID, es el horario de atención de ese peluquero.
     private Long servicioIdRequest;
+
     @NotNull(message = "El dia  es obligatorio")
     private Diasemana diaSemana;
 
