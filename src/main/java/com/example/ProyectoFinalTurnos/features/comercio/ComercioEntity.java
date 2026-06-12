@@ -1,6 +1,7 @@
 package com.example.ProyectoFinalTurnos.features.comercio;
 
 import com.example.ProyectoFinalTurnos.features.categoria.CategoriaEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.example.ProyectoFinalTurnos.features.servicio.ServicioEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -40,6 +41,7 @@ public class ComercioEntity {
     private List<CategoriaEntity> categorias;
 
     @OneToMany(mappedBy = "comercio")
+    @JsonIgnore
     private List<ServicioEntity> servicios;
 
 

@@ -3,6 +3,7 @@ package com.example.ProyectoFinalTurnos.features.turno;
 import com.example.ProyectoFinalTurnos.features.cancelacion.CancelacionEntity;
 import com.example.ProyectoFinalTurnos.features.servicio.ServicioEntity;
 import com.example.ProyectoFinalTurnos.features.usuario.UsuarioEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.example.ProyectoFinalTurnos.model.enums.EstadoTurno;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -44,12 +45,14 @@ public class TurnoEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_usuario",
     foreignKey = @ForeignKey(name = "fk_turno_usuario"))
+    @JsonIgnore
     private UsuarioEntity usuario;
 
     // RELACIÓN: Muchos turnos pueden ser para un Servicio
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_servicio",
     foreignKey = @ForeignKey (name = "fk_turno_servicio"))
+    @JsonIgnore
     private ServicioEntity servicio;
 
     // RELACIÓN 1 a 1: Un turno puede tener una cancelación
