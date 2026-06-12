@@ -24,5 +24,6 @@ public interface TurnoRepository extends JpaRepository<TurnoEntity, Long>
     List<TurnoEntity> findByUsuario_IdUsuarioAndFecha(
             Long usuarioId,
             LocalDate fecha);
-}
+
+    boolean existsByUsuario_IdUsuario(Long idUsuario);}
 

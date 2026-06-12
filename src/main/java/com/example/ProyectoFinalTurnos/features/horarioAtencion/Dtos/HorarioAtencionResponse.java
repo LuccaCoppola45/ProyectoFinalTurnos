@@ -13,5 +13,4 @@ public class HorarioAtencionResponse {
     private Diasemana diaSemana;
     private LocalTime horaApertura;
     private LocalTime horaCierre;
-    private Long comercioIdResponse;
 }
