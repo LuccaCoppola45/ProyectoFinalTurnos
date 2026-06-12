@@ -11,6 +11,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.*;
 
@@ -21,32 +24,28 @@ import java.util.*;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class UsuarioEntity{
+public class UsuarioEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idUsuario;
 
 
-    @NotNull(message = "El nombre es obligatorio")
-    @Size(min = 3)
+
     private String nombre;
 
 
-    @NotNull(message = "El apellido es obligatorio")
-    @Size(min = 3)
+
     private String apellido;
 
     @Enumerated(EnumType.STRING)
     @NotNull(message = "El rol es obligatorio")
     private Rol rol = Rol.CLIENTE;
 
-    @NotNull(message = "El email es obligatorio")
-    @Email
+
     private String email;
 
-    @NotNull(message = "La contraseña es obligatoria")
-    @Size(min = 6)
+
     private String password;
 
     @ManyToMany
@@ -80,6 +79,26 @@ public class UsuarioEntity{
     }
 
 
+    // --- MÉTODOS OBLIGATORIOS DE USERDETAILS ---
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        // Transformamos el Rol en un GrantedAuthority que Spring entiende [2]
+        return List.of(new SimpleGrantedAuthority(rol.name()));
+    }
 
+    @Override
+    public String getUsername() {
+        return this.email; // Usamos el email como nombre de usuario para el login
+    }
 
+    // Los siguientes métodos por defecto los dejamos en "true" para no bloquear la cuenta
+    @Override
+    public boolean isAccountNonExpired() { return true; }
+    @Override
+    public boolean isAccountNonLocked() { return true; }
+    @Override
+    public boolean isCredentialsNonExpired() { return true; }
+    @Override
+    public boolean isEnabled() { return true; }
 }
+
