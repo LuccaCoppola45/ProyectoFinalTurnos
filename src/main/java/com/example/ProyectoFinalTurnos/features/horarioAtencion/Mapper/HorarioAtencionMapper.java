@@ -25,7 +25,7 @@ public class HorarioAtencionMapper {
         HorarioAtencionResponse response = modelMapper.map(dto, HorarioAtencionResponse.class);
 
         if(dto.getComercio() != null){
-            response.setComercioIdResponse(dto.getComercio().getId());
+            response.setComercioId(dto.getComercio().getId());
         }
         return response;
     }
