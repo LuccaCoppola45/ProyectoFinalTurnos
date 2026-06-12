@@ -1,5 +1,6 @@
 package com.example.ProyectoFinalTurnos.features.servicio.Mapper;
 
+import com.example.ProyectoFinalTurnos.features.horarioAtencion.HorarioAtencionEntity;
 import com.example.ProyectoFinalTurnos.features.servicio.Dtos.ServicioRequest;
 import com.example.ProyectoFinalTurnos.features.servicio.Dtos.ServicioResponse;
 import com.example.ProyectoFinalTurnos.features.servicio.ServicioEntity;
@@ -9,16 +10,29 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ServicioMapper {
-    private final ModelMapper modelMapper;
 
+    // saque el atributo global 'modelMapper' si ya no lo usamos en los métodos.
     public ServicioMapper(ModelMapper modelMapper) {
-        this.modelMapper = modelMapper;
-        this.modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        // Dejamos el constructor configurando el objeto localmente para evitar el warning.
+            modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+
     }
 
 
     public ServicioEntity toEntity(ServicioRequest request) {
-        return modelMapper.map(request, ServicioEntity.class);
+
+        if (request == null) {
+            return null;
+        }
+
+        ServicioEntity entity = new ServicioEntity();
+
+        // Asignamos a mano y cruzamos los nombres que son distintos
+        entity.setNombre(request.getNombreServicio());
+        entity.setPrecio(request.getPrecio());
+        entity.setDuracionDelServicio(request.getDuracionDelServicio());
+
+        return entity;
     }
 
     public ServicioResponse toDto(ServicioEntity entity) {
@@ -38,7 +52,7 @@ public class ServicioMapper {
         if (entity.getHorarios() != null && !entity.getHorarios().isEmpty()) {
             response.setHorariosAtencionIds(
                 entity.getHorarios().stream()
-                    .map(h -> h.getId())
+                    .map(HorarioAtencionEntity::getId)
                     .toList()
             );
         }

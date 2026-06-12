@@ -12,7 +12,7 @@ public class ServicioRequest {
     private String nombreServicio;
     @Positive(message = "El precio debe ser un numero positivo")
     @NotNull(message = "El precio es obligatorio")
-    private double Precio;
+    private double precio;
 
 
     @NotNull(message = "La duracion del servicio es obligatorio")
