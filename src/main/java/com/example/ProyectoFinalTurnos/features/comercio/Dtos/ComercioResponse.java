@@ -1,5 +1,7 @@
 package com.example.ProyectoFinalTurnos.features.comercio.Dtos;
 
+import com.example.ProyectoFinalTurnos.features.horarioAtencion.Dtos.HorarioAtencionResponse;
+import com.example.ProyectoFinalTurnos.features.servicio.Dtos.ServicioResponse;
 import com.example.ProyectoFinalTurnos.features.servicio.ServicioEntity;
 import lombok.Data;
 
@@ -19,7 +21,7 @@ public class ComercioResponse
 
     private List<String> categorias;
 
-    private List<Long> serviciosIds;
+    private List<ServicioResponse> servicios;
 
-    private List<Long> horariosIds;
+    private List<HorarioAtencionResponse> horarios;
 }

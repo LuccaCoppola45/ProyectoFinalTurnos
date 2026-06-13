@@ -55,6 +55,7 @@ public class ComercioEntity {
             mappedBy = "comercio",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
+    @JsonIgnore
     private List<HorarioAtencionEntity> horarios;
 
 
