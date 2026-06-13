@@ -40,6 +40,11 @@ public class TurnoMapper
             dto.setServicioId(entity.getServicio().getIdServicio()); // O getIdServicio()
         }
 
+        if (entity.getCancelacion() != null) {
+            dto.setCancelacionId(entity.getCancelacion().getId());
+        }
+
+
         return dto;
     }
 
