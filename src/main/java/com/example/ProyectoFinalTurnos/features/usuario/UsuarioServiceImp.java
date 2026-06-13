@@ -14,6 +14,7 @@ import com.example.ProyectoFinalTurnos.features.usuario.Mapper.UsuarioMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class UsuarioServiceImp implements UsuarioService
     private final UsuarioRepository usuarioRepository;
     private final UsuarioMapper usuarioMapper;
     private final TurnoRepository turnoRepository;
+    private final PasswordEncoder passwordEncoder;
 
 
     /// -Crear Usuario- ///
@@ -39,6 +41,7 @@ public class UsuarioServiceImp implements UsuarioService
             throw new UserEmailAlreadyInUseException("Ya existe un usuario con ese email");
         }
         UsuarioEntity usuario = usuarioMapper.toEntity(dto);
+        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
         UsuarioEntity guardado = usuarioRepository.save(usuario);
         return usuarioMapper.toResponce(guardado);
     }
