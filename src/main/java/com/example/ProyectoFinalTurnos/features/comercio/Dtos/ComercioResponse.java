@@ -7,14 +7,19 @@ import java.util.List;
 
 
 @Data
+public class ComercioResponse
+{
+    private Long idComercio;
 
-public class ComercioResponse {
-    private long idComercio;
     private String nombre;
+
     private String direccion;
+
     private String telefono;
+
     private List<String> categorias;
-    private List<ServicioEntity> servicios;
 
+    private List<Long> serviciosIds;
 
+    private List<Long> horariosIds;
 }

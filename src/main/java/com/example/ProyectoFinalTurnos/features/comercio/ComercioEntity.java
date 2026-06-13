@@ -1,6 +1,7 @@
 package com.example.ProyectoFinalTurnos.features.comercio;
 
 import com.example.ProyectoFinalTurnos.features.categoria.CategoriaEntity;
+import com.example.ProyectoFinalTurnos.features.horarioAtencion.HorarioAtencionEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.example.ProyectoFinalTurnos.features.servicio.ServicioEntity;
 import jakarta.persistence.*;
@@ -49,6 +50,12 @@ public class ComercioEntity {
     @OneToMany(mappedBy = "comercio")
     @JsonIgnore
     private List<ServicioEntity> servicios;
+
+    @OneToMany(
+            mappedBy = "comercio",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<HorarioAtencionEntity> horarios;
 
 
 }

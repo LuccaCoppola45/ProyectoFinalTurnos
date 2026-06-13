@@ -7,29 +7,35 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
+public class HorarioAtencionMapper
+{
+    private final ModelMapper modelMapper;
 
-public class HorarioAtencionMapper {
-
-    private  final ModelMapper modelMapper;
-
-    public HorarioAtencionMapper(ModelMapper modelMapper) {
+    public HorarioAtencionMapper(ModelMapper modelMapper)
+    {
         this.modelMapper = modelMapper;
-
     }
 
-    public HorarioAtencionEntity toEntity(HorarioAtencionRequest dto){
+    public HorarioAtencionEntity toEntity(HorarioAtencionRequest dto)
+    {
         return modelMapper.map(dto, HorarioAtencionEntity.class);
     }
 
-    public HorarioAtencionResponse toDto(HorarioAtencionEntity dto){
-        HorarioAtencionResponse response = modelMapper.map(dto, HorarioAtencionResponse.class);
+    public HorarioAtencionResponse toDto(HorarioAtencionEntity entity)
+    {
+        HorarioAtencionResponse response =
+                modelMapper.map(entity, HorarioAtencionResponse.class);
 
-        if(dto.getComercio() != null){
-            response.setComercioId(dto.getComercio().getIdComercio());
+        if (entity.getComercio() != null)
+        {
+            response.setComercioId(
+                    entity.getComercio().getIdComercio());
         }
 
-        if (dto.getServicio() != null) {
-            response.setServicioId(dto.getServicio().getIdServicio());
+        if (entity.getServicio() != null)
+        {
+            response.setServicioId(
+                    entity.getServicio().getIdServicio());
         }
 
         return response;

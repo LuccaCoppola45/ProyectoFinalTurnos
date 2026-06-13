@@ -1,9 +1,6 @@
 package com.example.ProyectoFinalTurnos.features.comercio.Dtos;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,8 +23,8 @@ public class ComercioRequest {
     @NotBlank(message = "La dirección del comercio no puede estar vacía")
     private String direccion;
 
-    @NotNull(message = "El teléfono no puede ser nulo") // <-- Ahora podés usar esta validación
-    @Positive(message = "El teléfono debe ser un número positivo")
+    @NotBlank(message = "El teléfono es obligatorio")
+    @Pattern(regexp = "^[0-9+\\- ]+$", message = "El teléfono contiene caracteres inválidos")
     private String telefono;
 
     @NotEmpty(message = "Debe seleccionar al menos una categoría para el comercio")

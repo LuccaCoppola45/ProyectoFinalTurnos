@@ -53,7 +53,7 @@ public class HorarioAtencionService implements IHorarioAtencionService{
             comercio = servicio.getComercio();
 
             // TRAEMOS TODOS LOS HORARIOS DE ESTE COMERCIO PARA EL DÍA (Tanto del local como de otros empleados)
-            List<HorarioAtencionEntity> horariosDelDia = repository.findByComercioIdComercioAndDiaSemana(comercio.getIdComercio(), request.getDiaSemana());
+            List<HorarioAtencionEntity> horariosDelDia = repository.findByComercio_IdComercioAndDiaSemana(comercio.getIdComercio(), request.getDiaSemana());
 
             // STREAMS: Validar que el horario solicitado esté DENTRO del horario general del comercio (servicio == null)
             boolean dentroDeHorarioComercio = horariosDelDia.stream()
@@ -81,7 +81,7 @@ public class HorarioAtencionService implements IHorarioAtencionService{
                     .orElseThrow(() -> new ComercioNotFoundException("Comercio no encontrado con ID: " + request.getComercioId()));
 
             // STREAMS: Validar solapamiento con otro horario general del local
-            boolean seSolapaHorarioComercio = repository.findByComercioIdComercioAndDiaSemana(comercio.getIdComercio(), request.getDiaSemana())
+            boolean seSolapaHorarioComercio = repository.findByComercio_IdComercioAndDiaSemana(comercio.getIdComercio(), request.getDiaSemana())
                     .stream()
                     .filter(h -> h.getServicio() == null) // Solo comparamos contra el horario general
                     .anyMatch(h -> request.getHoraApertura().isBefore(h.getHoraCierre()) &&

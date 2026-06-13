@@ -1,8 +1,11 @@
 package com.example.ProyectoFinalTurnos.features.comercio.Mapper;
 
+import com.example.ProyectoFinalTurnos.features.categoria.CategoriaEntity;
 import com.example.ProyectoFinalTurnos.features.comercio.ComercioEntity;
 import com.example.ProyectoFinalTurnos.features.comercio.Dtos.ComercioRequest;
 import com.example.ProyectoFinalTurnos.features.comercio.Dtos.ComercioResponse;
+import com.example.ProyectoFinalTurnos.features.horarioAtencion.HorarioAtencionEntity;
+import com.example.ProyectoFinalTurnos.features.servicio.ServicioEntity;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -17,18 +20,43 @@ public class ComercioMapper {
         this.modelMapper = modelMapper;
     }
 
-    public ComercioResponse toResponse(ComercioEntity entity) {
-        if (entity == null) {
+    public ComercioResponse toResponse(ComercioEntity entity)
+    {
+        if (entity == null)
+        {
             return null;
         }
 
-        ComercioResponse response = modelMapper.map(entity, ComercioResponse.class);
+        ComercioResponse response =
+                modelMapper.map(entity, ComercioResponse.class);
 
-        if (entity.getCategorias() != null) {
+        if (entity.getCategorias() != null)
+        {
             response.setCategorias(
-                    entity.getCategorias().stream()
-                            .map(cat -> cat.getNombreCategoria())
-                            .collect(Collectors.toList())
+                    entity.getCategorias()
+                            .stream()
+                            .map(CategoriaEntity::getNombreCategoria)
+                            .toList()
+            );
+        }
+
+        if (entity.getServicios() != null)
+        {
+            response.setServiciosIds(
+                    entity.getServicios()
+                            .stream()
+                            .map(ServicioEntity::getIdServicio)
+                            .toList()
+            );
+        }
+
+        if (entity.getHorarios() != null)
+        {
+            response.setHorariosIds(
+                    entity.getHorarios()
+                            .stream()
+                            .map(HorarioAtencionEntity::getIdHorarioAtencion)
+                            .toList()
             );
         }
 
