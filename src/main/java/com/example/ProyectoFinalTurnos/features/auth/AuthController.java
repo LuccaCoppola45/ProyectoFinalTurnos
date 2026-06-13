@@ -1,5 +1,6 @@
 package com.example.ProyectoFinalTurnos.features.auth;
 
+import com.example.ProyectoFinalTurnos.features.usuario.Dtos.LoginResponseDTO;
 import com.example.ProyectoFinalTurnos.features.usuario.Dtos.LoginResquestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,13 +20,13 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResquestDTO> login(@RequestBody LoginResquestDTO loginResquestDTO){
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginResquestDTO loginResquestDTO){
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginResquestDTO.getEmail(),
                         loginResquestDTO.getPassword()
                 )
         );
-        return ResponseEntity.ok(new LoginResquestDTO());
+        return ResponseEntity.ok(new LoginResponseDTO());
     }
 }
