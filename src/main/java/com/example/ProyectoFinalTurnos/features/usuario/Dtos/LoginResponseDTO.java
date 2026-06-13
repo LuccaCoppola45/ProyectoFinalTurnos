@@ -12,5 +12,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class LoginResponseDTO {
 
+    boolean success;
     private String mensaje;
 }
