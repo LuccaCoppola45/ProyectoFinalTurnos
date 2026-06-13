@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 
 public class ComercioResponse {
-    private long id;
+    private long idComercio;
     private String nombre;
     private String direccion;
     private String telefono;

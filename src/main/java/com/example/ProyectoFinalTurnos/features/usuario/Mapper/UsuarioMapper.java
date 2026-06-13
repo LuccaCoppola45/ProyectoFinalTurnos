@@ -5,6 +5,7 @@ import com.example.ProyectoFinalTurnos.features.servicio.ServicioEntity;
 import com.example.ProyectoFinalTurnos.features.usuario.Dtos.UsuarioRequest;
 import com.example.ProyectoFinalTurnos.features.usuario.UsuarioEntity;
 import com.example.ProyectoFinalTurnos.features.usuario.Dtos.UsuarioResponce;
+import com.example.ProyectoFinalTurnos.model.enums.Rol;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -22,8 +23,18 @@ public class UsuarioMapper
 
     public UsuarioEntity toEntity(UsuarioRequest dto)
     {
+        // Configurar ModelMapper para este mapeo específico
+        ModelMapper mapper = new ModelMapper();
 
-        return modelMapper.map(dto, UsuarioEntity.class);
+        // Omitir campos que no existen en el request o que generan conflicto
+        mapper.typeMap(UsuarioRequest.class, UsuarioEntity.class)
+                .addMapping(src -> Rol.CLIENTE, UsuarioEntity::setRol) // Rol por defecto
+                .addMapping(UsuarioRequest::getNombre, UsuarioEntity::setNombre)
+                .addMapping(UsuarioRequest::getApellido, UsuarioEntity::setApellido)
+                .addMapping(UsuarioRequest::getEmail, UsuarioEntity::setEmail)
+                .addMapping(UsuarioRequest::getPassword, UsuarioEntity::setPassword);
+
+        return mapper.map(dto, UsuarioEntity.class);
     }
 
     public UsuarioResponce toResponce(UsuarioEntity usuario)
@@ -31,12 +42,12 @@ public class UsuarioMapper
         UsuarioResponce dto = modelMapper.map(usuario, UsuarioResponce.class);
 
         if(usuario.getServiciosVinculados() != null){
-        dto.setServiciosId(
-                usuario.getServiciosVinculados()
-                        .stream()
-                        .map(ServicioEntity::getIdServicio)
-                        .collect(Collectors.toList())
-        );
+            dto.setServiciosId(
+                    usuario.getServiciosVinculados()
+                            .stream()
+                            .map(ServicioEntity::getIdServicio)
+                            .collect(Collectors.toList())
+            );
         }
 
         if (usuario.getTurnosVinculados() != null) {

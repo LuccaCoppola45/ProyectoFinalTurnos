@@ -19,7 +19,8 @@ import java.time.LocalTime;
 public class HorarioAtencionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id_HorarioAtencion")
+    private Long idHorarioAtencion;
 
     // MODIFICADO: Ahora es nullable = true (para cuando el horario sea de un peluquero)
     @ManyToOne

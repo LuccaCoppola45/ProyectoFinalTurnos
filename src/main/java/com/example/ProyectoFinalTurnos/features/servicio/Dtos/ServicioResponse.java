@@ -10,7 +10,7 @@ public class ServicioResponse
     private Long idServicio;
     private String nombreServicio;
     private Integer duracionDelServicio;
-    private Double precio;
+    private double precio;
     private Long idComercio;
-    private List<Long> HorariosAtencionIds;
+    private List<Long> horariosAtencionIds;
 }

@@ -36,24 +36,29 @@ public class ServicioMapper {
     }
 
     public ServicioResponse toDto(ServicioEntity entity) {
+        if (entity == null) {
+            return null;
+        }
+
         ServicioResponse response = new ServicioResponse();
 
         // Mapeo de propiedades básicas
         response.setIdServicio(entity.getIdServicio());
         response.setNombreServicio(entity.getNombre());
         response.setPrecio(entity.getPrecio());
+        response.setDuracionDelServicio(entity.getDuracionDelServicio());
 
         // Mapeo de comercio ID
         if (entity.getComercio() != null) {
-            response.setIdComercio(entity.getComercio().getId());
+            response.setIdComercio(entity.getComercio().getIdComercio());
         }
 
         // Mapeo de horarios IDs
         if (entity.getHorarios() != null && !entity.getHorarios().isEmpty()) {
             response.setHorariosAtencionIds(
-                entity.getHorarios().stream()
-                    .map(HorarioAtencionEntity::getId)
-                    .toList()
+                    entity.getHorarios().stream()
+                            .map(HorarioAtencionEntity::getIdHorarioAtencion)
+                            .toList()
             );
         }
 

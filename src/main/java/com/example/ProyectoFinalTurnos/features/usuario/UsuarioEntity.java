@@ -24,7 +24,7 @@ import java.util.*;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class UsuarioEntity implements UserDetails {
+public class UsuarioEntity implements UserDetails{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,7 +38,6 @@ public class UsuarioEntity implements UserDetails {
     private String apellido;
 
     @Enumerated(EnumType.STRING)
-    @NotBlank(message = "El rol es obligatorio")
     private Rol rol = Rol.CLIENTE;
 
     @Column(unique = true)
@@ -86,9 +85,9 @@ public class UsuarioEntity implements UserDetails {
     }
 
     @Override
-    public String getUsername() {
-        return this.email; // Usamos el email como nombre de usuario para el login
+    public String getUsername() { return this.email; // Usamos el email como nombre de usuario para el login
     }
+
 
     // Los siguientes métodos por defecto los dejamos en "true" para no bloquear la cuenta
     @Override
@@ -98,6 +97,8 @@ public class UsuarioEntity implements UserDetails {
     @Override
     public boolean isCredentialsNonExpired() { return true; }
     @Override
+
     public boolean isEnabled() { return true; }
+
 }
 

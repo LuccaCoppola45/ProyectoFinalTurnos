@@ -41,24 +41,18 @@ public class ServicioService implements IServicioService{
                 .orElseThrow(() -> new ComercioNotFoundException("No se encontró el comercio con ID: " + request.getIdComercio()));
 
         /// evita nombre duplicados para el servicio
-        boolean existeNombre = servicioRepository.existsByNombreServicio(request.getNombreServicio(),request.getIdComercio());
+        boolean existeNombre = servicioRepository.existsByNombreServicioAndIdComercio(request.getNombreServicio(),request.getIdComercio());
         if(existeNombre) {
             throw new IllegalStateException("Ya existe un servicio con el mismo nombre para este comercio");
         }
 
-
         HorarioAtencionEntity horario = horarioAtencionRepository.findById(request.getIdHorario())
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró el horario con ID: " + request.getIdHorario()));
 
-
         ServicioEntity servicioEntity = servicioMapper.toEntity(request);
-
-        servicioEntity.setNombre(request.getNombreServicio());
-        servicioEntity.setIdServicio(null); // Aseguramos que el ID sea null para que se genere uno nuevo al guardar
-
+        servicioEntity.setIdServicio(null);
         servicioEntity.setComercio(comercio);
         servicioEntity.setHorarios(List.of(horario));
-
 
         ServicioEntity guardado = servicioRepository.save(servicioEntity);
         return servicioMapper.toDto(guardado);
@@ -101,6 +95,8 @@ public class ServicioService implements IServicioService{
                 .orElseThrow(() -> new ResourceNotFoundException("No se encontró el horario con ID: " + request.getIdHorario()));
 
         servicioEntity.setNombre(request.getNombreServicio());
+        servicioEntity.setPrecio(request.getPrecio());
+        servicioEntity.setDuracionDelServicio(request.getDuracionDelServicio());
         servicioEntity.setComercio(comercio);
         servicioEntity.setHorarios(List.of(horario));
 

@@ -46,14 +46,14 @@ public class HorarioAtencionService implements IHorarioAtencionService{
         ServicioEntity servicio = null;
 
         // 2. Si viene un ID de servicio, es horario de un PELUQUERO
-        if (request.getServicioIdRequest() != null) {
-            servicio = servicioRepository.findById(request.getServicioIdRequest())
-                    .orElseThrow(() -> new ServicioNotFoundException("Servicio no encontrado con ID: " + request.getServicioIdRequest()));
+        if (request.getServicioId() != null) {
+            servicio = servicioRepository.findById(request.getServicioId())
+                    .orElseThrow(() -> new ServicioNotFoundException("Servicio no encontrado con ID: " + request.getServicioId()));
 
             comercio = servicio.getComercio();
 
             // TRAEMOS TODOS LOS HORARIOS DE ESTE COMERCIO PARA EL DÍA (Tanto del local como de otros empleados)
-            List<HorarioAtencionEntity> horariosDelDia = repository.findByComercioIdAndDiaSemana(comercio.getId(), request.getDiaSemana());
+            List<HorarioAtencionEntity> horariosDelDia = repository.findByComercioIdComercioAndDiaSemana(comercio.getIdComercio(), request.getDiaSemana());
 
             // STREAMS: Validar que el horario solicitado esté DENTRO del horario general del comercio (servicio == null)
             boolean dentroDeHorarioComercio = horariosDelDia.stream()
@@ -67,7 +67,7 @@ public class HorarioAtencionService implements IHorarioAtencionService{
 
             // STREAMS: Validar que este peluquero específico no tenga solapamiento
             boolean seSolapaConMismoPeluquero = horariosDelDia.stream()
-                    .filter(h -> h.getServicio() != null && h.getServicio().getIdServicio().equals(request.getServicioIdRequest()))
+                    .filter(h -> h.getServicio() != null && h.getServicio().getIdServicio().equals(request.getServicioId()))
                     .anyMatch(h -> request.getHoraApertura().isBefore(h.getHoraCierre()) &&
                             request.getHoraCierre().isAfter(h.getHoraApertura()));
 
@@ -76,12 +76,12 @@ public class HorarioAtencionService implements IHorarioAtencionService{
             }
 
             // 3. Si viene solo el ID de comercio, es el horario GENERAL DEL LOCAL
-        } else if (request.getComercioIdRequest() != null) {
-            comercio = comercioRepository.findById(request.getComercioIdRequest())
-                    .orElseThrow(() -> new ComercioNotFoundException("Comercio no encontrado con ID: " + request.getComercioIdRequest()));
+        } else if (request.getComercioId() != null) {
+            comercio = comercioRepository.findById(request.getComercioId())
+                    .orElseThrow(() -> new ComercioNotFoundException("Comercio no encontrado con ID: " + request.getComercioId()));
 
             // STREAMS: Validar solapamiento con otro horario general del local
-            boolean seSolapaHorarioComercio = repository.findByComercioIdAndDiaSemana(comercio.getId(), request.getDiaSemana())
+            boolean seSolapaHorarioComercio = repository.findByComercioIdComercioAndDiaSemana(comercio.getIdComercio(), request.getDiaSemana())
                     .stream()
                     .filter(h -> h.getServicio() == null) // Solo comparamos contra el horario general
                     .anyMatch(h -> request.getHoraApertura().isBefore(h.getHoraCierre()) &&
@@ -97,7 +97,7 @@ public class HorarioAtencionService implements IHorarioAtencionService{
 
         // 4. Mapeo y guardado definitivo
         HorarioAtencionEntity horarioEntity = mapper.toEntity(request);
-        horarioEntity.setId(null);
+        horarioEntity.setIdHorarioAtencion(null);
         horarioEntity.setComercio(comercio);
         horarioEntity.setServicio(servicio);
 
@@ -132,17 +132,43 @@ public class HorarioAtencionService implements IHorarioAtencionService{
         repository.delete(horarioAtencion);
         }
 
-        @Override
-        public HorarioAtencionResponse ActualizarHorarioAtencion(long id, HorarioAtencionRequest request) {
-        HorarioAtencionEntity horarioAtencion = repository.findById(id).
-                orElseThrow(() -> new ResourceNotFoundException("Horario de atención no encontrado con id: " + id));
-        horarioAtencion.setDiaSemana(request.getDiaSemana());
-        horarioAtencion.setHoraApertura(request.getHoraApertura());
-        horarioAtencion.setHoraCierre(request.getHoraCierre());
+    @Override
+    public HorarioAtencionResponse ActualizarHorarioAtencion(long id, HorarioAtencionRequest request) {
+        HorarioAtencionEntity horarioAtencion = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Horario de atención no encontrado con id: " + id));
+
+        // Validaciones básicas del request sobre horas (si corresponde)
+        if (request.getHoraApertura() != null && request.getHoraCierre() != null) {
+            if (request.getHoraApertura().isAfter(request.getHoraCierre()) ||
+                    request.getHoraApertura().equals(request.getHoraCierre())) {
+                throw new IllegalArgumentException("Rango de horas inválido. Apertura debe ser anterior al cierre.");
+            }
+            horarioAtencion.setHoraApertura(request.getHoraApertura());
+            horarioAtencion.setHoraCierre(request.getHoraCierre());
+        }
+
+        if (request.getDiaSemana() != null) {
+            horarioAtencion.setDiaSemana(request.getDiaSemana());
+        }
+
+        // Si viene servicioId en el request: asignamos ese servicio y derivamos comercio desde el servicio
+        if (request.getServicioId() != null) {
+            ServicioEntity servicio = servicioRepository.findById(request.getServicioId())
+                    .orElseThrow(() -> new ServicioNotFoundException("Servicio no encontrado con ID: " + request.getServicioId()));
+            horarioAtencion.setServicio(servicio);
+            horarioAtencion.setComercio(servicio.getComercio());
+        } else if (request.getComercioId() != null) {
+            // Si viene solo comercioId: asignamos comercio y dejamos servicio en null (horario general del local)
+            ComercioEntity comercio = comercioRepository.findById(request.getComercioId())
+                    .orElseThrow(() -> new ComercioNotFoundException("Comercio no encontrado con ID: " + request.getComercioId()));
+            horarioAtencion.setComercio(comercio);
+            horarioAtencion.setServicio(null);
+        }
+        // Si no viene ni servicioId ni comercioId, dejamos la asociación previa (no tocamos)
 
         HorarioAtencionEntity actualizado = repository.save(horarioAtencion);
         return mapper.toDto(actualizado);
-        }
+    }
 
 
     @Override

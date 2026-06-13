@@ -20,7 +20,8 @@ import java.util.List;
 public class ComercioEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id_comercio")
+    private Long idComercio;
 
     @Column(nullable = false)
     private String nombre;
