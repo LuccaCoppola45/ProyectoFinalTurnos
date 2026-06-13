@@ -5,6 +5,8 @@ import com.example.ProyectoFinalTurnos.features.comercio.ComercioEntity;
 import com.example.ProyectoFinalTurnos.features.comercio.Dtos.ComercioRequest;
 import com.example.ProyectoFinalTurnos.features.comercio.Dtos.ComercioResponse;
 import com.example.ProyectoFinalTurnos.features.horarioAtencion.HorarioAtencionEntity;
+import com.example.ProyectoFinalTurnos.features.horarioAtencion.Mapper.HorarioAtencionMapper;
+import com.example.ProyectoFinalTurnos.features.servicio.Mapper.ServicioMapper;
 import com.example.ProyectoFinalTurnos.features.servicio.ServicioEntity;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -15,9 +17,15 @@ import java.util.stream.Collectors;
 public class ComercioMapper {
 
     private final ModelMapper modelMapper;
+    private final ServicioMapper servicioMapper;      // ← AGREGAR
+    private final HorarioAtencionMapper horarioMapper; // ← AGREGAR
 
-    public ComercioMapper(ModelMapper modelMapper) {
+    public ComercioMapper(ModelMapper modelMapper,
+                          ServicioMapper servicioMapper,      // ← AGREGAR
+                          HorarioAtencionMapper horarioMapper) { // ← AGREGAR
         this.modelMapper = modelMapper;
+        this.servicioMapper = servicioMapper;         // ← AGREGAR
+        this.horarioMapper = horarioMapper;           // ← AGREGAR
     }
 
     public ComercioResponse toResponse(ComercioEntity entity)
@@ -42,20 +50,20 @@ public class ComercioMapper {
 
         if (entity.getServicios() != null)
         {
-            response.setServiciosIds(
+            response.setServicios(
                     entity.getServicios()
                             .stream()
-                            .map(ServicioEntity::getIdServicio)
+                            .map(servicioMapper::toDto)
                             .toList()
             );
         }
 
         if (entity.getHorarios() != null)
         {
-            response.setHorariosIds(
+            response.setHorarios(
                     entity.getHorarios()
                             .stream()
-                            .map(HorarioAtencionEntity::getIdHorarioAtencion)
+                            .map(horarioMapper::toDto)
                             .toList()
             );
         }

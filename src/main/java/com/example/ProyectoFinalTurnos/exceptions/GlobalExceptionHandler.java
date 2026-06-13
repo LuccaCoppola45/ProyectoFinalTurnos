@@ -8,7 +8,7 @@ import com.example.ProyectoFinalTurnos.exceptions.catalog.ComercioNotFoundExcept
 import com.example.ProyectoFinalTurnos.exceptions.categoria.CategoriaAlreadyExistsException;
 import com.example.ProyectoFinalTurnos.exceptions.categoria.CategoriaInUseException;
 import com.example.ProyectoFinalTurnos.exceptions.categoria.CategoriaNoEncontradaException;
-import com.example.ProyectoFinalTurnos.exceptions.horarioAtencion.HorarioFueraDeAtencionException;
+import com.example.ProyectoFinalTurnos.exceptions.horarioAtencion.*;
 import com.example.ProyectoFinalTurnos.exceptions.servicio.ServicioNotFoundException;
 import com.example.ProyectoFinalTurnos.exceptions.turno.*;
 import com.example.ProyectoFinalTurnos.exceptions.user.*;
@@ -427,5 +427,73 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
+
+
+    @ExceptionHandler(HorarioInvalidoException.class)
+    public ResponseEntity<@NonNull ErrorResponse> handlerHorarioInvalidoException(
+            HorarioInvalidoException ex,
+            HttpServletRequest request)
+    {
+        ErrorResponse error = ErrorResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value()) // 400
+                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+
+    @ExceptionHandler(HorarioSuperpuestoException.class)
+    public ResponseEntity<@NonNull ErrorResponse> handlerHorarioSuperpuestoException(
+            HorarioSuperpuestoException ex,
+            HttpServletRequest request)
+    {
+        ErrorResponse error = ErrorResponse.builder()
+                .status(HttpStatus.CONFLICT.value()) // 409
+                .error(HttpStatus.CONFLICT.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+    }
+
+
+    @ExceptionHandler(HorarioFueraDeComercioException.class)
+    public ResponseEntity<@NonNull ErrorResponse> handlerHorarioFueraDeComercioException(
+            HorarioFueraDeComercioException ex,
+            HttpServletRequest request)
+    {
+        ErrorResponse error = ErrorResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value()) // 400
+                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(HorarioSinReferenciaException.class)
+    public ResponseEntity<@NonNull ErrorResponse> handlerHorarioSinReferenciaException(
+            HorarioSinReferenciaException ex,
+            HttpServletRequest request)
+    {
+        ErrorResponse error = ErrorResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value()) // 400
+                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
 
 }
