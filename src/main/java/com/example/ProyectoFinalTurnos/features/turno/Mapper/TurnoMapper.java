@@ -20,9 +20,27 @@ public class TurnoMapper
         return modelMapper.map(dto,TurnoEntity.class);
     }
 
-    public TurnoResponceDto toDto(TurnoEntity entity)
-    {
-        return modelMapper.map(entity,TurnoResponceDto.class);
+//    public TurnoResponceDto toDto(TurnoEntity entity)
+//    {
+//
+//        return modelMapper.map(entity,TurnoResponceDto.class);
+//    }
+    public TurnoResponceDto toDto(TurnoEntity entity) {
+        // 1. Dejamos que ModelMapper mapee lo que pueda (fecha, hora, estado)
+        TurnoResponceDto dto = modelMapper.map(entity, TurnoResponceDto.class);
+
+        // 2. Mapeamos manualmente los IDs que fallan (ajustá los "getters" según tu Entidad)
+        dto.setIdTurno(entity.getIdTurno());
+
+        if (entity.getUsuario() != null) {
+            dto.setUsuarioId(entity.getUsuario().getIdUsuario()); // O getIdUsuario() según cómo lo tengas
+        }
+
+        if (entity.getServicio() != null) {
+            dto.setServicioId(entity.getServicio().getIdServicio()); // O getIdServicio()
+        }
+
+        return dto;
     }
 
 
