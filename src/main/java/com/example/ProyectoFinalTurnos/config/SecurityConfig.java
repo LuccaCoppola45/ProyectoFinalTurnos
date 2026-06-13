@@ -5,6 +5,7 @@ import com.example.ProyectoFinalTurnos.security.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -92,9 +93,20 @@ private final JwtAuthenticationFilter jwtAuthFilter;
                 .csrf(AbstractHttpConfigurer::disable)
                 // 3. Configuramos las rutas
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll() // Login y Registro libres
-                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll() // Swagger libre
-                        .anyRequest().authenticated() // Todo el resto protegido
+                        // Rutas públicas (No piden Token)
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+
+                        // --- REGLAS DE AUTORIZACIÓN POR ROL ---
+                        // Solo los ADMINISTRADORES pueden crear categorías o borrar comercios
+                        .requestMatchers(HttpMethod.POST, "/api/categorias/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/comercios/**").hasAuthority("ADMIN")
+
+                        // Clientes y Admins pueden ver los servicios (GET), pero el Cliente no puede modificarlos
+                        .requestMatchers(HttpMethod.GET, "/api/servicios/**").hasAnyAuthority("CLIENTE", "ADMIN")
+
+                        // Todo el resto de la app (turnos, cancelaciones, etc.) exige estar logueado con token válido
+                        .anyRequest().authenticated()
                 )
                 // 4. Política Stateless
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
