@@ -36,6 +36,9 @@ public class TurnoEntity {
     @Column(nullable = false)
     private LocalTime horaInicio;
 
+    @Column(nullable = false)
+    private LocalTime horaFin;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private EstadoTurno estado; // Pendiente, Confirmado, etc.

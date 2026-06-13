@@ -8,6 +8,7 @@ import com.example.ProyectoFinalTurnos.exceptions.catalog.ComercioNotFoundExcept
 import com.example.ProyectoFinalTurnos.exceptions.categoria.CategoriaAlreadyExistsException;
 import com.example.ProyectoFinalTurnos.exceptions.categoria.CategoriaInUseException;
 import com.example.ProyectoFinalTurnos.exceptions.categoria.CategoriaNoEncontradaException;
+import com.example.ProyectoFinalTurnos.exceptions.horarioAtencion.HorarioFueraDeAtencionException;
 import com.example.ProyectoFinalTurnos.exceptions.servicio.ServicioNotFoundException;
 import com.example.ProyectoFinalTurnos.exceptions.turno.*;
 import com.example.ProyectoFinalTurnos.exceptions.user.*;
@@ -411,6 +412,20 @@ public class GlobalExceptionHandler {
     }
 
 
+    @ExceptionHandler(HorarioFueraDeAtencionException.class)
+    public ResponseEntity<@NonNull ErrorResponse> handlerHorarioFueraDeAtencionException(
+            HorarioFueraDeAtencionException ex,
+            HttpServletRequest request)
+    {
+        ErrorResponse error = ErrorResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .timestamp(LocalDateTime.now())
+                .build();
 
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
 
 }
