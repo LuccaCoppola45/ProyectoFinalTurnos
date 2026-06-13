@@ -10,6 +10,7 @@ import com.example.ProyectoFinalTurnos.features.horarioAtencion.HorarioAtencionR
 import com.example.ProyectoFinalTurnos.features.servicio.Dtos.ServicioRequest;
 import com.example.ProyectoFinalTurnos.features.servicio.Dtos.ServicioResponse;
 import com.example.ProyectoFinalTurnos.features.servicio.Mapper.ServicioMapper;
+import com.example.ProyectoFinalTurnos.features.turno.TurnoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,12 +23,14 @@ public class ServicioService implements IServicioService{
     private final ServicioMapper servicioMapper;
     private final ComercioRepository comercioRepository;
     private final HorarioAtencionRepository horarioAtencionRepository;
+    private final TurnoRepository turnoRepository;
 
-    public ServicioService(ServicioRepository servicioRepository, ServicioMapper servicioMapper, ComercioRepository comercioRepository, HorarioAtencionRepository horarioAtencionRepository) {
+    public ServicioService(ServicioRepository servicioRepository, ServicioMapper servicioMapper, ComercioRepository comercioRepository, HorarioAtencionRepository horarioAtencionRepository, TurnoRepository turnoRepository) {
         this.servicioRepository = servicioRepository;
         this.servicioMapper = servicioMapper;
         this.comercioRepository = comercioRepository;
         this.horarioAtencionRepository = horarioAtencionRepository;
+        this.turnoRepository = turnoRepository;
     }
 
 
@@ -36,6 +39,12 @@ public class ServicioService implements IServicioService{
 
         ComercioEntity comercio = comercioRepository.findById(request.getIdComercio())
                 .orElseThrow(() -> new ComercioNotFoundException("No se encontró el comercio con ID: " + request.getIdComercio()));
+
+        /// evita nombre duplicados para el servicio
+        boolean existeNombre = servicioRepository.existsByNombreServicio(request.getNombreServicio(),request.getIdComercio());
+        if(existeNombre) {
+            throw new IllegalStateException("Ya existe un servicio con el mismo nombre para este comercio");
+        }
 
 
         HorarioAtencionEntity horario = horarioAtencionRepository.findById(request.getIdHorario())
@@ -74,6 +83,10 @@ public class ServicioService implements IServicioService{
         ServicioEntity servicioEntity = servicioRepository.findById(id)
                 .orElseThrow(() -> new ServicioNotFoundException("No se encontró el servicio con ID: " + id));
         servicioRepository.delete(servicioEntity);
+        if (turnoRepository.existsByUsuario_IdUsuario(id)){
+            throw new IllegalStateException("No se puede eliminar el servicio porque tiene turnos asociados");
+        }
+
     }
 
     @Override
