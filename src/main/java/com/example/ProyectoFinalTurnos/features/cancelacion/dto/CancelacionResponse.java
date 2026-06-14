@@ -12,5 +12,6 @@ import java.time.LocalDateTime;
 public class CancelacionResponse {
     private Long idCancelacion;
     private LocalDateTime fechaCancelacion;
-    private String mensaje;
+    private String Motivo;
+    private long idUsuario;
 }

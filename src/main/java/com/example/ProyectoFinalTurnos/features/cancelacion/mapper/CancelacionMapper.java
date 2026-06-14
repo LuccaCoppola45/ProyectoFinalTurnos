@@ -3,30 +3,26 @@ package com.example.ProyectoFinalTurnos.features.cancelacion.mapper;
 import com.example.ProyectoFinalTurnos.features.cancelacion.CancelacionEntity;
 import com.example.ProyectoFinalTurnos.features.cancelacion.dto.CancelacionRequest;
 import com.example.ProyectoFinalTurnos.features.cancelacion.dto.CancelacionResponse;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CancelacionMapper {
-    public CancelacionEntity requestDtotoEntity(CancelacionRequest requestDto) {
-        if (requestDto == null) {
-            return null;
-        }
-        CancelacionEntity cancelacionEntity = new CancelacionEntity();
-        cancelacionEntity.setMotivo(requestDto.getMotivo());
 
-        return cancelacionEntity;
+    private final ModelMapper modelMapper = new ModelMapper();
+
+    public CancelacionEntity requestDtoToEntity(CancelacionRequest requestDto) {
+        if (requestDto == null) return null;
+        CancelacionEntity entity = new CancelacionEntity();
+        entity.setMotivo(requestDto.getMotivo());
+
+        return entity;
     }
 
-    public CancelacionResponse entitytoResponseDto(CancelacionEntity entityCancelacion, String mensajePersonalizado) {
-        if (entityCancelacion == null) {
-            return null;
-        }
-        CancelacionResponse responseDTO = new CancelacionResponse();
-        responseDTO.setIdCancelacion(entityCancelacion.getId());
-        responseDTO.setFechaCancelacion(entityCancelacion.getFechaCancelacion());
-        responseDTO.setMensaje(mensajePersonalizado);
-
-        return responseDTO;
+    public CancelacionResponse entityToResponseDto(CancelacionEntity entity) {
+        if (entity == null) return null;
+        return modelMapper.map(entity, CancelacionResponse.class);
     }
-
 }
+
+

@@ -59,7 +59,7 @@ public class CancelacionServiceImpl implements CancelacionService {
         }
 
         // 2. USO DEL MAPPER (DTO -> Entidad)
-        CancelacionEntity cancelacionEntity = cancelacionMapper.requestDtotoEntity(requestDTO);
+        CancelacionEntity cancelacionEntity = cancelacionMapper.requestDtoToEntity(requestDTO);
 
 
         cancelacionEntity.setUsuario(usuario);
@@ -73,7 +73,7 @@ public class CancelacionServiceImpl implements CancelacionService {
 
         // 5. USO DEL MAPPER (Entidad -> ResponseDTO)
         String mensajeExito = "El turno ID: " + turno.getIdTurno() + " se canceló correctamente.";
-        return cancelacionMapper.entitytoResponseDto(guardada, mensajeExito);
+        return cancelacionMapper.entityToResponseDto(guardada);
     }
 
     @Override
@@ -81,7 +81,7 @@ public class CancelacionServiceImpl implements CancelacionService {
         List <CancelacionEntity> cancelaciones = cancelacionRepository.findAll();
 
         return cancelaciones.stream()
-                .map(cancelacion -> cancelacionMapper.entitytoResponseDto(cancelacion, "Detalle de cancelación"))
+                .map(cancelacion -> cancelacionMapper.entityToResponseDto(cancelacion))
                 .toList();
     }
 
@@ -89,7 +89,7 @@ public class CancelacionServiceImpl implements CancelacionService {
     public CancelacionResponse obtenerCancelacionPorId(Long id){
         CancelacionEntity cancelacion = cancelacionRepository.findById(id).
                 orElseThrow(()->new CancelacionNotFoundException("Cancelacion no encontrada con ID: " + id));
-        return cancelacionMapper.entitytoResponseDto(cancelacion,"Cancelacion encontrada");
+        return cancelacionMapper.entityToResponseDto(cancelacion);
     }
 
 }
