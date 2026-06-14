@@ -14,9 +14,6 @@ public class HorarioAtencionRequest
     @Positive(message = "El ID del comercio debe ser mayor a cero")
     private Long comercioId;
 
-    @Positive(message = "El ID del servicio debe ser mayor a cero")
-    private Long servicioId;
-
     @NotNull(message = "El día es obligatorio")
     private Diasemana diaSemana;
 

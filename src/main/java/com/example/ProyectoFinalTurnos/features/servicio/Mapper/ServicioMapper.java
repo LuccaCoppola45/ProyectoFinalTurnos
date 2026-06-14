@@ -53,14 +53,6 @@ public class ServicioMapper {
             response.setIdComercio(entity.getComercio().getIdComercio());
         }
 
-        // Mapeo de horarios IDs
-        if (entity.getHorarios() != null && !entity.getHorarios().isEmpty()) {
-            response.setHorariosAtencionIds(
-                    entity.getHorarios().stream()
-                            .map(HorarioAtencionEntity::getIdHorarioAtencion)
-                            .toList()
-            );
-        }
 
         return response;
     }

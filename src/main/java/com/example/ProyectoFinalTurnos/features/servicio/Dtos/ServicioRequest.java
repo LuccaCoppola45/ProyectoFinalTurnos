@@ -22,5 +22,5 @@ public class ServicioRequest {
 
     private Long idComercio;
 
-    private Long idHorario;
+
 }

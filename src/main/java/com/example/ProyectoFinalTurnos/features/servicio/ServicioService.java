@@ -17,42 +17,47 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class ServicioService implements IServicioService{
+public class ServicioService implements IServicioService {
 
     private final ServicioRepository servicioRepository;
     private final ServicioMapper servicioMapper;
     private final ComercioRepository comercioRepository;
-    private final HorarioAtencionRepository horarioAtencionRepository;
     private final TurnoRepository turnoRepository;
 
-    public ServicioService(ServicioRepository servicioRepository, ServicioMapper servicioMapper, ComercioRepository comercioRepository, HorarioAtencionRepository horarioAtencionRepository, TurnoRepository turnoRepository) {
+    public ServicioService(
+            ServicioRepository servicioRepository,
+            ServicioMapper servicioMapper,
+            ComercioRepository comercioRepository,
+            TurnoRepository turnoRepository) {
         this.servicioRepository = servicioRepository;
         this.servicioMapper = servicioMapper;
         this.comercioRepository = comercioRepository;
-        this.horarioAtencionRepository = horarioAtencionRepository;
         this.turnoRepository = turnoRepository;
     }
 
-
+    /**     * Crear un nuevo servicio.     * Los horarios ya no se asocian directamente al servicio.     * Se asocian al comercio.     */
     @Override
     public ServicioResponse crearServicio(ServicioRequest request) {
 
         ComercioEntity comercio = comercioRepository.findById(request.getIdComercio())
-                .orElseThrow(() -> new ComercioNotFoundException("No se encontró el comercio con ID: " + request.getIdComercio()));
+                .orElseThrow(() -> new ComercioNotFoundException(
+                        "No se encontró el comercio con ID: " + request.getIdComercio()));
 
-        /// evita nombre duplicados para el servicio
-        boolean existeNombre = servicioRepository.existsByNombreServicioAndIdComercio(request.getNombreServicio(),request.getIdComercio());
-        if(existeNombre) {
-            throw new IllegalStateException("Ya existe un servicio con el mismo nombre para este comercio");
+        // Validar que no exista un servicio con el mismo nombre para este comercio
+        boolean existeNombre = servicioRepository
+                .existsByNombreServicioAndIdComercio(
+                        request.getNombreServicio(),
+                        request.getIdComercio());
+
+        if (existeNombre) {
+            throw new IllegalStateException(
+                    "Ya existe un servicio con el mismo nombre para este comercio");
         }
-
-        HorarioAtencionEntity horario = horarioAtencionRepository.findById(request.getIdHorario())
-                .orElseThrow(() -> new ResourceNotFoundException("No se encontró el horario con ID: " + request.getIdHorario()));
 
         ServicioEntity servicioEntity = servicioMapper.toEntity(request);
         servicioEntity.setIdServicio(null);
         servicioEntity.setComercio(comercio);
-        servicioEntity.setHorarios(List.of(horario));
+        // NO asignamos horario porque ya no existe esa relación
 
         ServicioEntity guardado = servicioRepository.save(servicioEntity);
         return servicioMapper.toDto(guardado);
@@ -60,7 +65,8 @@ public class ServicioService implements IServicioService{
 
     @Override
     public List<ServicioResponse> listarServicios() {
-        return servicioRepository.findAll().stream()
+        return servicioRepository.findAll()
+                .stream()
                 .map(servicioMapper::toDto)
                 .collect(Collectors.toList());
     }
@@ -68,37 +74,43 @@ public class ServicioService implements IServicioService{
     @Override
     public ServicioResponse BuscarporId(long id) {
         ServicioEntity servicioEntity = servicioRepository.findById(id)
-                .orElseThrow(() -> new ServicioNotFoundException("No se encontró el servicio con ID: " + id));
+                .orElseThrow(() -> new ServicioNotFoundException(
+                        "No se encontró el servicio con ID: " + id));
         return servicioMapper.toDto(servicioEntity);
     }
 
+    /**     * Eliminar un servicio.     * Primero validar que no tenga turnos asociados.     * NOTA: El método turnoRepository.existsByUsuario_IdUsuario(id) parece incorrecto.     * Debería ser algo como turnoRepository.existsByServicio_IdServicio(id)     */
     @Override
     public void eliminarServicio(long id) {
         ServicioEntity servicioEntity = servicioRepository.findById(id)
-                .orElseThrow(() -> new ServicioNotFoundException("No se encontró el servicio con ID: " + id));
-        servicioRepository.delete(servicioEntity);
-        if (turnoRepository.existsByUsuario_IdUsuario(id)){
-            throw new IllegalStateException("No se puede eliminar el servicio porque tiene turnos asociados");
+                .orElseThrow(() -> new ServicioNotFoundException(
+                        "No se encontró el servicio con ID: " + id));
+
+        // Validar que no tenga turnos asociados antes de eliminar
+        if (turnoRepository.existsByServicio_IdServicio(id)) {
+            throw new IllegalStateException(
+                    "No se puede eliminar el servicio porque tiene turnos asociados");
         }
 
+        servicioRepository.delete(servicioEntity);
     }
 
+    /**     * Actualizar un servicio.     * Los horarios ya no se asocian directamente al servicio.     */
     @Override
     public ServicioResponse ActualizarServicio(long id, ServicioRequest request) {
         ServicioEntity servicioEntity = servicioRepository.findById(id)
-                .orElseThrow(() -> new ServicioNotFoundException("No se encontró el servicio con ID: " + id));
+                .orElseThrow(() -> new ServicioNotFoundException(
+                        "No se encontró el servicio con ID: " + id));
 
         ComercioEntity comercio = comercioRepository.findById(request.getIdComercio())
-                .orElseThrow(() -> new ComercioNotFoundException("No se encontró el comercio con ID: " + request.getIdComercio()));
-
-        HorarioAtencionEntity horario = horarioAtencionRepository.findById(request.getIdHorario())
-                .orElseThrow(() -> new ResourceNotFoundException("No se encontró el horario con ID: " + request.getIdHorario()));
+                .orElseThrow(() -> new ComercioNotFoundException(
+                        "No se encontró el comercio con ID: " + request.getIdComercio()));
 
         servicioEntity.setNombre(request.getNombreServicio());
         servicioEntity.setPrecio(request.getPrecio());
         servicioEntity.setDuracionDelServicio(request.getDuracionDelServicio());
         servicioEntity.setComercio(comercio);
-        servicioEntity.setHorarios(List.of(horario));
+        // NO asignamos horario porque ya no existe esa relación
 
         ServicioEntity actualizado = servicioRepository.save(servicioEntity);
         return servicioMapper.toDto(actualizado);

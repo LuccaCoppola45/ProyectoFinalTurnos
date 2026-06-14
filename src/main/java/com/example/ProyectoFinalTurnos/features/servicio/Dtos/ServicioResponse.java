@@ -12,5 +12,5 @@ public class ServicioResponse
     private Integer duracionDelServicio;
     private double precio;
     private Long idComercio;
-    private List<Long> horariosAtencionIds;
+
 }

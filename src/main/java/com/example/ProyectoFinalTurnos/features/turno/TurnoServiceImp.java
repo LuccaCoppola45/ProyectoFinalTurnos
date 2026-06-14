@@ -28,335 +28,322 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
-@Transactional
-@RequiredArgsConstructor
-public class TurnoServiceImp implements TurnoService
-{
-    private final TurnoRepository turnoRepository;
-    private final UsuarioRepository usuarioRepository;
-    private final ServicioRepository servicioRepository;
-    private final TurnoMapper turnoMapper;
 
+    @Service
+    @Transactional
+    @RequiredArgsConstructor
+    public class TurnoServiceImp implements TurnoService {
 
-    @Override
-    public TurnoResponceDto crearTurno(TurnoRequestDto requestDto)
-    {
-        validarFechaYHora(requestDto);
+        private final TurnoRepository turnoRepository;
+        private final UsuarioRepository usuarioRepository;
+        private final ServicioRepository servicioRepository;
+        private final TurnoMapper turnoMapper;
 
-        UsuarioEntity usuario = usuarioRepository
-                .findById(requestDto.getUsuarioId())
-                .orElseThrow(() ->
-                        new UserProfileNotFoundException(
-                                "Usuario no encontrado"));
+        @Override
+        public TurnoResponceDto crearTurno(TurnoRequestDto requestDto) {
+            validarFechaYHora(requestDto);
 
-        ServicioEntity servicio = servicioRepository
-                .findById(requestDto.getServicioId())
-                .orElseThrow(() ->
-                        new ServicioNotFoundException(
-                                "Servicio no encontrado"));
+            UsuarioEntity usuario = usuarioRepository
+                    .findById(requestDto.getUsuarioId())
+                    .orElseThrow(() ->
+                            new UserProfileNotFoundException(
+                                    "Usuario no encontrado"));
 
-        LocalTime horaInicio = requestDto.getHoraInicio();
+            ServicioEntity servicio = servicioRepository
+                    .findById(requestDto.getServicioId())
+                    .orElseThrow(() ->
+                            new ServicioNotFoundException(
+                                    "Servicio no encontrado"));
 
-        LocalTime horaFinCalculada =
-                horaInicio.plusMinutes(
-                        servicio.getDuracionDelServicio());
+            LocalTime horaInicio = requestDto.getHoraInicio();
 
-        validarHorarioAtencion(
-                servicio,
-                requestDto.getFecha(),
-                horaInicio,
-                horaFinCalculada);
+            LocalTime horaFinCalculada =
+                    horaInicio.plusMinutes(
+                            servicio.getDuracionDelServicio());
 
-        validarSuperposicionServicio(
-                servicio.getIdServicio(),
-                requestDto.getFecha(),
-                horaInicio,
-                horaFinCalculada);
+            // CAMBIO: Obtener horarios del comercio del servicio, no del servicio
+            validarHorarioAtencion(
+                    servicio.getComercio(),
+                    requestDto.getFecha(),
+                    horaInicio,
+                    horaFinCalculada);
 
-        validarSuperposicionUsuario(
-                usuario.getIdUsuario(),
-                requestDto.getFecha(),
-                horaInicio,
-                horaFinCalculada);
+            validarSuperposicionServicio(
+                    servicio.getIdServicio(),
+                    requestDto.getFecha(),
+                    horaInicio,
+                    horaFinCalculada);
 
-        TurnoEntity turno = turnoMapper.toEntity(requestDto);
+            validarSuperposicionUsuario(
+                    usuario.getIdUsuario(),
+                    requestDto.getFecha(),
+                    horaInicio,
+                    horaFinCalculada);
 
-        turno.setUsuario(usuario);
-        turno.setServicio(servicio);
-        turno.setHoraFin(horaFinCalculada);
-        turno.setEstado(EstadoTurno.PENDIENTE);
+            TurnoEntity turno = turnoMapper.toEntity(requestDto);
 
-        TurnoEntity guardado = turnoRepository.save(turno);
+            turno.setUsuario(usuario);
+            turno.setServicio(servicio);
+            turno.setHoraFin(horaFinCalculada);
+            turno.setEstado(EstadoTurno.PENDIENTE);
 
-        return turnoMapper.toDto(guardado);
-    }
+            TurnoEntity guardado = turnoRepository.save(turno);
 
-    @Override
-    public List<TurnoResponceDto> obtenerTodos()
-    {
-        return turnoRepository.findAll()
-                .stream()
-                .map(turnoMapper::toDto)
-                .toList();
-    }
-
-    @Override
-    public TurnoResponceDto obtenerPorId(Long id)
-    {
-        TurnoEntity turno = turnoRepository.findById(id)
-                .orElseThrow(() -> new TurnoNotFoundException("Turno no encontrado"));
-
-        return turnoMapper.toDto(turno);
-    }
-
-    @Override
-    public TurnoResponceDto actualizarTurno(Long id, TurnoRequestDto dto)
-    {
-        TurnoEntity turno = turnoRepository.findById(id)
-                .orElseThrow(() -> new TurnoNotFoundException("Turno no encontrado"));
-
-        if (turno.getEstado() == EstadoTurno.CANCELADO)
-        {
-            throw new TurnoAlreadyCancelledException("No se puede modificar un turno cancelado");
+            return turnoMapper.toDto(guardado);
         }
 
-        validarFechaYHora(dto);
-
-        UsuarioEntity usuario = usuarioRepository.findById(
-                        dto.getUsuarioId())
-                .orElseThrow(() -> new UserProfileNotFoundException("Usuario no encontrado"));
-
-        ServicioEntity servicio = servicioRepository.findById(dto.getServicioId())
-                .orElseThrow(() -> new ServicioNotFoundException("Servicio no encontrado"));
-
-        LocalTime horaInicio = dto.getHoraInicio();
-
-        LocalTime horaFinCalculada = horaInicio.plusMinutes(servicio.getDuracionDelServicio());
-
-        validarHorarioAtencion(
-                servicio,
-                dto.getFecha(),
-                horaInicio,
-                horaFinCalculada);
-
-        validarSuperposicionServicioExcluyendoActual(
-                turno.getIdTurno(),
-                servicio.getIdServicio(),
-                dto.getFecha(),
-                horaInicio,
-                horaFinCalculada);
-
-        validarSuperposicionUsuarioExcluyendoActual(
-                turno.getIdTurno(),
-                usuario.getIdUsuario(),
-                dto.getFecha(),
-                horaInicio,
-                horaFinCalculada);
-
-        turno.setFecha(dto.getFecha());
-        turno.setHoraInicio(horaInicio);
-        turno.setHoraFin(horaFinCalculada);
-        turno.setUsuario(usuario);
-        turno.setServicio(servicio);
-
-        TurnoEntity actualizado = turnoRepository.save(turno);
-
-        return turnoMapper.toDto(actualizado);
-    }
-
-    @Override
-    public void eliminarUnTurno(Long id)
-    {
-        TurnoEntity turno = turnoRepository.findById(id)
-                .orElseThrow(() -> new TurnoNotFoundException("Turno no encontrado"));
-
-        if (turno.getEstado() == EstadoTurno.FINALIZADO)
-        {
-            throw new TurnFinishedException("No se puede eliminar un turno finalizado");
+        @Override
+        public List<TurnoResponceDto> obtenerTodos() {
+            return turnoRepository.findAll()
+                    .stream()
+                    .map(turnoMapper::toDto)
+                    .toList();
         }
 
-        turnoRepository.delete(turno);
-    }
+        @Override
+        public TurnoResponceDto obtenerPorId(Long id) {
+            TurnoEntity turno = turnoRepository.findById(id)
+                    .orElseThrow(() -> new TurnoNotFoundException("Turno no encontrado"));
 
-    private void validarFechaYHora(TurnoRequestDto dto)
-    {
-        if (dto.getFecha().isBefore(LocalDate.now()))
-        {
-            throw new TurnoPastDateException("No se puede crear un turno en una fecha pasada");
+            return turnoMapper.toDto(turno);
         }
 
-        if (dto.getFecha().equals(LocalDate.now())
-                && dto.getHoraInicio().isBefore(LocalTime.now()))
-        {
-            throw new TurnoPastDateException("No se puede crear un turno en una hora pasada");
+        @Override
+        public TurnoResponceDto actualizarTurno(Long id, TurnoRequestDto dto) {
+            TurnoEntity turno = turnoRepository.findById(id)
+                    .orElseThrow(() -> new TurnoNotFoundException("Turno no encontrado"));
+
+            if (turno.getEstado() == EstadoTurno.CANCELADO) {
+                throw new TurnoAlreadyCancelledException("No se puede modificar un turno cancelado");
+            }
+
+            validarFechaYHora(dto);
+
+            UsuarioEntity usuario = usuarioRepository.findById(
+                            dto.getUsuarioId())
+                    .orElseThrow(() -> new UserProfileNotFoundException("Usuario no encontrado"));
+
+            ServicioEntity servicio = servicioRepository.findById(dto.getServicioId())
+                    .orElseThrow(() -> new ServicioNotFoundException("Servicio no encontrado"));
+
+            LocalTime horaInicio = dto.getHoraInicio();
+
+            LocalTime horaFinCalculada = horaInicio.plusMinutes(servicio.getDuracionDelServicio());
+
+            // CAMBIO: Obtener horarios del comercio del servicio, no del servicio
+            validarHorarioAtencion(
+                    servicio.getComercio(),
+                    dto.getFecha(),
+                    horaInicio,
+                    horaFinCalculada);
+
+            validarSuperposicionServicioExcluyendoActual(
+                    turno.getIdTurno(),
+                    servicio.getIdServicio(),
+                    dto.getFecha(),
+                    horaInicio,
+                    horaFinCalculada);
+
+            validarSuperposicionUsuarioExcluyendoActual(
+                    turno.getIdTurno(),
+                    usuario.getIdUsuario(),
+                    dto.getFecha(),
+                    horaInicio,
+                    horaFinCalculada);
+
+            turno.setFecha(dto.getFecha());
+            turno.setHoraInicio(horaInicio);
+            turno.setHoraFin(horaFinCalculada);
+            turno.setUsuario(usuario);
+            turno.setServicio(servicio);
+
+            TurnoEntity actualizado = turnoRepository.save(turno);
+
+            return turnoMapper.toDto(actualizado);
+        }
+
+        @Override
+        public void eliminarUnTurno(Long id) {
+            TurnoEntity turno = turnoRepository.findById(id)
+                    .orElseThrow(() -> new TurnoNotFoundException("Turno no encontrado"));
+
+            if (turno.getEstado() == EstadoTurno.FINALIZADO) {
+                throw new TurnFinishedException("No se puede eliminar un turno finalizado");
+            }
+
+            turnoRepository.delete(turno);
+        }
+
+        private void validarFechaYHora(TurnoRequestDto dto) {
+            if (dto.getFecha().isBefore(LocalDate.now())) {
+                throw new TurnoPastDateException("No se puede crear un turno en una fecha pasada");
+            }
+
+            if (dto.getFecha().equals(LocalDate.now())
+                    && dto.getHoraInicio().isBefore(LocalTime.now())) {
+                throw new TurnoPastDateException("No se puede crear un turno en una hora pasada");
+            }
+        }
+
+        private void validarSuperposicionServicio(
+                Long servicioId,
+                LocalDate fecha,
+                LocalTime horaInicio,
+                LocalTime horaFin) {
+            boolean existeSuperposicion =
+                    turnoRepository.findByServicio_IdServicioAndFecha(
+                                    servicioId,
+                                    fecha)
+                            .stream()
+                            .filter(turno ->
+                                    turno.getEstado() != EstadoTurno.CANCELADO)
+                            .anyMatch(turno ->
+                                    haySuperposicion(
+                                            turno,
+                                            horaInicio,
+                                            horaFin));
+
+            if (existeSuperposicion) {
+                throw new DuplicateTurnException(
+                        "El horario seleccionado ya está ocupado");
+            }
+        }
+
+        private void validarSuperposicionUsuario(
+                Long usuarioId,
+                LocalDate fecha,
+                LocalTime horaInicio,
+                LocalTime horaFin) {
+            boolean existeSuperposicion =
+                    turnoRepository.findByUsuario_IdUsuarioAndFecha(
+                                    usuarioId,
+                                    fecha)
+                            .stream()
+                            .filter(turno ->
+                                    turno.getEstado() != EstadoTurno.CANCELADO)
+                            .anyMatch(turno ->
+                                    haySuperposicion(
+                                            turno,
+                                            horaInicio,
+                                            horaFin));
+
+            if (existeSuperposicion) {
+                throw new DuplicateTurnException(
+                        "El usuario ya posee un turno en ese horario");
+            }
+        }
+
+        private void validarSuperposicionServicioExcluyendoActual(
+                Long idTurno,
+                Long servicioId,
+                LocalDate fecha,
+                LocalTime horaInicio,
+                LocalTime horaFin) {
+            boolean existeSuperposicion =
+                    turnoRepository.findByServicio_IdServicioAndFecha(
+                                    servicioId,
+                                    fecha)
+                            .stream()
+                            .filter(turno ->
+                                    !turno.getIdTurno().equals(idTurno))
+                            .filter(turno ->
+                                    turno.getEstado() != EstadoTurno.CANCELADO)
+                            .anyMatch(turno ->
+                                    haySuperposicion(
+                                            turno,
+                                            horaInicio,
+                                            horaFin));
+
+            if (existeSuperposicion) {
+                throw new DuplicateTurnException(
+                        "El horario seleccionado ya está ocupado");
+            }
+        }
+
+        private void validarSuperposicionUsuarioExcluyendoActual(
+                Long idTurno,
+                Long usuarioId,
+                LocalDate fecha,
+                LocalTime horaInicio,
+                LocalTime horaFin) {
+            boolean existeSuperposicion =
+                    turnoRepository.findByUsuario_IdUsuarioAndFecha(
+                                    usuarioId,
+                                    fecha)
+                            .stream()
+                            .filter(turno ->
+                                    !turno.getIdTurno().equals(idTurno))
+                            .filter(turno ->
+                                    turno.getEstado() != EstadoTurno.CANCELADO)
+                            .anyMatch(turno ->
+                                    haySuperposicion(
+                                            turno,
+                                            horaInicio,
+                                            horaFin));
+
+            if (existeSuperposicion) {
+                throw new DuplicateTurnException(
+                        "El usuario ya posee un turno en ese horario");
+            }
+        }
+
+        private boolean haySuperposicion(
+                TurnoEntity turno,
+                LocalTime horaInicio,
+                LocalTime horaFin) {
+            LocalTime inicioExistente = turno.getHoraInicio();
+
+            LocalTime finExistente =
+                    inicioExistente.plusMinutes(
+                            turno.getServicio()
+                                    .getDuracionDelServicio());
+
+            return horaInicio.isBefore(finExistente)
+                    && horaFin.isAfter(inicioExistente);
+        }
+
+        /**
+         * CAMBIO PRINCIPAL: Ahora recibe ComercioEntity en lugar de ServicioEntity     * Los horarios están asociados directamente al comercio, no al servicio
+         */
+        private void validarHorarioAtencion(
+                com.example.ProyectoFinalTurnos.features.comercio.ComercioEntity comercio,
+                LocalDate fecha,
+                LocalTime horaInicio,
+                LocalTime horaFin) {
+
+            // Mapear día de la fecha al enum Diasemana
+            Diasemana diaTurno = mapearDiaSemana(fecha.getDayOfWeek());
+
+            // Buscar un horario del comercio para ese día
+            HorarioAtencionEntity horario = comercio.getHorarios().stream()
+                    .filter(h -> h.getDiaSemana() == diaTurno)
+                    .findFirst()
+                    .orElseThrow(() -> new HorarioFueraDeAtencionException(
+                            "El comercio no atiende los días " + diaTurno));
+
+            // Validar que la hora de inicio esté dentro del horario
+            if (horaInicio.isBefore(horario.getHoraApertura())) {
+                throw new HorarioFueraDeAtencionException(
+                        "El horario seleccionado es anterior a la apertura del comercio");
+            }
+
+            // Validar que la hora de fin esté dentro del horario
+            if (horaFin.isAfter(horario.getHoraCierre())) {
+                throw new HorarioFueraDeAtencionException(
+                        "El horario seleccionado excede el horario de cierre del comercio");
+            }
+        }
+
+        private Diasemana mapearDiaSemana(java.time.DayOfWeek dayOfWeek) {
+            return switch (dayOfWeek) {
+                case MONDAY -> Diasemana.LUNES;
+                case TUESDAY -> Diasemana.MARTES;
+                case WEDNESDAY -> Diasemana.MIERCOLES;
+                case THURSDAY -> Diasemana.JUEVES;
+                case FRIDAY -> Diasemana.VIERNES;
+                case SATURDAY -> Diasemana.SABADO;
+                case SUNDAY -> Diasemana.DOMINGO;
+            };
         }
     }
 
-    private void validarSuperposicionServicio(
-            Long servicioId,
-            LocalDate fecha,
-            LocalTime horaInicio,
-            LocalTime horaFin)
-    {
-        boolean existeSuperposicion =
-                turnoRepository.findByServicio_IdServicioAndFecha(
-                                servicioId,
-                                fecha)
-                        .stream()
-                        .filter(turno ->
-                                turno.getEstado() != EstadoTurno.CANCELADO)
-                        .anyMatch(turno ->
-                                haySuperposicion(
-                                        turno,
-                                        horaInicio,
-                                        horaFin));
-
-        if (existeSuperposicion)
-        {
-            throw new DuplicateTurnException(
-                    "El horario seleccionado ya está ocupado");
-        }
-    }
-
-    private void validarSuperposicionUsuario(
-            Long usuarioId,
-            LocalDate fecha,
-            LocalTime horaInicio,
-            LocalTime horaFin)
-    {
-        boolean existeSuperposicion =
-                turnoRepository.findByUsuario_IdUsuarioAndFecha(
-                                usuarioId,
-                                fecha)
-                        .stream()
-                        .filter(turno ->
-                                turno.getEstado() != EstadoTurno.CANCELADO)
-                        .anyMatch(turno ->
-                                haySuperposicion(
-                                        turno,
-                                        horaInicio,
-                                        horaFin));
-
-        if (existeSuperposicion)
-        {
-            throw new DuplicateTurnException(
-                    "El usuario ya posee un turno en ese horario");
-        }
-    }
-
-    private void validarSuperposicionServicioExcluyendoActual(
-            Long idTurno,
-            Long servicioId,
-            LocalDate fecha,
-            LocalTime horaInicio,
-            LocalTime horaFin)
-    {
-        boolean existeSuperposicion =
-                turnoRepository.findByServicio_IdServicioAndFecha(
-                                servicioId,
-                                fecha)
-                        .stream()
-                        .filter(turno ->
-                                !turno.getIdTurno().equals(idTurno))
-                        .filter(turno ->
-                                turno.getEstado() != EstadoTurno.CANCELADO)
-                        .anyMatch(turno ->
-                                haySuperposicion(
-                                        turno,
-                                        horaInicio,
-                                        horaFin));
-
-        if (existeSuperposicion)
-        {
-            throw new DuplicateTurnException(
-                    "El horario seleccionado ya está ocupado");
-        }
-    }
-
-    private void validarSuperposicionUsuarioExcluyendoActual(
-            Long idTurno,
-            Long usuarioId,
-            LocalDate fecha,
-            LocalTime horaInicio,
-            LocalTime horaFin)
-    {
-        boolean existeSuperposicion =
-                turnoRepository.findByUsuario_IdUsuarioAndFecha(
-                                usuarioId,
-                                fecha)
-                        .stream()
-                        .filter(turno ->
-                                !turno.getIdTurno().equals(idTurno))
-                        .filter(turno ->
-                                turno.getEstado() != EstadoTurno.CANCELADO)
-                        .anyMatch(turno ->
-                                haySuperposicion(
-                                        turno,
-                                        horaInicio,
-                                        horaFin));
-
-        if (existeSuperposicion)
-        {
-            throw new DuplicateTurnException(
-                    "El usuario ya posee un turno en ese horario");
-        }
-    }
-
-    private boolean haySuperposicion(
-            TurnoEntity turno,
-            LocalTime horaInicio,
-            LocalTime horaFin)
-    {
-        LocalTime inicioExistente = turno.getHoraInicio();
-
-        LocalTime finExistente =
-                inicioExistente.plusMinutes(
-                        turno.getServicio()
-                                .getDuracionDelServicio());
-
-        return horaInicio.isBefore(finExistente)
-                && horaFin.isAfter(inicioExistente);
-    }
-
-    private void validarHorarioAtencion(
-            ServicioEntity servicio,
-            LocalDate fecha,
-            LocalTime horaInicio,
-            LocalTime horaFin)
-    {
-        Diasemana diaTurno =
-                mapearDiaSemana(fecha.getDayOfWeek());
-
-        HorarioAtencionEntity horario = servicio.getHorarios().stream()
-                        .filter(h -> h.getDiaSemana() == diaTurno)
-                        .findFirst()
-                        .orElseThrow(() -> new HorarioFueraDeAtencionException("El servicio no atiende los días " + diaTurno));
-
-        if (horaInicio.isBefore(horario.getHoraApertura()))
-        {
-            throw new HorarioFueraDeAtencionException("El horario seleccionado es anterior a la apertura");
-        }
-
-        if (horaFin.isAfter(horario.getHoraCierre()))
-        {
-            throw new HorarioFueraDeAtencionException("El horario seleccionado excede el horario de cierre");
-        }
-    }
-
-    private Diasemana mapearDiaSemana(java.time.DayOfWeek dayOfWeek)
-    {
-        return switch (dayOfWeek) {
-            case MONDAY -> Diasemana.LUNES;
-            case TUESDAY -> Diasemana.MARTES;
-            case WEDNESDAY -> Diasemana.MIERCOLES;
-            case THURSDAY -> Diasemana.JUEVES;
-            case FRIDAY -> Diasemana.VIERNES;
-            case SATURDAY -> Diasemana.SABADO;
-            case SUNDAY -> Diasemana.DOMINGO;
-        };
-    }
-
-
-
-}
