@@ -30,13 +30,6 @@ public class HorarioAtencionEntity {
     @JsonIgnore
     private ComercioEntity comercio;
 
-    // AGREGADO: Relación con el servicio/peluquero (nullable = true para cuando sea el horario del local)
-    @ManyToOne
-    @JoinColumn(name = "id_servicio",
-            foreignKey = @ForeignKey(name = "FK_horario_servicio"),
-            nullable = true)
-    @JsonIgnore
-    private ServicioEntity servicio;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "dia_semana", nullable = false)

@@ -32,11 +32,6 @@ public class HorarioAtencionMapper
                     entity.getComercio().getIdComercio());
         }
 
-        if (entity.getServicio() != null)
-        {
-            response.setServicioId(
-                    entity.getServicio().getIdServicio());
-        }
 
         return response;
     }

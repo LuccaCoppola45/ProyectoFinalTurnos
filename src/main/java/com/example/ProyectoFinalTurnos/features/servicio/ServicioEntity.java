@@ -57,8 +57,5 @@ public class ServicioEntity {
     @OneToMany(mappedBy = "servicio")
     private List<TurnoEntity> turnos;
 
-    // MODIFICADO: Cambiamos el @ManyToOne por este @OneToMany
-    // Un servicio/peluquero ahora tiene su propia lista de días y horarios de atención
-    @OneToMany(mappedBy = "servicio", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<HorarioAtencionEntity> horarios;
+
 }
