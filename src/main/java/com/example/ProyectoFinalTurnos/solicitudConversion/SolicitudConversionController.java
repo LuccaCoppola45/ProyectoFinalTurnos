@@ -5,6 +5,7 @@ import com.example.ProyectoFinalTurnos.solicitudConversion.dtos.SolicitudConvers
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.Nullable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +27,7 @@ public class SolicitudConversionController {
     }
 
     // Solo ADMIN
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
     public ResponseEntity<List<SolicitudConversionResponse>> listarPendientes() {
         List<SolicitudConversionResponse> lista = service.listarSolicitudesPendientes();
@@ -33,6 +35,7 @@ public class SolicitudConversionController {
     }
 
     // Solo ADMIN: aprobar
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/{id}/aprobar")
     public ResponseEntity<SolicitudConversionResponse> aprobar(@PathVariable Long id) {
         String emailAdmin = obtenerEmail();
@@ -41,6 +44,7 @@ public class SolicitudConversionController {
     }
 
     // Solo ADMIN: rechazar
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/{id}/rechazar")
     public ResponseEntity<SolicitudConversionResponse> rechazar(@PathVariable Long id, @RequestParam(required = false) String motivo) {
         String emailAdmin = obtenerEmail();
