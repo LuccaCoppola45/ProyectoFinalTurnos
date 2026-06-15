@@ -17,10 +17,12 @@ import java.util.Map;
 public class TurnoController
 {
     private final TurnoService turnoService;
+    private final NotificacionService notificacionService;
 
-    public TurnoController(TurnoService turnoService)
+    public TurnoController(TurnoService turnoService,  NotificacionService notificacionService)
     {
         this.turnoService=turnoService;
+        this.notificacionService=notificacionService;
     }
 
     @PostMapping
@@ -28,6 +30,7 @@ public class TurnoController
             @Valid @RequestBody TurnoRequestDto dto)
     {
         TurnoResponceDto turno = turnoService.crearTurno(dto);
+
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)

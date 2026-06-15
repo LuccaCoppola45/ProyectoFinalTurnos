@@ -39,6 +39,8 @@ import java.util.stream.Collectors;
         private final ServicioRepository servicioRepository;
         private final TurnoMapper turnoMapper;
 
+        private final NotificacionService notificacionService;
+
         @Override
         public TurnoResponceDto crearTurno(TurnoRequestDto requestDto) {
             validarFechaYHora(requestDto);
@@ -89,6 +91,10 @@ import java.util.stream.Collectors;
 
             TurnoEntity guardado = turnoRepository.save(turno);
 
+            notificacionService.enviarEmail(
+                    usuario.getEmail(),
+                    "Confirmación de Turno",
+                    "Hola " + usuario.getNombre() + ", tu turno ha sido reservado correctamente.");
             return turnoMapper.toDto(guardado);
         }
 
