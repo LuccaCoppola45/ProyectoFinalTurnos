@@ -3,6 +3,7 @@ package com.example.ProyectoFinalTurnos.features.comercio;
 import com.example.ProyectoFinalTurnos.features.categoria.CategoriaEntity;
 import com.example.ProyectoFinalTurnos.features.horarioAtencion.HorarioAtencionEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.example.ProyectoFinalTurnos.features.usuario.UsuarioEntity;
 import com.example.ProyectoFinalTurnos.features.servicio.ServicioEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -33,6 +34,9 @@ public class ComercioEntity {
     @Column(nullable = false)
     private String telefono;
 
+    @Column(nullable = false)
+    private String descripcion;
+
     @ManyToMany
     @JoinTable(
             name = "comercio_categoria",
@@ -58,5 +62,9 @@ public class ComercioEntity {
     @JsonIgnore
     private List<HorarioAtencionEntity> horarios;
 
-
+    
+    @ManyToOne
+    @JoinColumn(name = "usuario_id_propietario", foreignKey = @ForeignKey(name = "fk_comercio_usuario"))
+    @JsonIgnore
+    private UsuarioEntity usuarioPropietario;
 }

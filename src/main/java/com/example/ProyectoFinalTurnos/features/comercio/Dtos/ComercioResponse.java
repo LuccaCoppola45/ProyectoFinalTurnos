@@ -19,9 +19,13 @@ public class ComercioResponse
 
     private String telefono;
 
+    private String descripcion;
+
     private List<String> categorias;
 
     private List<ServicioResponse> servicios;
 
     private List<HorarioAtencionResponse> horarios;
+    
+    private Long usuarioPropietarioId;
 }
