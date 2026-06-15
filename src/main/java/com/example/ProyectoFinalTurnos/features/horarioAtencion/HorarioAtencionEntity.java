@@ -1,7 +1,7 @@
 package com.example.ProyectoFinalTurnos.features.horarioAtencion;
 
 import com.example.ProyectoFinalTurnos.features.comercio.ComercioEntity;
-import com.example.ProyectoFinalTurnos.features.servicio.ServicioEntity;
+//import com.example.ProyectoFinalTurnos.features.servicio.ServicioEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.example.ProyectoFinalTurnos.model.enums.Diasemana;
 import jakarta.persistence.*;
