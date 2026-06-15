@@ -16,6 +16,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.*;
+import com.example.ProyectoFinalTurnos.features.comercio.ComercioEntity;
 
 @Entity
 @Table (name = "usuarios")
@@ -68,12 +69,17 @@ public class UsuarioEntity implements UserDetails{
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
     private List<CancelacionEntity> cancelacionEntitiesVinculados;
 
+    @OneToMany(mappedBy = "usuarioPropietario", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<ComercioEntity> comerciosPropios;
+
 
     @PrePersist
     public void init(){
         this.serviciosVinculados = new ArrayList<>();
         this.turnosVinculados = new HashSet<>();
         this.cancelacionEntitiesVinculados = new ArrayList<>();
+        this.comerciosPropios = new ArrayList<>();
     }
 
 

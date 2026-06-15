@@ -68,6 +68,10 @@ public class ComercioMapper {
             );
         }
 
+        if (entity.getUsuarioPropietario() != null) {
+            response.setUsuarioPropietarioId(entity.getUsuarioPropietario().getIdUsuario());
+        }
+
         return response;
     }
 
