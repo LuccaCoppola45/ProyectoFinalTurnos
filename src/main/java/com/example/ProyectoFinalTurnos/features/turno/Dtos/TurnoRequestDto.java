@@ -24,9 +24,6 @@ public class TurnoRequestDto
     @NotNull(message = "La hora de inicio es obligatoria")
     private LocalTime horaInicio;
 
-    @NotNull(message = "El id del usuario es obligatorio")
-    private Long usuarioId;
-
     @NotNull(message = "El id del servicio es obligatorio")
     private Long servicioId;
 
