@@ -99,8 +99,11 @@ public class TurnoServiceImp implements TurnoService {
         UsuarioEntity usuarioAutenticado = usuarioRepository.findByEmail(emailUsuario)
                 .orElseThrow(() -> new UserProfileNotFoundException("Usuario autenticado no encontrado"));
 
-        // Impedir que un usuario modifique turnos de otro (salvo ADMIN si implementas esa excepción)
-        if (!turno.getUsuario().getIdUsuario().equals(usuarioAutenticado.getIdUsuario())) {
+        // Verificar permisos: solo el propietario o ADMIN pueden modificar
+        boolean esAdmin = usuarioAutenticado.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+
+        if (!turno.getUsuario().getIdUsuario().equals(usuarioAutenticado.getIdUsuario()) && !esAdmin) {
             throw new AccessDeniedException("No tienes permisos para modificar este turno");
         }
 
@@ -118,7 +121,6 @@ public class TurnoServiceImp implements TurnoService {
         turno.setFecha(dto.getFecha());
         turno.setHoraInicio(horaInicio);
         turno.setHoraFin(horaFinCalculada);
-        // dejamos el mismo usuario del turno
         turno.setServicio(servicio);
 
         TurnoEntity actualizado = turnoRepository.save(turno);
@@ -138,7 +140,11 @@ public class TurnoServiceImp implements TurnoService {
         UsuarioEntity usuarioAutenticado = usuarioRepository.findByEmail(emailUsuario)
                 .orElseThrow(() -> new UserProfileNotFoundException("Usuario autenticado no encontrado"));
 
-        if (!turno.getUsuario().getIdUsuario().equals(usuarioAutenticado.getIdUsuario())) {
+        // Verificar permisos: solo el propietario o ADMIN pueden eliminar
+        boolean esAdmin = usuarioAutenticado.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+
+        if (!turno.getUsuario().getIdUsuario().equals(usuarioAutenticado.getIdUsuario()) && !esAdmin) {
             throw new AccessDeniedException("No tienes permisos para eliminar este turno");
         }
 
