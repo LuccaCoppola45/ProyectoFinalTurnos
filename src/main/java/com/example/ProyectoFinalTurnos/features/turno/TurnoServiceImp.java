@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -67,12 +68,24 @@ public class TurnoServiceImp implements TurnoService {
 
         TurnoEntity guardado = turnoRepository.save(turno);
 
+        String urlGestion = "http://localhost:8080/turnos/detalles/" + guardado.getIdTurno();
+        Context context = new Context();
+        context.setVariable("nombre", guardado.getUsuario().getNombre());
+        context.setVariable("fecha", guardado.getFecha().toString());
+        context.setVariable("hora", guardado.getHoraInicio().toString());
+        context.setVariable("urlGestion", urlGestion);
+        // 3. Llamar al servicio de notificación (async)
+        // El tercer parámetro es el nombre del archivo: "email-turno.html" -> "email-turno"
         try {
-            System.out.println("DEBUG: Intentando enviar email...");
-            notificacionService.enviarEmail(usuario.getEmail(), "Asunto", "Mensaje");
-            System.out.println("DEBUG: El pedido de envío de email fue realizado.");
+            notificacionService.enviarEmailConPlantilla(
+                    guardado.getUsuario().getEmail(),
+                    "Confirmación de tu Turno",
+                    "email-turno",
+                    context
+            );
         } catch (Exception e) {
-            System.err.println("DEBUG: Hubo un problema al llamar al servicio de mail: " + e.getMessage());
+            // Esto evita que si falla el mail, el usuario crea que el turno no se guardó
+            System.err.println("El turno se guardó, pero hubo un error al enviar el mail: " + e.getMessage());
         }
         return turnoMapper.toDto(guardado);
     }
