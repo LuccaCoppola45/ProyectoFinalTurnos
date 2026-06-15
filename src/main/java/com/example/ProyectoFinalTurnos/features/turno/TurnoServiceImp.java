@@ -31,6 +31,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TurnoServiceImp implements TurnoService {
 
+    private final NotificacionService  notificacionService;
     private final TurnoRepository turnoRepository;
     private final UsuarioRepository usuarioRepository;
     private final ServicioRepository servicioRepository;
@@ -65,6 +66,14 @@ public class TurnoServiceImp implements TurnoService {
         turno.setEstado(EstadoTurno.PENDIENTE);
 
         TurnoEntity guardado = turnoRepository.save(turno);
+
+        try {
+            System.out.println("DEBUG: Intentando enviar email...");
+            notificacionService.enviarEmail(usuario.getEmail(), "Asunto", "Mensaje");
+            System.out.println("DEBUG: El pedido de envío de email fue realizado.");
+        } catch (Exception e) {
+            System.err.println("DEBUG: Hubo un problema al llamar al servicio de mail: " + e.getMessage());
+        }
         return turnoMapper.toDto(guardado);
     }
 
