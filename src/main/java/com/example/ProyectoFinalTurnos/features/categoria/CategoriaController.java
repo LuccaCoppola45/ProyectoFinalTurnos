@@ -28,18 +28,9 @@ public class CategoriaController {
 
     // POST: Crear una categoría
     @PostMapping
-    public ResponseEntity<?> crearCategoria(@Valid @RequestBody categoriaRequest requestDto) {
-        try {
-            categoriaResponse response = categoriaService.crearCategoria(requestDto);
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        } catch (Exception e) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("error", e.getMessage());
-
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
-
-
+    public ResponseEntity<categoriaResponse> crearCategoria(@Valid @RequestBody categoriaRequest requestDto) {
+        categoriaResponse response = categoriaService.crearCategoria(requestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
 
