@@ -3,6 +3,7 @@ package com.example.ProyectoFinalTurnos.features.comercio;
 import com.example.ProyectoFinalTurnos.exceptions.auth.ResourceNotFoundException;
 import com.example.ProyectoFinalTurnos.exceptions.catalog.ComercioAlreadyExistsException;
 import com.example.ProyectoFinalTurnos.exceptions.catalog.ComercioNotFoundException;
+import com.example.ProyectoFinalTurnos.exceptions.categoria.CategoriaNoEncontradaException;
 import com.example.ProyectoFinalTurnos.features.categoria.CategoriaEntity;
 import com.example.ProyectoFinalTurnos.features.categoria.CategoriaRepository;
 import com.example.ProyectoFinalTurnos.features.comercio.Dtos.ComercioRequest;
@@ -110,16 +111,16 @@ public class ComercioServiceImpl implements IComercioService {
     @Transactional(readOnly = true)
     public List<ComercioResponse> comerciosPorCategoria(Long categoriaId) {
         // 1. Verificar que la categoría existe
-        CategoriaEntity categoria = categoriaRepository.findById(categoriaId)
-                .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada con id: " + categoriaId));
+        if (!categoriaRepository.existsById(categoriaId)) {
+            throw new CategoriaNoEncontradaException("Categoría no encontrada con id: " + categoriaId);
+        }
 
         // 2. Buscar comercios que tengan esa categoría
         List<ComercioEntity> comercios = comercioRepository.findByCategorias_UniqueId(categoriaId);
 
         // 3. Convertir a DTOs y retornar
         return comercios.stream()
-                .map(comercioMapper::toResponse)
-                .collect(Collectors.toList());
+                .map(comercioMapper::toResponse).toList();
     }
 }
 
