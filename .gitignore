@@ -32,3 +32,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+#Archivos con credenciales locales
+application-local.properties
+application-dev.properties
+.env
+.env.local
