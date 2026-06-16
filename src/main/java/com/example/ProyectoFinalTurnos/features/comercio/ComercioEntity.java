@@ -2,6 +2,7 @@ package com.example.ProyectoFinalTurnos.features.comercio;
 
 import com.example.ProyectoFinalTurnos.features.categoria.CategoriaEntity;
 import com.example.ProyectoFinalTurnos.features.horarioAtencion.HorarioAtencionEntity;
+import com.example.ProyectoFinalTurnos.features.turno.TurnoEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.example.ProyectoFinalTurnos.features.usuario.UsuarioEntity;
 import com.example.ProyectoFinalTurnos.features.servicio.ServicioEntity;
@@ -67,4 +68,8 @@ public class ComercioEntity {
     @JoinColumn(name = "usuario_id_propietario", foreignKey = @ForeignKey(name = "fk_comercio_usuario"))
     @JsonIgnore
     private UsuarioEntity usuarioPropietario;
+
+    @OneToMany(mappedBy = "comercio")
+    @JsonIgnore
+    private List<TurnoEntity> turnos;
 }
