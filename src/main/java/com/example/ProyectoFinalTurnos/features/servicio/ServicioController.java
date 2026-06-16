@@ -20,72 +20,44 @@ public class ServicioController {
     private final IServicioService servicioService;
 
     @PostMapping
-    public ResponseEntity<?> crearServicio(@Valid @RequestBody ServicioRequest request) {
-        try {
-            ServicioResponse response = servicioService.crearServicio(request);
-            return ResponseEntity.status(HttpStatus.CREATED).body(response); // 201
-        } catch (Exception e) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("error", e.getMessage());
-
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response); // 400
-        }
+    public ResponseEntity<ServicioResponse> crearServicio(@Valid @RequestBody ServicioRequest request) {
+        ServicioResponse response = servicioService.crearServicio(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response); // 201
     }
 
     @GetMapping
     public ResponseEntity<List<ServicioResponse>> listarServicios() {
-        try {
-            List<ServicioResponse> servicios = servicioService.listarServicios();
-            if (servicios.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); // 204
-            }
-            return ResponseEntity.ok(servicios); // 200
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // 500
+        List<ServicioResponse> servicios = servicioService.listarServicios();
+        if (servicios.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); // 204
         }
+        return ResponseEntity.ok(servicios); // 200
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ServicioResponse> buscarPorId(@PathVariable long id) {
-        try {
-            ServicioResponse servicio = servicioService.BuscarporId(id);
-            return ResponseEntity.ok(servicio); // 200
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 404
-        }
+        ServicioResponse servicio = servicioService.BuscarporId(id);
+        return ResponseEntity.ok(servicio); // 200
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ServicioResponse> actualizarServicio(@PathVariable long id, @Valid @RequestBody ServicioRequest request) {
-        try {
-            ServicioResponse response = servicioService.ActualizarServicio(id, request);
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(response); // 202
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 404
-        }
+        ServicioResponse response = servicioService.ActualizarServicio(id, request);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(response); // 202
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarServicio(@PathVariable long id) {
-        try {
-            servicioService.eliminarServicio(id);
-            return ResponseEntity.noContent().build(); // 204
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 404
-        }
+        servicioService.eliminarServicio(id);
+        return ResponseEntity.noContent().build(); // 204
     }
 
     @GetMapping("/comercio/{comercioId}")
-    public ResponseEntity<List<ServicioResponse>> serviciosPorComercio(@PathVariable Long comercioId)
-    {
-        try {
-            List<ServicioResponse> servicios = servicioService.serviciosPorComercio(comercioId);
-            return servicios.isEmpty() ?
-                    ResponseEntity.noContent().build() :
-                    ResponseEntity.ok(servicios);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+    public ResponseEntity<List<ServicioResponse>> serviciosPorComercio(@PathVariable Long comercioId) {
+        List<ServicioResponse> servicios = servicioService.serviciosPorComercio(comercioId);
+        return servicios.isEmpty() ?
+                ResponseEntity.noContent().build() :
+                ResponseEntity.ok(servicios);
     }
 }
 
