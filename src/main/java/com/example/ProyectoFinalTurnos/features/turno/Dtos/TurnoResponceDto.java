@@ -23,4 +23,5 @@ public class TurnoResponceDto
     private Long usuarioId;
     private Long servicioId;
     private Long cancelacionId;
+    private Long idComercio;
 }

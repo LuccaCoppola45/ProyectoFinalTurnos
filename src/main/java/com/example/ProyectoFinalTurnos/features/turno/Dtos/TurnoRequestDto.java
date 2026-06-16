@@ -27,4 +27,7 @@ public class TurnoRequestDto
     @NotNull(message = "El id del servicio es obligatorio")
     private Long servicioId;
 
+    @NotNull (message = "El id del comercio es obligatorio")
+    private Long idComercio;
+
 }
