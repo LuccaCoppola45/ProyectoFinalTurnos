@@ -99,7 +99,7 @@ private final JwtAuthenticationFilter jwtAuthFilter;
 
                         // --- REGLAS DE AUTORIZACIÓN POR ROL ---
                         // Solo los ADMINISTRADORES pueden crear categorías o borrar comercios
-                        .requestMatchers(HttpMethod.POST, "/api/categorias/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/categorias/**").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/comercios/**").hasAuthority("ADMIN")
 
                         // Clientes y Admins pueden ver los servicios (GET), pero el Cliente no puede modificarlos
