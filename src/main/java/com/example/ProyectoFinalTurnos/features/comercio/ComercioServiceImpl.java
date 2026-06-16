@@ -105,5 +105,21 @@ public class ComercioServiceImpl implements IComercioService {
                 .orElseThrow(() -> new ComercioNotFoundException("Comercio no encontrado con id: " + id));
         comercioRepository.delete(entity);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ComercioResponse> comerciosPorCategoria(Long categoriaId) {
+        // 1. Verificar que la categoría existe
+        CategoriaEntity categoria = categoriaRepository.findById(categoriaId)
+                .orElseThrow(() -> new ResourceNotFoundException("Categoría no encontrada con id: " + categoriaId));
+
+        // 2. Buscar comercios que tengan esa categoría
+        List<ComercioEntity> comercios = comercioRepository.findByCategorias_UniqueId(categoriaId);
+
+        // 3. Convertir a DTOs y retornar
+        return comercios.stream()
+                .map(comercioMapper::toResponse)
+                .collect(Collectors.toList());
+    }
 }
 

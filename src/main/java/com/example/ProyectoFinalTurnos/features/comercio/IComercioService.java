@@ -14,6 +14,8 @@ public interface IComercioService {
 
     ComercioResponse actualizarComercio(Long id, ComercioRequest request);
 
+    List<ComercioResponse> comerciosPorCategoria(Long categoriaId);
+
     void eliminarComercio(Long id);
 }
 
