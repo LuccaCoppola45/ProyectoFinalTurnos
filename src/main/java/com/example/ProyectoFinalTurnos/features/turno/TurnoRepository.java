@@ -28,5 +28,8 @@ public interface TurnoRepository extends JpaRepository<TurnoEntity, Long>
     boolean existsByUsuario_IdUsuario(Long idUsuario);
 
     boolean existsByServicio_IdServicio(long id);
+
+    List<TurnoEntity> findByComercio_IdComercio(Long comercioId);
+    List<TurnoEntity> findByComercio_IdComercioOrderByFechaDesc(Long comercioId);
 }
 

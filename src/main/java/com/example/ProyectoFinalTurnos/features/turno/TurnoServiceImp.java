@@ -64,6 +64,7 @@ public class TurnoServiceImp implements TurnoService {
         turno.setUsuario(usuario);
         turno.setServicio(servicio);
         turno.setHoraFin(horaFinCalculada);
+        turno.setComercio(servicio.getComercio());
         turno.setEstado(EstadoTurno.PENDIENTE);
 
         TurnoEntity guardado = turnoRepository.save(turno);

@@ -1,6 +1,7 @@
 package com.example.ProyectoFinalTurnos.features.turno;
 
 import com.example.ProyectoFinalTurnos.features.cancelacion.CancelacionEntity;
+import com.example.ProyectoFinalTurnos.features.comercio.ComercioEntity;
 import com.example.ProyectoFinalTurnos.features.servicio.ServicioEntity;
 import com.example.ProyectoFinalTurnos.features.usuario.UsuarioEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -56,6 +57,13 @@ public class TurnoEntity {
     foreignKey = @ForeignKey (name = "fk_turno_servicio"))
     @JsonIgnore
     private ServicioEntity servicio;
+
+    // RELACIÓN: Muchos turnos pertenecen a un Comercio
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_comercio",
+            foreignKey = @ForeignKey(name = "fk_turno_comercio"))
+    @JsonIgnore
+    private ComercioEntity comercio;
 
     // RELACIÓN 1 a 1: Un turno puede tener una cancelación
     // 'mappedBy' indica que la FK está en la tabla Cancelacion
