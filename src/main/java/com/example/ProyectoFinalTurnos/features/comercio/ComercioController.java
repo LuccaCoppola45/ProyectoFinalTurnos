@@ -65,4 +65,12 @@ public class ComercioController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 404
         }
     }
+
+    @GetMapping("/por-categoria/{categoriaId}")
+    public ResponseEntity<List<ComercioResponse>> comerciosPorCategoria(@PathVariable Long categoriaId) {
+        List<ComercioResponse> comercios = comercioService.comerciosPorCategoria(categoriaId);
+        return comercios.isEmpty() ?
+                ResponseEntity.noContent().build() :
+                ResponseEntity.ok(comercios);
+    }
 }
