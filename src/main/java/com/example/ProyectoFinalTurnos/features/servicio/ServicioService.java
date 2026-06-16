@@ -79,6 +79,8 @@ public class ServicioService implements IServicioService {
         return servicioMapper.toDto(servicioEntity);
     }
 
+
+
     /**     * Eliminar un servicio.     * Primero validar que no tenga turnos asociados.     * NOTA: El método turnoRepository.existsByUsuario_IdUsuario(id) parece incorrecto.     * Debería ser algo como turnoRepository.existsByServicio_IdServicio(id)     */
     @Override
     public void eliminarServicio(long id) {
@@ -115,4 +117,19 @@ public class ServicioService implements IServicioService {
         ServicioEntity actualizado = servicioRepository.save(servicioEntity);
         return servicioMapper.toDto(actualizado);
     }
+
+    @Override
+    public List<ServicioResponse> serviciosPorComercio(Long comercioId) {
+        // Validar que el comercio existe
+        if (!comercioRepository.existsById(comercioId)) {
+            throw new ComercioNotFoundException(
+                    "No se encontró el comercio con ID: " + comercioId);
+        }
+
+        return servicioRepository.findByComercio_IdComercio(comercioId)
+                .stream()
+                .map(servicioMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
 }

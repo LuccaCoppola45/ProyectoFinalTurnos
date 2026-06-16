@@ -17,4 +17,5 @@ public interface IServicioService {
 
     ServicioResponse ActualizarServicio(long id, ServicioRequest request);
 
+    public List<ServicioResponse> serviciosPorComercio(Long comercioId);
 }

@@ -74,5 +74,18 @@ public class ServicioController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 404
         }
     }
+
+    @GetMapping("/comercio/{comercioId}")
+    public ResponseEntity<List<ServicioResponse>> serviciosPorComercio(@PathVariable Long comercioId)
+    {
+        try {
+            List<ServicioResponse> servicios = servicioService.serviciosPorComercio(comercioId);
+            return servicios.isEmpty() ?
+                    ResponseEntity.noContent().build() :
+                    ResponseEntity.ok(servicios);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
 }
 
