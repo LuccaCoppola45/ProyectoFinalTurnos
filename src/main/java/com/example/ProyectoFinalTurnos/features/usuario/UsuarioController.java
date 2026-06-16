@@ -65,11 +65,11 @@ public class UsuarioController
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<@NonNull UpdateUserResponse> updateUser(@PathVariable Long id, @Valid @RequestBody UpdateUserRequestDTO request)
-    {
-        UpdateUserResponse response =
-                usuarioService.actualizarUsuario(id, request);
-
+    public ResponseEntity<@NonNull UpdateUserResponse> updateUser(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateUserRequestDTO request) {
+        // La autenticación se valida en el servicio
+        UpdateUserResponse response = usuarioService.actualizarUsuario(id, request);
         return ResponseEntity.ok(response);
     }
 

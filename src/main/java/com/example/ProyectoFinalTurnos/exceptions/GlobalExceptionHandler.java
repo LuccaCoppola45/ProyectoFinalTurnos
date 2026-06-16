@@ -495,5 +495,17 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-
+    @ExceptionHandler(UnauthorizedUserAccessException.class)
+    public ResponseEntity<@NonNull ErrorResponse> handleUnauthorizedUserAccessException(
+            UnauthorizedUserAccessException ex,
+            HttpServletRequest request) {
+        ErrorResponse error = ErrorResponse.builder()
+                .status(HttpStatus.FORBIDDEN.value()) // 403
+                .error(HttpStatus.FORBIDDEN.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .timestamp(LocalDateTime.now())
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+    }
 }
