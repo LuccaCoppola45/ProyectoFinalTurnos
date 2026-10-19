@@ -21,6 +21,7 @@ import java.util.List;
     @UniqueConstraint(name = "uk_comercio_nombre_direccion", columnNames = {"nombre", "direccion"})
 })
 public class ComercioEntity {
+   
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_comercio")

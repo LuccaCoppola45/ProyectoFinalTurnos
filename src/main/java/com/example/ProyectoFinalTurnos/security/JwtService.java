@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +17,11 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
-    // Esta clave secreta debe ser larga y segura. (En producción esto va en el application.properties)
-    // Es una clave en Base64 generada al azar.
-    private static final String SECRET_KEY = "MzE0MTU5MjY1MzU4OTc5MzIzODQ2MjY0MzM4MzI3OTUwMjg4NDExOTcxNjkzOTkzNzUxMA==";
+    private final String secretKey;
+
+    public JwtService(@Value("${jwt.secret}") String secretKey) {
+        this.secretKey = secretKey;
+    }
 
     // 1. Extraer el email (username) del Token
     public String extractUsername(String token) {
@@ -71,7 +74,7 @@ public class JwtService {
     }
 
     private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }

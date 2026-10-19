@@ -21,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.context.Context;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -32,7 +31,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TurnoServiceImp implements TurnoService {
 
-    private final NotificacionService  notificacionService;
     private final TurnoRepository turnoRepository;
     private final UsuarioRepository usuarioRepository;
     private final ServicioRepository servicioRepository;
@@ -69,25 +67,6 @@ public class TurnoServiceImp implements TurnoService {
 
         TurnoEntity guardado = turnoRepository.save(turno);
 
-        String urlGestion = "http://localhost:8080/turnos/detalles/" + guardado.getIdTurno();
-        Context context = new Context();
-        context.setVariable("nombre", guardado.getUsuario().getNombre());
-        context.setVariable("fecha", guardado.getFecha().toString());
-        context.setVariable("hora", guardado.getHoraInicio().toString());
-        context.setVariable("urlGestion", urlGestion);
-        // 3. Llamar al servicio de notificación (async)
-        // El tercer parámetro es el nombre del archivo: "email-turno.html" -> "email-turno"
-        try {
-            notificacionService.enviarEmailConPlantilla(
-                    guardado.getUsuario().getEmail(),
-                    "Confirmación de tu Turno",
-                    "email-turno",
-                    context
-            );
-        } catch (Exception e) {
-            // Esto evita que si falla el mail, el usuario crea que el turno no se guardó
-            System.err.println("El turno se guardó, pero hubo un error al enviar el mail: " + e.getMessage());
-        }
         return turnoMapper.toDto(guardado);
     }
 
@@ -280,4 +259,3 @@ public class TurnoServiceImp implements TurnoService {
         }
     }
 }
-

@@ -17,12 +17,10 @@ import java.util.Map;
 public class TurnoController
 {
     private final TurnoService turnoService;
-    private final NotificacionService notificacionService;
 
-    public TurnoController(TurnoService turnoService,  NotificacionService notificacionService)
+    public TurnoController(TurnoService turnoService)
     {
         this.turnoService=turnoService;
-        this.notificacionService=notificacionService;
     }
 
     @PostMapping
