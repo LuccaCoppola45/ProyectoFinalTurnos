@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+<h1>Turno reservado</h1>
+<p>Hola, <span th:text="${nombreUsuario}">usuario</span>.</p>
+<p>Tu turno fue reservado correctamente.</p>
+<ul>
+    <li>Comercio: <span th:text="${nombreComercio}">comercio</span></li>
+    <li>Servicio: <span th:text="${nombreServicio}">servicio</span></li>
+    <li>Fecha: <span th:text="${fecha}">fecha</span></li>
+    <li>Hora: <span th:text="${hora}">hora</span></li>
+    <li>Número de turno: <span th:text="${turnoId}">id</span></li>
+</ul>
+</body>
+</html>

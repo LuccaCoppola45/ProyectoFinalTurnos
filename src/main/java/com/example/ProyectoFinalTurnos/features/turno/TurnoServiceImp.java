@@ -16,8 +16,10 @@ import com.example.ProyectoFinalTurnos.features.usuario.UsuarioEntity;
 import com.example.ProyectoFinalTurnos.features.usuario.UsuarioRepository;
 import com.example.ProyectoFinalTurnos.model.enums.Diasemana;
 import com.example.ProyectoFinalTurnos.model.enums.EstadoTurno;
+import com.example.ProyectoFinalTurnos.features.notificacion.TurnoCreadoEvent;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -35,6 +37,7 @@ public class TurnoServiceImp implements TurnoService {
     private final UsuarioRepository usuarioRepository;
     private final ServicioRepository servicioRepository;
     private final TurnoMapper turnoMapper;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     public TurnoResponceDto crearTurno(TurnoRequestDto requestDto) {
@@ -66,6 +69,15 @@ public class TurnoServiceImp implements TurnoService {
         turno.setEstado(EstadoTurno.PENDIENTE);
 
         TurnoEntity guardado = turnoRepository.save(turno);
+        eventPublisher.publishEvent(new TurnoCreadoEvent(
+                guardado.getIdTurno(),
+                usuario.getEmail(),
+                usuario.getNombre(),
+                servicio.getNombre(),
+                servicio.getComercio().getNombre(),
+                guardado.getFecha(),
+                guardado.getHoraInicio()
+        ));
 
         return turnoMapper.toDto(guardado);
     }
@@ -92,6 +104,10 @@ public class TurnoServiceImp implements TurnoService {
 
         if (turno.getEstado() == EstadoTurno.CANCELADO) {
             throw new TurnoAlreadyCancelledException("No se puede modificar un turno cancelado");
+        }
+
+        if (turno.getEstado() == EstadoTurno.FINALIZADO) {
+            throw new TurnFinishedException("No se puede modificar un turno finalizado");
         }
 
         validarFechaYHora(dto);

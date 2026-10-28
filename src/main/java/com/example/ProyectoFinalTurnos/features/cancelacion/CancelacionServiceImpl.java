@@ -9,6 +9,7 @@ import com.example.ProyectoFinalTurnos.exceptions.user.UserProfileNotFoundExcept
 import com.example.ProyectoFinalTurnos.features.cancelacion.dto.CancelacionRequest;
 import com.example.ProyectoFinalTurnos.features.cancelacion.dto.CancelacionResponse;
 import com.example.ProyectoFinalTurnos.features.cancelacion.mapper.CancelacionMapper;
+import com.example.ProyectoFinalTurnos.features.notificacion.TurnoCanceladoEvent;
 import com.example.ProyectoFinalTurnos.features.turno.TurnoEntity;
 import com.example.ProyectoFinalTurnos.features.turno.TurnoRepository;
 import com.example.ProyectoFinalTurnos.features.usuario.UsuarioEntity;
@@ -16,6 +17,7 @@ import com.example.ProyectoFinalTurnos.features.usuario.UsuarioRepository;
 import com.example.ProyectoFinalTurnos.model.enums.EstadoTurno;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -30,6 +32,7 @@ public class CancelacionServiceImpl implements CancelacionService {
     private final TurnoRepository turnoRepository;
 
     private final CancelacionMapper cancelacionMapper;
+    private final ApplicationEventPublisher eventPublisher;
 
     //crear una cancelacion
     @Override
@@ -70,6 +73,16 @@ public class CancelacionServiceImpl implements CancelacionService {
         turnoRepository.save(turno);
         // 4. PERSISTENCIA
         CancelacionEntity guardada = cancelacionRepository.save(cancelacionEntity);
+        eventPublisher.publishEvent(new TurnoCanceladoEvent(
+                turno.getIdTurno(),
+                usuario.getEmail(),
+                usuario.getNombre(),
+                turno.getServicio().getNombre(),
+                turno.getComercio().getNombre(),
+                turno.getFecha(),
+                turno.getHoraInicio(),
+                guardada.getMotivo()
+        ));
 
         // 5. USO DEL MAPPER (Entidad -> ResponseDTO)
         String mensajeExito = "El turno ID: " + turno.getIdTurno() + " se canceló correctamente.";
@@ -93,4 +106,3 @@ public class CancelacionServiceImpl implements CancelacionService {
     }
 
 }
-

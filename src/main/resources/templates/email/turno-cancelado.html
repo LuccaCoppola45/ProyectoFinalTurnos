@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+<h1>Turno cancelado</h1>
+<p>Hola, <span th:text="${nombreUsuario}">usuario</span>.</p>
+<p>Se canceló el turno reservado en
+    <span th:text="${nombreComercio}">comercio</span> para el servicio
+    <span th:text="${nombreServicio}">servicio</span>.</p>
+<ul>
+    <li>Fecha: <span th:text="${fecha}">fecha</span></li>
+    <li>Hora: <span th:text="${hora}">hora</span></li>
+    <li>Número de turno: <span th:text="${turnoId}">id</span></li>
+</ul>
+<p th:if="${motivo != null and !#strings.isEmpty(motivo)}">
+    Motivo: <span th:text="${motivo}">motivo</span>
+</p>
+</body>
+</html>

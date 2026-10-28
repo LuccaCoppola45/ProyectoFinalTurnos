@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+<h1>Solicitud de conversión resuelta</h1>
+<p>Hola, <span th:text="${nombreUsuario}">usuario</span>.</p>
+<p>La solicitud para convertirte en comercio fue
+    <strong th:text="${estado}">estado</strong>.</p>
+<p>Comercio propuesto: <span th:text="${nombreComercio}">comercio</span>.</p>
+<p>Solicitud número: <span th:text="${solicitudId}">id</span>.</p>
+<p th:if="${motivo != null and !#strings.isEmpty(motivo)}">
+    Motivo: <span th:text="${motivo}">motivo</span>
+</p>
+</body>
+</html>

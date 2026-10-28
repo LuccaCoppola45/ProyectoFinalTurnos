@@ -4,6 +4,7 @@ import com.example.ProyectoFinalTurnos.features.comercio.ComercioEntity;
 import com.example.ProyectoFinalTurnos.features.comercio.ComercioRepository;
 import com.example.ProyectoFinalTurnos.features.usuario.UsuarioEntity;
 import com.example.ProyectoFinalTurnos.features.usuario.UsuarioRepository;
+import com.example.ProyectoFinalTurnos.features.notificacion.SolicitudResueltaEvent;
 import com.example.ProyectoFinalTurnos.model.enums.EstadoSolicitud;
 import com.example.ProyectoFinalTurnos.model.enums.Rol;
 import com.example.ProyectoFinalTurnos.solicitudConversion.dtos.SolicitudConversionRequest;
@@ -11,6 +12,7 @@ import com.example.ProyectoFinalTurnos.solicitudConversion.dtos.SolicitudConvers
 import com.example.ProyectoFinalTurnos.solicitudConversion.mapper.SolicitudConversionMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +26,7 @@ public class SolicitudConversionServiceImp implements SolicitudConversionService
     private final UsuarioRepository usuarioRepository;
     private final ComercioRepository comercioRepository;
     private final SolicitudConversionMapper mapper;  // ← añadir
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     public SolicitudConversionResponse crearSolicitud(SolicitudConversionRequest request, String emailUsuario) {
@@ -81,12 +84,21 @@ public class SolicitudConversionServiceImp implements SolicitudConversionService
 
         s.setEstado(EstadoSolicitud.APROBADA);
         repository.save(s);
+        eventPublisher.publishEvent(new SolicitudResueltaEvent(
+                s.getId(),
+                usuario.getEmail(),
+                usuario.getNombre(),
+                s.getNombreComercioPropuesto(),
+                s.getEstado().name(),
+                null
+        ));
 
         // ← Usar mapper para convertir a DTO
         return mapper.toDto(s);
     }
 
     @Override
+    @Transactional
     public SolicitudConversionResponse rechazarSolicitud(Long idSolicitud, String emailAdmin, String motivo) {
         SolicitudConversionEntity s = repository.findById(idSolicitud)
                 .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
@@ -97,6 +109,14 @@ public class SolicitudConversionServiceImp implements SolicitudConversionService
 
         s.setEstado(EstadoSolicitud.RECHAZADA);
         repository.save(s);
+        eventPublisher.publishEvent(new SolicitudResueltaEvent(
+                s.getId(),
+                s.getUsuario().getEmail(),
+                s.getUsuario().getNombre(),
+                s.getNombreComercioPropuesto(),
+                s.getEstado().name(),
+                motivo
+        ));
 
         // ← Usar mapper para convertir a DTO
         return mapper.toDto(s);
