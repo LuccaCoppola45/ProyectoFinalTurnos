@@ -1,5 +1,6 @@
 package com.example.ProyectoFinalTurnos.features.auth;
 
+import com.example.ProyectoFinalTurnos.exceptions.user.UserEmailAlreadyInUseException;
 import com.example.ProyectoFinalTurnos.features.usuario.Dtos.LoginResponseDTO;
 import com.example.ProyectoFinalTurnos.features.usuario.Dtos.LoginResquestDTO;
 import com.example.ProyectoFinalTurnos.features.usuario.Dtos.UsuarioRequest;
@@ -23,10 +24,9 @@ public class AuthService {
     // 1. Lógica de Registro
     public String registrar(UsuarioRequest request) {
 
-        // (Opcional pero recomendado) Validar que el email no exista ya en la BD
+        // Validar que el email no exista ya en la BD (el handler global responde 409)
         if (usuarioRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new RuntimeException("El email ya está registrado");
-            // Acá podés usar tu UserEmailAlreadyInUseException si la tenés armada
+            throw new UserEmailAlreadyInUseException("El email ya está registrado");
         }
 
         UsuarioEntity usuario = new UsuarioEntity();

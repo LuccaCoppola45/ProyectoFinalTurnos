@@ -9,6 +9,8 @@ import com.example.ProyectoFinalTurnos.features.categoria.CategoriaRepository;
 import com.example.ProyectoFinalTurnos.features.comercio.Dtos.ComercioRequest;
 import com.example.ProyectoFinalTurnos.features.comercio.Dtos.ComercioResponse;
 import com.example.ProyectoFinalTurnos.features.comercio.Mapper.ComercioMapper;
+import com.example.ProyectoFinalTurnos.features.foto.FotoRepository;
+import com.example.ProyectoFinalTurnos.features.foto.TipoFoto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,11 +24,13 @@ public class ComercioServiceImpl implements IComercioService {
     private final ComercioRepository comercioRepository;
     private final ComercioMapper comercioMapper;
     private final CategoriaRepository categoriaRepository;
+    private final FotoRepository fotoRepository;
 
-    public ComercioServiceImpl(ComercioRepository comercioRepository, ComercioMapper comercioMapper, CategoriaRepository categoriaRepository) {
+    public ComercioServiceImpl(ComercioRepository comercioRepository, ComercioMapper comercioMapper, CategoriaRepository categoriaRepository, FotoRepository fotoRepository) {
         this.comercioRepository = comercioRepository;
         this.comercioMapper = comercioMapper;
         this.categoriaRepository = categoriaRepository;
+        this.fotoRepository = fotoRepository;
     }
 
     @Override
@@ -105,6 +109,7 @@ public class ComercioServiceImpl implements IComercioService {
         ComercioEntity entity = comercioRepository.findById(id)
                 .orElseThrow(() -> new ComercioNotFoundException("Comercio no encontrado con id: " + id));
         comercioRepository.delete(entity);
+        fotoRepository.deleteByTipoAndReferenciaId(TipoFoto.COMERCIO, id);
     }
 
     @Override

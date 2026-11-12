@@ -41,3 +41,6 @@ application-local.properties
 application-dev.properties
 .env
 .env.local
+# Credenciales de prueba locales
+docs/usuarios-prueba.md
+/docs

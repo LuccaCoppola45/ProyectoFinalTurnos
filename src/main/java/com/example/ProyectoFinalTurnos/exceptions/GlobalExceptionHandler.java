@@ -8,6 +8,8 @@ import com.example.ProyectoFinalTurnos.exceptions.catalog.ComercioNotFoundExcept
 import com.example.ProyectoFinalTurnos.exceptions.categoria.CategoriaAlreadyExistsException;
 import com.example.ProyectoFinalTurnos.exceptions.categoria.CategoriaInUseException;
 import com.example.ProyectoFinalTurnos.exceptions.categoria.CategoriaNoEncontradaException;
+import com.example.ProyectoFinalTurnos.exceptions.foto.FotoInvalidaException;
+import com.example.ProyectoFinalTurnos.exceptions.foto.FotoNotFoundException;
 import com.example.ProyectoFinalTurnos.exceptions.horarioAtencion.*;
 import com.example.ProyectoFinalTurnos.exceptions.servicio.ServicioNotFoundException;
 import com.example.ProyectoFinalTurnos.exceptions.turno.*;
@@ -16,10 +18,12 @@ import lombok.NonNull;
 import com.example.ProyectoFinalTurnos.exceptions.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.time.LocalDateTime;
@@ -141,6 +145,19 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now())
                 .build();
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    // Login con email o contraseña incorrectos (lo lanza el AuthenticationManager)
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<@NonNull ErrorResponse> handlerBadCredentialsException(BadCredentialsException ex, HttpServletRequest request){
+        ErrorResponse error = ErrorResponse.builder()
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .error(HttpStatus.UNAUTHORIZED.getReasonPhrase())
+                .message("Email o contraseña incorrectos")
+                .path(request.getRequestURI())
+                .timestamp(LocalDateTime.now())
+                .build();
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(ComercioAlreadyExistsException.class)
@@ -507,5 +524,34 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now())
                 .build();
         return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+    }
+
+    // ---------- Fotos de perfil ----------
+
+    @ExceptionHandler(FotoInvalidaException.class)
+    public ResponseEntity<@NonNull ErrorResponse> handleFotoInvalidaException(FotoInvalidaException ex, HttpServletRequest request) {
+        return armarError(HttpStatus.BAD_REQUEST, ex.getMessage(), request);
+    }
+
+    @ExceptionHandler(FotoNotFoundException.class)
+    public ResponseEntity<@NonNull ErrorResponse> handleFotoNotFoundException(FotoNotFoundException ex, HttpServletRequest request) {
+        return armarError(HttpStatus.NOT_FOUND, ex.getMessage(), request);
+    }
+
+    // Lo lanza Spring antes de llegar al controller si el archivo supera spring.servlet.multipart.max-file-size
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<@NonNull ErrorResponse> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex, HttpServletRequest request) {
+        return armarError(HttpStatus.PAYLOAD_TOO_LARGE, "La imagen no puede superar los 2 MB", request);
+    }
+
+    private ResponseEntity<@NonNull ErrorResponse> armarError(HttpStatus status, String mensaje, HttpServletRequest request) {
+        ErrorResponse error = ErrorResponse.builder()
+                .status(status.value())
+                .error(status.getReasonPhrase())
+                .message(mensaje)
+                .path(request.getRequestURI())
+                .timestamp(LocalDateTime.now())
+                .build();
+        return new ResponseEntity<>(error, status);
     }
 }

@@ -2,6 +2,8 @@ package com.example.ProyectoFinalTurnos.features.usuario;
 
 
 import com.example.ProyectoFinalTurnos.exceptions.user.*;
+import com.example.ProyectoFinalTurnos.features.foto.FotoRepository;
+import com.example.ProyectoFinalTurnos.features.foto.TipoFoto;
 import com.example.ProyectoFinalTurnos.features.turno.TurnoRepository;
 import com.example.ProyectoFinalTurnos.features.usuario.Dtos.UpdateUserRequestDTO;
 import com.example.ProyectoFinalTurnos.features.usuario.Dtos.UpdateUserResponse;
@@ -28,6 +30,7 @@ public class UsuarioServiceImp implements UsuarioService
     private final UsuarioMapper usuarioMapper;
     private final TurnoRepository turnoRepository;
     private final PasswordEncoder passwordEncoder;
+    private final FotoRepository fotoRepository;
 
 
     /// -Crear Usuario- ///
@@ -82,6 +85,7 @@ public class UsuarioServiceImp implements UsuarioService
         }
 
         usuarioRepository.deleteById(id);
+        fotoRepository.deleteByTipoAndReferenciaId(TipoFoto.USUARIO, id);
     }
 
     @Override

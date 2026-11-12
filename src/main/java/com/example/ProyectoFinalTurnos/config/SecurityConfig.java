@@ -95,11 +95,17 @@ private final JwtAuthenticationFilter jwtAuthFilter;
                 .authorizeHttpRequests(auth -> auth
                         // Rutas públicas (No piden Token)
                         .requestMatchers("/api/auth/**").permitAll()
+                        // Permite ver el error real (409, 401, 500...) en vez de un 403 genérico
+                        .requestMatchers("/error").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                        // Las fotos de perfil se ven sin token (un <img> no puede mandar el header Authorization)
+                        .requestMatchers(HttpMethod.GET, "/usuarios/*/foto", "/api/comercios/*/foto").permitAll()
 
                         // --- REGLAS DE AUTORIZACIÓN POR ROL ---
                         // Solo los ADMINISTRADORES pueden crear categorías o borrar comercios
                         .requestMatchers(HttpMethod.POST, "/categorias/**").hasAuthority("ADMIN")
+                        // Excepción: el dueño puede quitar la foto de su comercio (FotoService valida que sea el dueño o ADMIN)
+                        .requestMatchers(HttpMethod.DELETE, "/api/comercios/*/foto").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/comercios/**").hasAuthority("ADMIN")
 
                         // Clientes y Admins pueden ver los servicios (GET), pero el Cliente no puede modificarlos
