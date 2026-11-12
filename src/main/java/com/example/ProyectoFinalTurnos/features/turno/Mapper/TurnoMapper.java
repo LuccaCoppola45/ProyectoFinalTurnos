@@ -42,6 +42,11 @@ public class TurnoMapper {
             dto.setCancelacionId(entity.getCancelacion().getId());
         }
 
+        // Sin esto idComercio llega null y la agenda del comercio no encuentra sus turnos
+        if (entity.getComercio() != null) {
+            dto.setIdComercio(entity.getComercio().getIdComercio());
+        }
+
         return dto;
     }
 }
