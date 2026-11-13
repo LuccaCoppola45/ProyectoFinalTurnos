@@ -10,7 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TurnoRepository extends JpaRepository<TurnoEntity, Long>
@@ -40,6 +42,12 @@ public interface TurnoRepository extends JpaRepository<TurnoEntity, Long>
      * (fecha anterior a hoy, o de hoy con hora de fin ya pasada).
      * Devuelve cuántos turnos actualizó.
      */
+    /** Turnos activos entre dos fechas (el recordatorio filtra después por hora exacta). */
+    List<TurnoEntity> findByEstadoInAndFechaBetween(Collection<EstadoTurno> estados, LocalDate desde, LocalDate hasta);
+
+    /** Para la página "¿Vas a ir?" que se abre desde el mail. */
+    Optional<TurnoEntity> findByTokenConfirmacion(String tokenConfirmacion);
+
     @Modifying
     @Transactional
     @Query("""

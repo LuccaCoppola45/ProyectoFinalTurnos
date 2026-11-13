@@ -1,15 +1,81 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<body>
-<h1>Turno reservado</h1>
-<p>Hola, <span th:text="${nombreUsuario}">usuario</span>.</p>
-<p>Tu turno fue reservado correctamente.</p>
-<ul>
-    <li>Comercio: <span th:text="${nombreComercio}">comercio</span></li>
-    <li>Servicio: <span th:text="${nombreServicio}">servicio</span></li>
-    <li>Fecha: <span th:text="${fecha}">fecha</span></li>
-    <li>Hora: <span th:text="${hora}">hora</span></li>
-    <li>Número de turno: <span th:text="${turnoId}">id</span></li>
-</ul>
+<!--
+  Mail "Turno reservado". Mismo estilo que la página (fondo oscuro + dorado).
+  Los estilos van "inline" en cada etiqueta porque Gmail/Outlook borran los <style>.
+-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="dark light">
+    <title>Turno reservado</title>
+</head>
+<body style="margin:0; padding:0; background-color:#111317;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#111317; padding:32px 12px;">
+    <tr>
+        <td align="center">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px; font-family:'Segoe UI',Roboto,Arial,sans-serif; color:#f5f1e8;">
+
+                <!-- Logo -->
+                <tr>
+                    <td style="padding:0 4px 18px; font-size:14px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#f5f1e8;">
+                        Turnos <span style="color:#d8b36a;">MDP</span>
+                    </td>
+                </tr>
+
+                <!-- Tarjeta -->
+                <tr>
+                    <td style="background-color:#1c1f25; border:1px solid #33363c; border-radius:18px; padding:32px 28px;">
+                        <p style="margin:0 0 6px; font-size:12px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#d8b36a;">Turno reservado</p>
+                        <h1 style="margin:0 0 14px; font-size:26px; line-height:1.2; color:#f5f1e8;">
+                            ¡Listo, <span th:text="${nombreUsuario}">usuario</span>!
+                        </h1>
+                        <p style="margin:0 0 22px; font-size:15px; line-height:1.55; color:#cbc4b7;">
+                            Tu turno quedó reservado. Te esperamos.
+                        </p>
+
+                        <!-- Datos del turno -->
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#262019; border-left:3px solid #d8b36a; border-radius:0 12px 12px 0;">
+                            <tr>
+                                <td style="padding:16px 18px;">
+                                    <p style="margin:0; font-size:18px; font-weight:700; color:#e8c987;" th:text="${nombreServicio}">Servicio</p>
+                                    <p style="margin:4px 0 14px; font-size:14px; color:#cbc4b7;" th:text="${nombreComercio}">Comercio</p>
+                                    <p style="margin:0; font-size:15px; color:#f5f1e8;">
+                                        📅 <strong th:text="${#temporals.format(fecha, 'dd/MM/yyyy')}">26/11/2026</strong>
+                                        &nbsp;&nbsp;🕒 <strong th:text="${#temporals.format(hora, 'HH:mm')} + ' hs'">18:00 hs</strong>
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <p style="margin:22px 0 0; font-size:14px; line-height:1.55; color:#cbc4b7;">
+                            Un día antes te vamos a escribir para que nos confirmes si vas a ir.
+                        </p>
+
+                        <!-- Botón -->
+                        <table role="presentation" cellpadding="0" cellspacing="0" style="margin-top:24px;">
+                            <tr>
+                                <td style="border-radius:999px; background-color:#d8b36a;">
+                                    <a th:href="${frontUrl} + '/mis-turnos'" href="#"
+                                       style="display:inline-block; padding:13px 26px; font-size:15px; font-weight:700; color:#14161a; text-decoration:none; border-radius:999px;">
+                                        Ver mis turnos
+                                    </a>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+                <!-- Pie -->
+                <tr>
+                    <td style="padding:18px 4px 0; font-size:12px; line-height:1.5; color:#8a857c;">
+                        Turno n.º <span th:text="${turnoId}">1</span> · Turnos MDP · Mar del Plata<br>
+                        Si necesitás cambiarlo, podés reprogramarlo o cancelarlo desde la app.
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
 </body>
 </html>

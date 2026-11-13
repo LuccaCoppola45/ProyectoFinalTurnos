@@ -100,6 +100,8 @@ private final JwtAuthenticationFilter jwtAuthFilter;
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         // Las fotos de perfil se ven sin token (un <img> no puede mandar el header Authorization)
                         .requestMatchers(HttpMethod.GET, "/usuarios/*/foto", "/api/comercios/*/foto").permitAll()
+                        // Link del mail "¿Vas a ir?": se responde sin iniciar sesión (el código del link identifica el turno)
+                        .requestMatchers("/api/turnos/confirmacion/*").permitAll()
 
                         // --- REGLAS DE AUTORIZACIÓN POR ROL ---
                         // Solo los ADMINISTRADORES pueden crear categorías o borrar comercios

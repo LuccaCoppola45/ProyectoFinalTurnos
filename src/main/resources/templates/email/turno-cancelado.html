@@ -1,21 +1,88 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<body>
-<h1>Turno cancelado</h1>
-<p>Hola, <span th:text="${nombreUsuario}">usuario</span>.</p>
-<p>Se canceló el turno reservado en
-    <span th:text="${nombreComercio}">comercio</span> para el servicio
-    <span th:text="${nombreServicio}">servicio</span>.</p>
-<p th:if="${canceladoPorComercio}">
-    El turno fue cancelado por el comercio. Podés reservar otro horario cuando quieras.
-</p>
-<ul>
-    <li>Fecha: <span th:text="${fecha}">fecha</span></li>
-    <li>Hora: <span th:text="${hora}">hora</span></li>
-    <li>Número de turno: <span th:text="${turnoId}">id</span></li>
-</ul>
-<p th:if="${motivo != null and !#strings.isEmpty(motivo)}">
-    Motivo: <span th:text="${motivo}">motivo</span>
-</p>
+<!--
+  Mail "Turno cancelado". Mismo estilo que la página (fondo oscuro + dorado).
+  Los estilos van "inline" en cada etiqueta porque Gmail/Outlook borran los <style>.
+-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="dark light">
+    <title>Turno cancelado</title>
+</head>
+<body style="margin:0; padding:0; background-color:#111317;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#111317; padding:32px 12px;">
+    <tr>
+        <td align="center">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px; font-family:'Segoe UI',Roboto,Arial,sans-serif; color:#f5f1e8;">
+
+                <!-- Logo -->
+                <tr>
+                    <td style="padding:0 4px 18px; font-size:14px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#f5f1e8;">
+                        Turnos <span style="color:#d8b36a;">MDP</span>
+                    </td>
+                </tr>
+
+                <!-- Tarjeta -->
+                <tr>
+                    <td style="background-color:#1c1f25; border:1px solid #33363c; border-radius:18px; padding:32px 28px;">
+                        <p style="margin:0 0 6px; font-size:12px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#fca5a5;">Turno cancelado</p>
+                        <h1 style="margin:0 0 14px; font-size:26px; line-height:1.2; color:#f5f1e8;">
+                            Hola, <span th:text="${nombreUsuario}">usuario</span>
+                        </h1>
+                        <p style="margin:0 0 22px; font-size:15px; line-height:1.55; color:#cbc4b7;">
+                            <span th:if="${canceladoPorComercio}">El comercio canceló tu turno.</span>
+                            <span th:unless="${canceladoPorComercio}">Tu turno quedó cancelado.</span>
+                        </p>
+
+                        <!-- Datos del turno (tachado: ya no va) -->
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#2a1d1f; border-left:3px solid #f87171; border-radius:0 12px 12px 0;">
+                            <tr>
+                                <td style="padding:16px 18px;">
+                                    <p style="margin:0; font-size:18px; font-weight:700; color:#f5f1e8;" th:text="${nombreServicio}">Servicio</p>
+                                    <p style="margin:4px 0 14px; font-size:14px; color:#cbc4b7;" th:text="${nombreComercio}">Comercio</p>
+                                    <p style="margin:0; font-size:15px; color:#cbc4b7; text-decoration:line-through;">
+                                        📅 <span th:text="${#temporals.format(fecha, 'dd/MM/yyyy')}">26/11/2026</span>
+                                        &nbsp;&nbsp;🕒 <span th:text="${#temporals.format(hora, 'HH:mm')} + ' hs'">18:00 hs</span>
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Motivo -->
+                        <p th:if="${motivo != null and !#strings.isEmpty(motivo)}"
+                           style="margin:20px 0 0; font-size:14px; line-height:1.55; color:#cbc4b7;">
+                            <strong style="color:#f5f1e8;">Motivo:</strong>
+                            <em th:text="${motivo}">motivo</em>
+                        </p>
+
+                        <p style="margin:20px 0 0; font-size:14px; line-height:1.55; color:#cbc4b7;">
+                            Podés reservar otro horario cuando quieras.
+                        </p>
+
+                        <!-- Botón -->
+                        <table role="presentation" cellpadding="0" cellspacing="0" style="margin-top:24px;">
+                            <tr>
+                                <td style="border-radius:999px; background-color:#d8b36a;">
+                                    <a th:href="${frontUrl} + '/comercios'" href="#"
+                                       style="display:inline-block; padding:13px 26px; font-size:15px; font-weight:700; color:#14161a; text-decoration:none; border-radius:999px;">
+                                        Reservar otro turno
+                                    </a>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+
+                <!-- Pie -->
+                <tr>
+                    <td style="padding:18px 4px 0; font-size:12px; line-height:1.5; color:#8a857c;">
+                        Turno n.º <span th:text="${turnoId}">1</span> · Turnos MDP · Mar del Plata
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
 </body>
 </html>

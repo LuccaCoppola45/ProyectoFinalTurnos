@@ -70,4 +70,14 @@ public class TurnoEntity {
     @OneToOne(mappedBy = "turno", cascade = CascadeType.ALL)
     private CancelacionEntity cancelacion;
 
+    // ===== Recordatorio 24 h antes (RecordatorioDeTurnos) =====
+
+    /** true cuando ya se mandó el mail "¿Vas a ir?" (null en turnos viejos = no se mandó). */
+    @Column(name = "recordatorio_enviado")
+    private Boolean recordatorioEnviado;
+
+    /** Código único que va en el link del mail para confirmar o cancelar sin iniciar sesión. */
+    @Column(name = "token_confirmacion", length = 36, unique = true)
+    @JsonIgnore
+    private String tokenConfirmacion;
 }
