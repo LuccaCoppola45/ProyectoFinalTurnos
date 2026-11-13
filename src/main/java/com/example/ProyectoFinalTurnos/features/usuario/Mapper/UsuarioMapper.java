@@ -1,6 +1,5 @@
 package com.example.ProyectoFinalTurnos.features.usuario.Mapper;
 
-
 import com.example.ProyectoFinalTurnos.features.servicio.ServicioEntity;
 import com.example.ProyectoFinalTurnos.features.usuario.Dtos.UsuarioRequest;
 import com.example.ProyectoFinalTurnos.features.usuario.UsuarioEntity;
@@ -10,7 +9,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
-
 
 @Component
 public class UsuarioMapper
@@ -23,12 +21,10 @@ public class UsuarioMapper
 
     public UsuarioEntity toEntity(UsuarioRequest dto)
     {
-        // Configurar ModelMapper para este mapeo específico
         ModelMapper mapper = new ModelMapper();
 
-        // Omitir campos que no existen en el request o que generan conflicto
         mapper.typeMap(UsuarioRequest.class, UsuarioEntity.class)
-                .addMapping(src -> Rol.CLIENTE, UsuarioEntity::setRol) // Rol por defecto
+                .addMapping(src -> Rol.CLIENTE, UsuarioEntity::setRol)
                 .addMapping(UsuarioRequest::getNombre, UsuarioEntity::setNombre)
                 .addMapping(UsuarioRequest::getApellido, UsuarioEntity::setApellido)
                 .addMapping(UsuarioRequest::getEmail, UsuarioEntity::setEmail)
@@ -69,6 +65,5 @@ public class UsuarioMapper
         }
         return dto;
     }
-
 
 }

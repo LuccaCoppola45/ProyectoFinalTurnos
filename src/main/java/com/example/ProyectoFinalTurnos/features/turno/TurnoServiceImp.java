@@ -43,7 +43,6 @@ public class TurnoServiceImp implements TurnoService {
     public TurnoResponceDto crearTurno(TurnoRequestDto requestDto) {
         validarFechaYHora(requestDto);
 
-        // Obtener usuario autenticado (ya no viene en el request)
         String emailUsuario = obtenerEmailUsuarioAutenticado();
         UsuarioEntity usuario = usuarioRepository.findByEmail(emailUsuario)
                 .orElseThrow(() -> new UserProfileNotFoundException("Usuario autenticado no encontrado"));
@@ -54,10 +53,8 @@ public class TurnoServiceImp implements TurnoService {
         LocalTime horaInicio = requestDto.getHoraInicio();
         LocalTime horaFinCalculada = horaInicio.plusMinutes(servicio.getDuracionDelServicio());
 
-        // Validar horario en base al comercio del servicio
         validarHorarioAtencion(servicio.getComercio(), requestDto.getFecha(), horaInicio, horaFinCalculada);
 
-        // Validaciones de superposición usan el servicio y el usuario autenticado
         validarSuperposicionServicio(servicio.getIdServicio(), requestDto.getFecha(), horaInicio, horaFinCalculada);
         validarSuperposicionUsuario(usuario.getIdUsuario(), requestDto.getFecha(), horaInicio, horaFinCalculada);
 
@@ -112,12 +109,10 @@ public class TurnoServiceImp implements TurnoService {
 
         validarFechaYHora(dto);
 
-        // Obtener usuario autenticado
         String emailUsuario = obtenerEmailUsuarioAutenticado();
         UsuarioEntity usuarioAutenticado = usuarioRepository.findByEmail(emailUsuario)
                 .orElseThrow(() -> new UserProfileNotFoundException("Usuario autenticado no encontrado"));
 
-        // Verificar permisos: solo el propietario o ADMIN pueden modificar
         boolean esAdmin = usuarioAutenticado.getAuthorities().stream()
                 .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
 
@@ -158,7 +153,6 @@ public class TurnoServiceImp implements TurnoService {
         UsuarioEntity usuarioAutenticado = usuarioRepository.findByEmail(emailUsuario)
                 .orElseThrow(() -> new UserProfileNotFoundException("Usuario autenticado no encontrado"));
 
-        // Verificar permisos: solo el propietario o ADMIN pueden eliminar
         boolean esAdmin = usuarioAutenticado.getAuthorities().stream()
                 .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
 
@@ -268,7 +262,6 @@ public class TurnoServiceImp implements TurnoService {
         return authentication.getName();
     }
 
-    // Clase de excepción local que puedes usar o reemplazar por la que ya tengas
     private static class AccessDeniedException extends RuntimeException {
         public AccessDeniedException(String message) {
             super(message);

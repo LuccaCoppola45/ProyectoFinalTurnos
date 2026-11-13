@@ -29,103 +29,36 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-//    private final UserDetailsServiceImpl userDetailsService;
-//
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
-//
-//    @Bean
-//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//        http
-//                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-//                .csrf(csrf -> csrf.disable())
-//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//                .authorizeHttpRequests(authz ->
-//                        authz
-//                                .requestMatchers("/**").permitAll()  // Permite todos los endpoints sin autenticación
-//                                .anyRequest().authenticated()
-//                );
-//
-//        return http.build();
-//    }
-//
-//    @Bean
-//    public CorsConfigurationSource corsConfigurationSource() {
-//        CorsConfiguration configuration = new CorsConfiguration();
-//        configuration.setAllowedOrigins(Arrays.asList("*"));
-//        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-//        configuration.setAllowedHeaders(Arrays.asList("*"));
-//        configuration.setAllowCredentials(false);
-//        configuration.setMaxAge(3600L);
-//
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", configuration);
-//        return source;
-//    }
-//
-//    //Autentica los Usuarios al inciar sesion
-//    @Bean
-//    public AuthenticationProvider authenticationProvider() {
-//        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
-//
-//        provider.setPasswordEncoder(passwordEncoder());
-//
-//        return provider;
-//    }
-//
-//    //Autentica los Usuarios con la bdd
-//    @Bean
-//    public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
-//            throws Exception {
-//        return config.getAuthenticationManager();
-//    }
 private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // 1. Agregamos TU configuración de CORS
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                // 2. Desactivamos CSRF (obligatorio en APIs REST)
                 .csrf(AbstractHttpConfigurer::disable)
-                // 3. Configuramos las rutas
                 .authorizeHttpRequests(auth -> auth
-                        // Rutas públicas (No piden Token)
                         .requestMatchers("/api/auth/**").permitAll()
-                        // Permite ver el error real (409, 401, 500...) en vez de un 403 genérico
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                        // Las fotos de perfil se ven sin token (un <img> no puede mandar el header Authorization)
                         .requestMatchers(HttpMethod.GET, "/usuarios/*/foto", "/api/comercios/*/foto").permitAll()
-                        // Link del mail "¿Vas a ir?": se responde sin iniciar sesión (el código del link identifica el turno)
                         .requestMatchers("/api/turnos/confirmacion/*").permitAll()
 
-                        // --- REGLAS DE AUTORIZACIÓN POR ROL ---
-                        // Solo los ADMINISTRADORES pueden crear categorías o borrar comercios
                         .requestMatchers(HttpMethod.POST, "/categorias/**").hasAuthority("ADMIN")
-                        // Excepción: el dueño puede quitar la foto de su comercio (FotoService valida que sea el dueño o ADMIN)
                         .requestMatchers(HttpMethod.DELETE, "/api/comercios/*/foto").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/comercios/**").hasAuthority("ADMIN")
 
-                        // Clientes y Admins pueden ver los servicios (GET), pero el Cliente no puede modificarlos
                         .requestMatchers(HttpMethod.GET, "/api/servicios/**").hasAnyAuthority("CLIENTE", "ADMIN")
 
-                        // Todo el resto de la app (turnos, cancelaciones, etc.) exige estar logueado con token válido
                         .anyRequest().authenticated()
                 )
-                // 4. Política Stateless
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
-                // 5. Acá ponemos a tu "Patovica" (El filtro JWT)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-    // método de CORS que estaba perfecto
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

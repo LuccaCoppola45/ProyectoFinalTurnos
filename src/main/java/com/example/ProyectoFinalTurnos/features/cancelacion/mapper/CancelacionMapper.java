@@ -22,7 +22,6 @@ public class CancelacionMapper {
     public CancelacionResponse entityToResponseDto(CancelacionEntity entity) {
         if (entity == null) return null;
         CancelacionResponse dto = modelMapper.map(entity, CancelacionResponse.class);
-        // Se cargan a mano para no depender de que ModelMapper adivine los nombres
         dto.setIdCancelacion(entity.getId());
         if (entity.getTurno() != null) {
             dto.setIdTurno(entity.getTurno().getIdTurno());
@@ -30,5 +29,3 @@ public class CancelacionMapper {
         return dto;
     }
 }
-
-

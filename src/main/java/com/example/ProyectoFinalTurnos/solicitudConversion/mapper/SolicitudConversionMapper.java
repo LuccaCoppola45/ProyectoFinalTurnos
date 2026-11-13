@@ -19,7 +19,6 @@ public class SolicitudConversionMapper
         entity.setDireccion(request.getDireccion());
         entity.setTelefono(request.getTelefono());
         entity.setDescripcion(request.getDescripcion());
-        // NO asignamos usuario ni estado; el servicio los asigna manualmente
         return entity;
     }
 

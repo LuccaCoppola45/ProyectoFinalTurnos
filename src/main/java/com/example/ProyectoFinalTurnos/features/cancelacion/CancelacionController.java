@@ -21,7 +21,6 @@ import java.util.Map;
 public class CancelacionController {
     private final CancelacionService cancelacionService;
 
-    //POST: Crear una cancelacion
     @PostMapping
     public ResponseEntity<CancelacionResponse> cancelarTurno(@Valid @RequestBody CancelacionRequest requestDTO) {
         CancelacionResponse response = cancelacionService.cancelarTurno(requestDTO);

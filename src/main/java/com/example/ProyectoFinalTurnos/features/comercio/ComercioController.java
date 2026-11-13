@@ -24,24 +24,22 @@ public class ComercioController {
 
     @PostMapping
     public ResponseEntity<ComercioResponse> crearComercio(@Valid @RequestBody ComercioRequest request) {
-        // Si la validación falla, Tira un error 400 automáticamente, sin necesidad de escribir código adicional.
         ComercioResponse response = comercioService.crearComercio(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
-
 
     @GetMapping
     public ResponseEntity<List<ComercioResponse>> listarComercioS() {
         List<ComercioResponse> comercios = comercioService.listarComercioS();
         if (comercios.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); // 204
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
-        return ResponseEntity.ok(comercios); // 200
+        return ResponseEntity.ok(comercios);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ComercioResponse> buscarPorId(@PathVariable long id) {
-            return ResponseEntity.ok(comercioService.buscarPorId(id)); // 200
+            return ResponseEntity.ok(comercioService.buscarPorId(id));
 
     }
 
@@ -55,7 +53,7 @@ public class ComercioController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarComercio(@PathVariable long id) {
         comercioService.eliminarComercio(id);
-        return ResponseEntity.noContent().build(); // 204
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/por-categoria/{categoriaId}")

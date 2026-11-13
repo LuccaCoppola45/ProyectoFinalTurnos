@@ -23,13 +23,11 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<String> registrar(@Valid @RequestBody UsuarioRequest request) {
-        // Status 201 (Created) es la buena práctica para cuando creamos algo nuevo
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.registrar(request));
     }
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginResquestDTO request) {
-        // Status 200 (OK)
         return ResponseEntity.ok(authService.login(request));
     }
 }

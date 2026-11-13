@@ -7,11 +7,6 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-/**
- * Las fotos se guardan en su propia tabla (y no como columna de usuarios/comercio)
- * para que la imagen no se cargue cada vez que se lee un usuario, por ejemplo en
- * cada request autenticado.
- */
 @Getter
 @Setter
 @Entity
@@ -30,7 +25,6 @@ public class FotoEntity {
     @Column(nullable = false, length = 20)
     private TipoFoto tipo;
 
-    /** Id del usuario o del comercio, según {@link #tipo}. */
     @Column(name = "referencia_id", nullable = false)
     private Long referenciaId;
 

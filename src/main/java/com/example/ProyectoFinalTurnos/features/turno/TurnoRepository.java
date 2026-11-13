@@ -37,15 +37,8 @@ public interface TurnoRepository extends JpaRepository<TurnoEntity, Long>
     List<TurnoEntity> findByComercio_IdComercio(Long comercioId);
     List<TurnoEntity> findByComercio_IdComercioOrderByFechaDesc(Long comercioId);
 
-    /**
-     * Pasa a FINALIZADO los turnos activos cuyo horario ya terminó
-     * (fecha anterior a hoy, o de hoy con hora de fin ya pasada).
-     * Devuelve cuántos turnos actualizó.
-     */
-    /** Turnos activos entre dos fechas (el recordatorio filtra después por hora exacta). */
     List<TurnoEntity> findByEstadoInAndFechaBetween(Collection<EstadoTurno> estados, LocalDate desde, LocalDate hasta);
 
-    /** Para la página "¿Vas a ir?" que se abre desde el mail. */
     Optional<TurnoEntity> findByTokenConfirmacion(String tokenConfirmacion);
 
     @Modifying
@@ -60,4 +53,3 @@ public interface TurnoRepository extends JpaRepository<TurnoEntity, Long>
                           @Param("hoy") LocalDate hoy,
                           @Param("ahora") LocalTime ahora);
 }
-

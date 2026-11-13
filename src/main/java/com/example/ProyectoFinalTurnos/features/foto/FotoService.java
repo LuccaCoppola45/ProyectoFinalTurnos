@@ -24,7 +24,6 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class FotoService {
 
-    /** Tamaño máximo de una foto: 2 MB. */
     public static final long TAMANIO_MAXIMO = 2L * 1024 * 1024;
 
     private final FotoRepository fotoRepository;
@@ -60,9 +59,6 @@ public class FotoService {
         fotoRepository.deleteByTipoAndReferenciaId(tipo, referenciaId);
     }
 
-    // ---------- Permisos ----------
-
-    /** Solo el dueño (el propio usuario o el propietario del comercio) o un ADMIN pueden cambiar la foto. */
     private void verificarPermiso(TipoFoto tipo, Long referenciaId) {
         UsuarioEntity actual = usuarioAutenticado();
         if (actual.getRol() == Rol.ADMIN) {
@@ -112,8 +108,6 @@ public class FotoService {
                 .orElseThrow(() -> new UserProfileNotFoundException("Usuario autenticado no encontrado"));
     }
 
-    // ---------- Validación del archivo ----------
-
     private byte[] leerYValidar(MultipartFile archivo) {
         if (archivo == null || archivo.isEmpty()) {
             throw new FotoInvalidaException("No se recibió ninguna imagen");
@@ -128,10 +122,6 @@ public class FotoService {
         }
     }
 
-    /**
-     * Se mira el contenido real del archivo (sus primeros bytes) en vez de confiar en
-     * la extensión o en el Content-Type que manda el navegador, que se pueden falsear.
-     */
     private String detectarTipoDeImagen(byte[] d) {
         if (d.length >= 3 && (d[0] & 0xFF) == 0xFF && (d[1] & 0xFF) == 0xD8 && (d[2] & 0xFF) == 0xFF) {
             return "image/jpeg";

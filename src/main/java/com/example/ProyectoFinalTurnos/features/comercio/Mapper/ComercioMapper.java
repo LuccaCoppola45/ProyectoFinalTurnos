@@ -17,15 +17,15 @@ import java.util.stream.Collectors;
 public class ComercioMapper {
 
     private final ModelMapper modelMapper;
-    private final ServicioMapper servicioMapper;      // ← AGREGAR
-    private final HorarioAtencionMapper horarioMapper; // ← AGREGAR
+    private final ServicioMapper servicioMapper;
+    private final HorarioAtencionMapper horarioMapper;
 
     public ComercioMapper(ModelMapper modelMapper,
-                          ServicioMapper servicioMapper,      // ← AGREGAR
-                          HorarioAtencionMapper horarioMapper) { // ← AGREGAR
+                          ServicioMapper servicioMapper,
+                          HorarioAtencionMapper horarioMapper) {
         this.modelMapper = modelMapper;
-        this.servicioMapper = servicioMapper;         // ← AGREGAR
-        this.horarioMapper = horarioMapper;           // ← AGREGAR
+        this.servicioMapper = servicioMapper;
+        this.horarioMapper = horarioMapper;
     }
 
     public ComercioResponse toResponse(ComercioEntity entity)

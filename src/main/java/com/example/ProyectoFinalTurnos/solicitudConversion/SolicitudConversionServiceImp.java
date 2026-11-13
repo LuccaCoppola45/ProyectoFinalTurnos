@@ -25,7 +25,7 @@ public class SolicitudConversionServiceImp implements SolicitudConversionService
     private final SolicitudConversionRepository repository;
     private final UsuarioRepository usuarioRepository;
     private final ComercioRepository comercioRepository;
-    private final SolicitudConversionMapper mapper;  // ← añadir
+    private final SolicitudConversionMapper mapper;
     private final ApplicationEventPublisher eventPublisher;
 
     @Override
@@ -39,13 +39,11 @@ public class SolicitudConversionServiceImp implements SolicitudConversionService
             throw new IllegalStateException("Ya existe una solicitud pendiente para este usuario");
         }
 
-        // ← Usar mapper para convertir DTO a entidad
         SolicitudConversionEntity s = mapper.toEntity(request);
         s.setUsuario(usuario);
         s.setEstado(EstadoSolicitud.PENDIENTE);
         repository.save(s);
 
-        // ← Usar mapper para convertir entidad a DTO
         return mapper.toDto(s);
     }
 
@@ -53,7 +51,7 @@ public class SolicitudConversionServiceImp implements SolicitudConversionService
     public List<SolicitudConversionResponse> listarSolicitudesPendientes() {
         return repository.findByEstado(EstadoSolicitud.PENDIENTE)
                 .stream()
-                .map(mapper::toDto)  // ← usar mapper
+                .map(mapper::toDto)
                 .collect(Collectors.toList());
     }
 
@@ -76,7 +74,6 @@ public class SolicitudConversionServiceImp implements SolicitudConversionService
         comercio.setDescripcion(s.getDescripcion());
         comercio.setUsuarioPropietario(usuario);
 
-
         ComercioEntity guardado = comercioRepository.save(comercio);
 
         usuario.setRol(Rol.COMERCIO);
@@ -93,7 +90,6 @@ public class SolicitudConversionServiceImp implements SolicitudConversionService
                 null
         ));
 
-        // ← Usar mapper para convertir a DTO
         return mapper.toDto(s);
     }
 
@@ -118,7 +114,6 @@ public class SolicitudConversionServiceImp implements SolicitudConversionService
                 motivo
         ));
 
-        // ← Usar mapper para convertir a DTO
         return mapper.toDto(s);
     }
 

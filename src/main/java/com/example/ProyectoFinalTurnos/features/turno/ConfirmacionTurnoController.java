@@ -7,11 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * Endpoints PÚBLICOS (ver SecurityConfig) para el link del mail de recordatorio.
- * GET  -> datos del turno para mostrar en la página "¿Vas a ir?"
- * POST -> el cliente responde: { "asiste": true } confirma, { "asiste": false } cancela.
- */
 @RestController
 @RequestMapping("/api/turnos/confirmacion")
 @RequiredArgsConstructor

@@ -1,6 +1,5 @@
 package com.example.ProyectoFinalTurnos.features.usuario;
 
-
 import com.example.ProyectoFinalTurnos.exceptions.user.*;
 import com.example.ProyectoFinalTurnos.features.foto.FotoRepository;
 import com.example.ProyectoFinalTurnos.features.foto.TipoFoto;
@@ -32,8 +31,6 @@ public class UsuarioServiceImp implements UsuarioService
     private final PasswordEncoder passwordEncoder;
     private final FotoRepository fotoRepository;
 
-
-    /// -Crear Usuario- ///
     @Override
     public UsuarioResponce crearUsuario(UsuarioRequest dto)
     {
@@ -48,9 +45,6 @@ public class UsuarioServiceImp implements UsuarioService
         return usuarioMapper.toResponce(guardado);
     }
 
-
-
-    /// -Obtener todos los usuarios- ///
     @Override
     public List<UsuarioResponce> obtenerTodos()
     {
@@ -60,8 +54,6 @@ public class UsuarioServiceImp implements UsuarioService
                 .collect(Collectors.toList());
     }
 
-    /// -Obtener por Id-///
-
     @Override
     public UsuarioResponce obtenerPorId (Long id)
     {
@@ -70,7 +62,6 @@ public class UsuarioServiceImp implements UsuarioService
         return usuarioMapper.toResponce(usuario);
     }
 
-    /// -Eliminar Usuario- ///
     @Override
     public void eliminarUsuario (Long id)
     {
@@ -91,12 +82,10 @@ public class UsuarioServiceImp implements UsuarioService
     @Override
     @Transactional
     public UpdateUserResponse actualizarUsuario(Long id, UpdateUserRequestDTO dto) {
-        // Obtener usuario autenticado
         String emailUsuarioAutenticado = obtenerEmailUsuarioAutenticado();
         UsuarioEntity usuarioAutenticado = usuarioRepository.findByEmail(emailUsuarioAutenticado)
                 .orElseThrow(() -> new UserProfileNotFoundException("Usuario autenticado no encontrado"));
 
-        // VALIDACIÓN: Solo puede actualizar su propia cuenta
         if (!usuarioAutenticado.getIdUsuario().equals(id)) {
             throw new UnauthorizedUserAccessException("No puedes actualizar la información de otro usuario");
         }
@@ -130,7 +119,6 @@ public class UsuarioServiceImp implements UsuarioService
                 .build();
     }
 
-    // Método auxiliar para obtener email del usuario autenticado
     private String obtenerEmailUsuarioAutenticado() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || auth.getName() == null) {

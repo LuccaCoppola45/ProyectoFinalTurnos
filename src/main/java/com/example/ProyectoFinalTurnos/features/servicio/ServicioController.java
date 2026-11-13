@@ -22,34 +22,34 @@ public class ServicioController {
     @PostMapping
     public ResponseEntity<ServicioResponse> crearServicio(@Valid @RequestBody ServicioRequest request) {
         ServicioResponse response = servicioService.crearServicio(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response); // 201
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping
     public ResponseEntity<List<ServicioResponse>> listarServicios() {
         List<ServicioResponse> servicios = servicioService.listarServicios();
         if (servicios.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); // 204
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
-        return ResponseEntity.ok(servicios); // 200
+        return ResponseEntity.ok(servicios);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ServicioResponse> buscarPorId(@PathVariable long id) {
         ServicioResponse servicio = servicioService.BuscarporId(id);
-        return ResponseEntity.ok(servicio); // 200
+        return ResponseEntity.ok(servicio);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ServicioResponse> actualizarServicio(@PathVariable long id, @Valid @RequestBody ServicioRequest request) {
         ServicioResponse response = servicioService.ActualizarServicio(id, request);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(response); // 202
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarServicio(@PathVariable long id) {
         servicioService.eliminarServicio(id);
-        return ResponseEntity.noContent().build(); // 204
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/comercio/{comercioId}")
@@ -60,4 +60,3 @@ public class ServicioController {
                 ResponseEntity.ok(servicios);
     }
 }
-

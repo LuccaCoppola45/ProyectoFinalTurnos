@@ -14,14 +14,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * Tarea automática: cada 10 minutos busca los turnos que empiezan en las próximas 24 horas
- * y le manda al cliente el mail "¿Vas a ir a tu turno?" con un link para confirmar o cancelar.
- *
- * - Cada turno recibe un solo recordatorio (recordatorioEnviado = true).
- * - No se manda si falta menos de 1 hora: ya no tiene sentido preguntar.
- * - Solo turnos PENDIENTE o RESERVADO (si ya está CONFIRMADO no hace falta).
- */
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -32,8 +24,6 @@ public class RecordatorioDeTurnos {
     private final TurnoRepository turnoRepository;
     private final ApplicationEventPublisher eventPublisher;
 
-    // @Transactional: el mail se manda recién cuando se guardó en la base que ya se mandó
-    // (el listener es AFTER_COMMIT), así nunca se manda dos veces el mismo recordatorio.
     @Scheduled(initialDelay = 10_000, fixedRate = 600_000)
     @Transactional
     public void enviarRecordatorios() {

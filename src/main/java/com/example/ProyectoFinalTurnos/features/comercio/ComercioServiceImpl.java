@@ -37,11 +37,9 @@ public class ComercioServiceImpl implements IComercioService {
     @Transactional
     public ComercioResponse crearComercio(ComercioRequest request) {
 
-        // 1. Limpiar espacios en blanco de los textos
         String nombreLimpio = request.getNombre().trim();
         String direccionLimpia = request.getDireccion().trim();
 
-        // 2. Validar que no exista un comercio duplicado (mismo nombre + dirección)
         boolean existeDuplicado = comercioRepository.findByNombreIgnoreCaseAndDireccionIgnoreCase(nombreLimpio, direccionLimpia).isPresent();
         if (existeDuplicado) {
             throw new ComercioAlreadyExistsException("Ya existe un comercio registrado con ese nombre en esa dirección.");
@@ -49,18 +47,14 @@ public class ComercioServiceImpl implements IComercioService {
 
         ComercioEntity entity = comercioMapper.toEntity(request);
 
-            // valida que las categorias existan en la base de datos
             List<CategoriaEntity> categoriasValidas = request.getListaCategoriasIds().stream()
                     .map(id -> categoriaRepository.findById(id)
                             .orElseThrow(() -> new ResourceNotFoundException("La categoría con ID " + id + " no existe.")))
                     .collect(Collectors.toList());
 
-
-
         entity.setNombre(nombreLimpio);
         entity.setDireccion(direccionLimpia);
         entity.setCategorias(categoriasValidas);
-
 
         ComercioEntity saved = comercioRepository.save(entity);
         return comercioMapper.toResponse(saved);
@@ -115,17 +109,13 @@ public class ComercioServiceImpl implements IComercioService {
     @Override
     @Transactional(readOnly = true)
     public List<ComercioResponse> comerciosPorCategoria(Long categoriaId) {
-        // 1. Verificar que la categoría existe
         if (!categoriaRepository.existsById(categoriaId)) {
             throw new CategoriaNoEncontradaException("Categoría no encontrada con id: " + categoriaId);
         }
 
-        // 2. Buscar comercios que tengan esa categoría
         List<ComercioEntity> comercios = comercioRepository.findByCategorias_UniqueId(categoriaId);
 
-        // 3. Convertir a DTOs y retornar
         return comercios.stream()
                 .map(comercioMapper::toResponse).toList();
     }
 }
-

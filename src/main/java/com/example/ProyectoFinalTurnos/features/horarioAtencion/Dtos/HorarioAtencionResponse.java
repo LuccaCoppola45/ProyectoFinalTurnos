@@ -8,7 +8,7 @@ import java.time.LocalTime;
 @Data
 public class HorarioAtencionResponse {
     private Long idHorarioAtencion;
-    private Long comercioId; // ID del comercio asociado
+    private Long comercioId;
     private Diasemana diaSemana;
     private LocalTime horaApertura;
     private LocalTime horaCierre;

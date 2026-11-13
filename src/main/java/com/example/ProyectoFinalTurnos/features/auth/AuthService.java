@@ -21,10 +21,8 @@ public class AuthService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    // 1. Lógica de Registro
     public String registrar(UsuarioRequest request) {
 
-        // Validar que el email no exista ya en la BD (el handler global responde 409)
         if (usuarioRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new UserEmailAlreadyInUseException("El email ya está registrado");
         }
@@ -34,7 +32,6 @@ public class AuthService {
         usuario.setApellido(request.getApellido());
         usuario.setEmail(request.getEmail());
 
-        // ¡SÚPER IMPORTANTE! Encriptamos la contraseña
         usuario.setPassword(passwordEncoder.encode(request.getPassword()));
 
         usuarioRepository.save(usuario);
@@ -42,10 +39,8 @@ public class AuthService {
         return "Usuario registrado con éxito. Por favor, inicie sesión.";
     }
 
-    // 2. Lógica de Inicio de Sesión (Login)
     public LoginResponseDTO login(LoginResquestDTO request) {
 
-        // El AuthenticationManager de Spring Security compara la contraseña encriptada por nosotros
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
@@ -53,14 +48,11 @@ public class AuthService {
                 )
         );
 
-        // Si pasa la línea anterior, las credenciales están bien. Buscamos al usuario:
         UsuarioEntity usuario = usuarioRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        // Fabricamos el Token JWT
         String jwtToken = jwtService.generateToken(usuario);
 
-        // Devolvemos tu DTO armado
         return new LoginResponseDTO(true, "Inicio de sesión exitoso", jwtToken);
     }
 }

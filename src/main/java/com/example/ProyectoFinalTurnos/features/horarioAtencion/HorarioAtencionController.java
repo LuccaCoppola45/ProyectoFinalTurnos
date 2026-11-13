@@ -20,13 +20,11 @@ public class HorarioAtencionController {
 
     private final IHorarioAtencionService horarioAtencionService;
 
-
     @PostMapping
     public ResponseEntity<HorarioAtencionResponse> crearHorarioAtencion(@Valid @RequestBody HorarioAtencionRequest request) {
         HorarioAtencionResponse response = horarioAtencionService.crearHorariotencion(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response); // 201 Created
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
-
 
     @GetMapping
     public ResponseEntity<List<HorarioAtencionResponse>> listarHorarios() {
@@ -34,22 +32,19 @@ public class HorarioAtencionController {
         return ResponseEntity.ok(horarios);
     }
 
-
     @GetMapping("/{id}")
     public ResponseEntity<HorarioAtencionResponse> obtenerHorarioPorId(@PathVariable long id) {
        HorarioAtencionResponse response = horarioAtencionService.ObtenerHorarioPorId(id);
        return ResponseEntity.ok(response);
     }
 
-
     @PutMapping("/{id}")
     public ResponseEntity<HorarioAtencionResponse> actualizarHorarioAtencion(@PathVariable long id,@Valid @RequestBody HorarioAtencionRequest request) {
 
             HorarioAtencionResponse response = horarioAtencionService.ActualizarHorarioAtencion(id, request);
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(response); // 202 Accepted
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
 
     }
-
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarHorarioAtencion(@PathVariable long id) {

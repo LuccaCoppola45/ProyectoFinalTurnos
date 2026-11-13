@@ -10,18 +10,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.ZoneId;
 
-/**
- * Fotos de perfil de usuarios y comercios.
- * Los GET son públicos (un &lt;img&gt; no puede mandar el token); subir y borrar requieren
- * ser el dueño o ADMIN.
- */
 @RestController
 @RequiredArgsConstructor
 public class FotoController {
 
     private final FotoService fotoService;
-
-    // ---------- Usuarios ----------
 
     @GetMapping("/usuarios/{id}/foto")
     public ResponseEntity<byte[]> verFotoUsuario(@PathVariable Long id, WebRequest request) {
@@ -40,8 +33,6 @@ public class FotoController {
         return ResponseEntity.noContent().build();
     }
 
-    // ---------- Comercios ----------
-
     @GetMapping("/api/comercios/{id}/foto")
     public ResponseEntity<byte[]> verFotoComercio(@PathVariable Long id, WebRequest request) {
         return responderFoto(fotoService.obtener(TipoFoto.COMERCIO, id), request);
@@ -59,7 +50,6 @@ public class FotoController {
         return ResponseEntity.noContent().build();
     }
 
-    /** Usa un ETag para que el navegador no vuelva a descargar la foto si no cambió (responde 304). */
     private ResponseEntity<byte[]> responderFoto(FotoEntity foto, WebRequest request) {
         String etag = "\"" + foto.getActualizada().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() + "\"";
         if (request.checkNotModified(etag)) {

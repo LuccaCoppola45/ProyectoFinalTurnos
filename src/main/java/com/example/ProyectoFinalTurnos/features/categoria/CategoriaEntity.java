@@ -23,12 +23,9 @@ public class CategoriaEntity {
     @Column(name = "id_categoria")
     private long uniqueId;
 
-
     @Column(name = "Nombre_categoria",nullable =false, length = 50)
     private String nombreCategoria;
 
-    // Relación ManyToMany para poder consultar los comercios asociados
-    // y validar antes de eliminar (Integridad referencial)
     @ManyToMany(mappedBy = "categorias")
     @JsonIgnore
     private List<ComercioEntity> comercios;

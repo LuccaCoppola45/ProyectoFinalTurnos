@@ -26,7 +26,6 @@ public class SolicitudConversionController {
         return ResponseEntity.ok(resp);
     }
 
-    // Solo ADMIN
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
     public ResponseEntity<List<SolicitudConversionResponse>> listarPendientes() {
@@ -34,7 +33,6 @@ public class SolicitudConversionController {
         return ResponseEntity.ok(lista);
     }
 
-    // Solo ADMIN: aprobar
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/{id}/aprobar")
     public ResponseEntity<SolicitudConversionResponse> aprobar(@PathVariable Long id) {
@@ -43,7 +41,6 @@ public class SolicitudConversionController {
         return ResponseEntity.ok(resp);
     }
 
-    // Solo ADMIN: rechazar
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/{id}/rechazar")
     public ResponseEntity<SolicitudConversionResponse> rechazar(@PathVariable Long id, @RequestParam(required = false) String motivo) {

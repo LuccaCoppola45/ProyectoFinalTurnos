@@ -1,7 +1,6 @@
 package com.example.ProyectoFinalTurnos.features.horarioAtencion;
 
 import com.example.ProyectoFinalTurnos.features.comercio.ComercioEntity;
-//import com.example.ProyectoFinalTurnos.features.servicio.ServicioEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.example.ProyectoFinalTurnos.model.enums.Diasemana;
 import jakarta.persistence.*;
@@ -22,14 +21,12 @@ public class HorarioAtencionEntity {
     @Column(name = "id_HorarioAtencion")
     private Long idHorarioAtencion;
 
-    // MODIFICADO: Ahora es nullable = true (para cuando el horario sea de un peluquero)
     @ManyToOne
     @JoinColumn(name = "id_comercio",
             foreignKey = @ForeignKey(name = "FK_horario_comercio"),
             nullable = true)
     @JsonIgnore
     private ComercioEntity comercio;
-
 
     @Enumerated(EnumType.STRING)
     @Column(name = "dia_semana", nullable = false)

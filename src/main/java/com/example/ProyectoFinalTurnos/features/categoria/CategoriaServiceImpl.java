@@ -25,13 +25,10 @@ public class CategoriaServiceImpl implements CategoriaService {
         if(categoriaRepository.existsByNombreCategoria(requestDto.getNombreCategoria())) {
             throw new CategoriaAlreadyExistsException("Ya existe una categoria con el nombre: " + requestDto.getNombreCategoria());
         }
-        // Mapear DTO a Entidad
         CategoriaEntity categoriaEntity = categoriaMapper.requestDtoToEntity(requestDto);
 
-        // Guardar en la base de datos
         CategoriaEntity guardada = categoriaRepository.save(categoriaEntity);
 
-        // Mapear Entidad a Response DTO
         return categoriaMapper.entityToResponseDto(guardada);
     }
 
@@ -75,14 +72,10 @@ public class CategoriaServiceImpl implements CategoriaService {
         CategoriaEntity categoria = categoriaRepository.findById(id)
                 .orElseThrow(() -> new CategoriaNoEncontradaException("No se puede eliminar. Categoría no encontrada con ID: " + id));
 
-        // Nos fijamos si la lista de comercios no es nula y si tiene elementos adentro
         if (categoria.getComercios() != null && !categoria.getComercios().isEmpty()) {
             throw new CategoriaInUseException("No se puede eliminar la categoría porque está asignada a uno o más comercios. Desvincúlelos primero.");
         }
 
-        // Si la lista está vacía, la borramos tranquilos
         categoriaRepository.delete(categoria);
     }
 }
-
-

@@ -33,13 +33,11 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-
-
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<@NonNull ErrorResponse> handlerResourceNotFoundException(ResourceNotFoundException ex, HttpServletRequest request){
         ErrorResponse error = ErrorResponse.builder()
-                .status(HttpStatus.NOT_FOUND.value()) // 404
-                .error(HttpStatus.NOT_FOUND.getReasonPhrase()) // "Not Found"
+                .status(HttpStatus.NOT_FOUND.value())
+                .error(HttpStatus.NOT_FOUND.getReasonPhrase())
                 .message(ex.getMessage())
                 .path(request.getRequestURI())
                 .timestamp(LocalDateTime.now())
@@ -47,13 +45,10 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    //Metodo que captura las excepciones d ela dependencia de Validation que definimos en las entidades
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errores = new HashMap<>();
 
-        // Recorremos todos los errores que saltaron en la validación
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             String campo = ((FieldError) error).getField();
             String mensaje = error.getDefaultMessage();
@@ -147,7 +142,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-    // Login con email o contraseña incorrectos (lo lanza el AuthenticationManager)
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<@NonNull ErrorResponse> handlerBadCredentialsException(BadCredentialsException ex, HttpServletRequest request){
         ErrorResponse error = ErrorResponse.builder()
@@ -222,7 +216,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(TurnoNotFoundException.class)
     public ResponseEntity<@NonNull ErrorResponse> handleTurnoNotFoundException(TurnoNotFoundException ex, HttpServletRequest request) {
         ErrorResponse error = ErrorResponse.builder()
-                .status(HttpStatus.NOT_FOUND.value()) // 404
+                .status(HttpStatus.NOT_FOUND.value())
                 .error(HttpStatus.NOT_FOUND.getReasonPhrase())
                 .message(ex.getMessage())
                 .path(request.getRequestURI())
@@ -234,7 +228,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UnauthorizedTurnoAccessException.class)
     public ResponseEntity<@NonNull ErrorResponse> handleUnauthorizedTurnoAccessException(UnauthorizedTurnoAccessException ex, HttpServletRequest request) {
         ErrorResponse error = ErrorResponse.builder()
-                .status(HttpStatus.FORBIDDEN.value()) // 403
+                .status(HttpStatus.FORBIDDEN.value())
                 .error(HttpStatus.FORBIDDEN.getReasonPhrase())
                 .message(ex.getMessage())
                 .path(request.getRequestURI())
@@ -246,7 +240,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(TurnoPastDateException.class)
     public ResponseEntity<@NonNull ErrorResponse> handleTurnoPastDateException(TurnoPastDateException ex, HttpServletRequest request) {
         ErrorResponse error = ErrorResponse.builder()
-                .status(HttpStatus.BAD_REQUEST.value()) // 400
+                .status(HttpStatus.BAD_REQUEST.value())
                 .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
                 .message(ex.getMessage())
                 .path(request.getRequestURI())
@@ -258,7 +252,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(TurnoAlreadyCancelledException.class)
     public ResponseEntity<@NonNull ErrorResponse> handleTurnoAlreadyCancelledException(TurnoAlreadyCancelledException ex, HttpServletRequest request) {
         ErrorResponse error = ErrorResponse.builder()
-                .status(HttpStatus.BAD_REQUEST.value()) // 400
+                .status(HttpStatus.BAD_REQUEST.value())
                 .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
                 .message(ex.getMessage())
                 .path(request.getRequestURI())
@@ -270,7 +264,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CancelacionNotFoundException.class)
     public ResponseEntity<@NonNull ErrorResponse> handleCancelacionNotFoundException(CancelacionNotFoundException ex, HttpServletRequest request) {
         ErrorResponse error = ErrorResponse.builder()
-                .status(HttpStatus.NOT_FOUND.value()) // 404
+                .status(HttpStatus.NOT_FOUND.value())
                 .error(HttpStatus.NOT_FOUND.getReasonPhrase())
                 .message(ex.getMessage())
                 .path(request.getRequestURI())
@@ -279,12 +273,10 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
-    // --- EXCEPCIONES DE CATEGORIA ---
-
     @ExceptionHandler(CategoriaAlreadyExistsException.class)
     public ResponseEntity<@NonNull ErrorResponse> handleCategoriaAlreadyExistsException(CategoriaAlreadyExistsException ex, HttpServletRequest request) {
         ErrorResponse error = ErrorResponse.builder()
-                .status(HttpStatus.BAD_REQUEST.value()) // 400
+                .status(HttpStatus.BAD_REQUEST.value())
                 .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
                 .message(ex.getMessage())
                 .path(request.getRequestURI())
@@ -296,7 +288,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CategoriaInUseException.class)
     public ResponseEntity<@NonNull ErrorResponse> handleCategoriaInUseException(CategoriaInUseException ex, HttpServletRequest request) {
         ErrorResponse error = ErrorResponse.builder()
-                .status(HttpStatus.CONFLICT.value()) // 409 CONFLICT
+                .status(HttpStatus.CONFLICT.value())
                 .error(HttpStatus.CONFLICT.getReasonPhrase())
                 .message(ex.getMessage())
                 .path(request.getRequestURI())
@@ -311,7 +303,7 @@ public class GlobalExceptionHandler {
             HttpServletRequest request) {
 
         ErrorResponse error = ErrorResponse.builder()
-                .status(HttpStatus.CONFLICT.value()) // 409
+                .status(HttpStatus.CONFLICT.value())
                 .error(HttpStatus.CONFLICT.getReasonPhrase())
                 .message(ex.getMessage())
                 .path(request.getRequestURI())
@@ -327,7 +319,7 @@ public class GlobalExceptionHandler {
             HttpServletRequest request) {
 
         ErrorResponse error = ErrorResponse.builder()
-                .status(HttpStatus.BAD_REQUEST.value()) // 400
+                .status(HttpStatus.BAD_REQUEST.value())
                 .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
                 .message(ex.getMessage())
                 .path(request.getRequestURI())
@@ -403,7 +395,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(TurnoOutsideBusinessException.class)
     public ResponseEntity<@NonNull ErrorResponse> handleTurnoOutsideBusinessHoursException(TurnoOutsideBusinessException ex, HttpServletRequest request) {
         ErrorResponse error = ErrorResponse.builder()
-                .status(HttpStatus.BAD_REQUEST.value()) // 400
+                .status(HttpStatus.BAD_REQUEST.value())
                 .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
                 .message(ex.getMessage())
                 .path(request.getRequestURI())
@@ -428,7 +420,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
-
     @ExceptionHandler(HorarioFueraDeAtencionException.class)
     public ResponseEntity<@NonNull ErrorResponse> handlerHorarioFueraDeAtencionException(
             HorarioFueraDeAtencionException ex,
@@ -445,14 +436,13 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-
     @ExceptionHandler(HorarioInvalidoException.class)
     public ResponseEntity<@NonNull ErrorResponse> handlerHorarioInvalidoException(
             HorarioInvalidoException ex,
             HttpServletRequest request)
     {
         ErrorResponse error = ErrorResponse.builder()
-                .status(HttpStatus.BAD_REQUEST.value()) // 400
+                .status(HttpStatus.BAD_REQUEST.value())
                 .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
                 .message(ex.getMessage())
                 .path(request.getRequestURI())
@@ -462,14 +452,13 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-
     @ExceptionHandler(HorarioSuperpuestoException.class)
     public ResponseEntity<@NonNull ErrorResponse> handlerHorarioSuperpuestoException(
             HorarioSuperpuestoException ex,
             HttpServletRequest request)
     {
         ErrorResponse error = ErrorResponse.builder()
-                .status(HttpStatus.CONFLICT.value()) // 409
+                .status(HttpStatus.CONFLICT.value())
                 .error(HttpStatus.CONFLICT.getReasonPhrase())
                 .message(ex.getMessage())
                 .path(request.getRequestURI())
@@ -479,14 +468,13 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 
-
     @ExceptionHandler(HorarioFueraDeComercioException.class)
     public ResponseEntity<@NonNull ErrorResponse> handlerHorarioFueraDeComercioException(
             HorarioFueraDeComercioException ex,
             HttpServletRequest request)
     {
         ErrorResponse error = ErrorResponse.builder()
-                .status(HttpStatus.BAD_REQUEST.value()) // 400
+                .status(HttpStatus.BAD_REQUEST.value())
                 .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
                 .message(ex.getMessage())
                 .path(request.getRequestURI())
@@ -502,7 +490,7 @@ public class GlobalExceptionHandler {
             HttpServletRequest request)
     {
         ErrorResponse error = ErrorResponse.builder()
-                .status(HttpStatus.BAD_REQUEST.value()) // 400
+                .status(HttpStatus.BAD_REQUEST.value())
                 .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
                 .message(ex.getMessage())
                 .path(request.getRequestURI())
@@ -517,7 +505,7 @@ public class GlobalExceptionHandler {
             UnauthorizedUserAccessException ex,
             HttpServletRequest request) {
         ErrorResponse error = ErrorResponse.builder()
-                .status(HttpStatus.FORBIDDEN.value()) // 403
+                .status(HttpStatus.FORBIDDEN.value())
                 .error(HttpStatus.FORBIDDEN.getReasonPhrase())
                 .message(ex.getMessage())
                 .path(request.getRequestURI())
@@ -525,8 +513,6 @@ public class GlobalExceptionHandler {
                 .build();
         return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
     }
-
-    // ---------- Fotos de perfil ----------
 
     @ExceptionHandler(FotoInvalidaException.class)
     public ResponseEntity<@NonNull ErrorResponse> handleFotoInvalidaException(FotoInvalidaException ex, HttpServletRequest request) {
@@ -538,7 +524,6 @@ public class GlobalExceptionHandler {
         return armarError(HttpStatus.NOT_FOUND, ex.getMessage(), request);
     }
 
-    // Lo lanza Spring antes de llegar al controller si el archivo supera spring.servlet.multipart.max-file-size
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<@NonNull ErrorResponse> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex, HttpServletRequest request) {
         return armarError(HttpStatus.PAYLOAD_TOO_LARGE, "La imagen no puede superar los 2 MB", request);

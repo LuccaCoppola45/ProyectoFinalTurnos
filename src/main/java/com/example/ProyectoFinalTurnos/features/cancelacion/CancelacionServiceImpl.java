@@ -38,18 +38,14 @@ public class CancelacionServiceImpl implements CancelacionService {
     private final CancelacionMapper cancelacionMapper;
     private final ApplicationEventPublisher eventPublisher;
 
-    //crear una cancelacion
     @Override
     @Transactional
     public CancelacionResponse cancelarTurno(CancelacionRequest requestDTO) {
-        // Quien cancela es el usuario logueado (sale del token), no el id que manda el front:
-        // así nadie puede cancelar "en nombre de" otro usuario cambiando el body.
         UsuarioEntity usuario = usuarioAutenticado();
 
         TurnoEntity turno = turnoRepository.findById(requestDTO.getIdTurno())
                 .orElseThrow(() -> new TurnoNotFoundException("Turno no encontrado con ID: " + requestDTO.getIdTurno()));
 
-        // 1. ¿Puede cancelarlo? (RF-14 el cliente del turno, RF-19 el dueño del comercio, o un admin)
         boolean esElCliente = turno.getUsuario().getIdUsuario().equals(usuario.getIdUsuario());
         boolean esElComercio = esDuenioDelComercio(usuario, turno);
         boolean esAdmin = usuario.getRol() == Rol.ADMIN;
@@ -57,14 +53,12 @@ public class CancelacionServiceImpl implements CancelacionService {
             throw new UnauthorizedTurnoAccessException("No tienes permiso para cancelar este turno.");
         }
 
-        // 2. Verifica que el turno no sea en el pasado
         LocalDateTime fechaHoraDelTurno = LocalDateTime.of(turno.getFecha(), turno.getHoraInicio());
 
         if (fechaHoraDelTurno.isBefore(LocalDateTime.now())) {
             throw new TurnoPastDateException("No se puede cancelar un turno cuya fecha y hora ya pasaron.");
         }
 
-        // 3. Verifica estado actual del turno usando tu Enum
         if (turno.getEstado() == EstadoTurno.CANCELADO) {
             throw new TurnoAlreadyCancelledException("Este turno ya se encuentra cancelado.");
         }
@@ -72,20 +66,16 @@ public class CancelacionServiceImpl implements CancelacionService {
             throw new TurnFinishedException("No se puede cancelar un turno finalizado.");
         }
 
-        // 2. USO DEL MAPPER (DTO -> Entidad)
         CancelacionEntity cancelacionEntity = cancelacionMapper.requestDtoToEntity(requestDTO);
-
 
         cancelacionEntity.setUsuario(usuario);
         cancelacionEntity.setTurno(turno);
         cancelacionEntity.setFechaCancelacion(LocalDateTime.now());
 
-        turno.setEstado(EstadoTurno.CANCELADO); // Acá le pasamos la constante del Enum
+        turno.setEstado(EstadoTurno.CANCELADO);
         turnoRepository.save(turno);
-        // 4. PERSISTENCIA
         CancelacionEntity guardada = cancelacionRepository.save(cancelacionEntity);
 
-        // El mail siempre le llega al CLIENTE del turno (aunque lo haya cancelado el comercio)
         UsuarioEntity cliente = turno.getUsuario();
         eventPublisher.publishEvent(new TurnoCanceladoEvent(
                 turno.getIdTurno(),
@@ -96,10 +86,9 @@ public class CancelacionServiceImpl implements CancelacionService {
                 turno.getFecha(),
                 turno.getHoraInicio(),
                 guardada.getMotivo(),
-                !esElCliente // true = lo canceló el comercio (o un admin)
+                !esElCliente
         ));
 
-        // 5. USO DEL MAPPER (Entidad -> ResponseDTO)
         String mensajeExito = "El turno ID: " + turno.getIdTurno() + " se canceló correctamente.";
         return cancelacionMapper.entityToResponseDto(guardada);
     }

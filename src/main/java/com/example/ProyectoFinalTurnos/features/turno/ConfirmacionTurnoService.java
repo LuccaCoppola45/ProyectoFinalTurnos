@@ -16,10 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
-/**
- * El cliente responde al recordatorio de 24 h desde el link del mail (sin iniciar sesión).
- * El "código" (token) del link es lo que identifica al turno: es un UUID imposible de adivinar.
- */
 @Service
 @RequiredArgsConstructor
 public class ConfirmacionTurnoService {
@@ -58,7 +54,6 @@ public class ConfirmacionTurnoService {
         return aRespuesta(turno);
     }
 
-    /** Igual que una cancelación hecha desde la app: queda registrada y le llega el mail al cliente. */
     private void cancelar(TurnoEntity turno) {
         CancelacionEntity cancelacion = new CancelacionEntity();
         cancelacion.setUsuario(turno.getUsuario());

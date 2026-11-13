@@ -17,16 +17,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @RequiredArgsConstructor
 @EnableAsync
-@EnableScheduling // para FinalizadorDeTurnos (tarea que corre cada minuto)
+@EnableScheduling
 @EnableMethodSecurity
 public class AppConfig {
-    // Inyectamos el UserDetailsServiceImpl que creaste antes
     private final UserDetailsService userDetailsService;
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userDetailsService);
-        // Le decimos que use el encriptador BCrypt
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
@@ -38,6 +36,6 @@ public class AppConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // El estándar de la industria para contraseñas
+        return new BCryptPasswordEncoder();
     }
 }

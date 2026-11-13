@@ -13,7 +13,6 @@ public class NotificacionesListener {
 
     private final CanalDeNotificacion canal;
 
-    /** Dirección del front, para los botones de los mails (app.front-url en application.properties) */
     @Value("${app.front-url:http://localhost:4200}")
     private String frontUrl;
 
@@ -45,7 +44,6 @@ public class NotificacionesListener {
         canal.enviar(evento.destinatario(), "Cancelación de turno", "email/turno-cancelado", contexto);
     }
 
-    /** Recordatorio 24 h antes: le pregunta al cliente si va a ir (ver RecordatorioDeTurnos). */
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void alRecordarTurno(TurnoRecordatorioEvent evento) {
         Context contexto = new Context();
