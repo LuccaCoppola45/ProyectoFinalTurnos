@@ -6,6 +6,9 @@
 <p>Se canceló el turno reservado en
     <span th:text="${nombreComercio}">comercio</span> para el servicio
     <span th:text="${nombreServicio}">servicio</span>.</p>
+<p th:if="${canceladoPorComercio}">
+    El turno fue cancelado por el comercio. Podés reservar otro horario cuando quieras.
+</p>
 <ul>
     <li>Fecha: <span th:text="${fecha}">fecha</span></li>
     <li>Hora: <span th:text="${hora}">hora</span></li>

@@ -12,6 +12,9 @@ import java.time.LocalDateTime;
 public class CancelacionResponse {
     private Long idCancelacion;
     private LocalDateTime fechaCancelacion;
-    private String Motivo;
+    // En minúscula: con "Motivo" el JSON salía como "Motivo" y el front (que espera "motivo") lo veía vacío
+    private String motivo;
     private long idUsuario;
+    /** Turno que se canceló (para que el admin vea de qué fecha y comercio era). */
+    private Long idTurno;
 }

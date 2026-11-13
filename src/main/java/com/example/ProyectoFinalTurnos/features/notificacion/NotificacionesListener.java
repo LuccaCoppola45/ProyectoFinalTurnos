@@ -34,6 +34,7 @@ public class NotificacionesListener {
         contexto.setVariable("fecha", evento.fecha());
         contexto.setVariable("hora", evento.hora());
         contexto.setVariable("motivo", evento.motivo());
+        contexto.setVariable("canceladoPorComercio", evento.canceladoPorComercio());
         canal.enviar(evento.destinatario(), "Cancelación de turno", "email/turno-cancelado", contexto);
     }
 

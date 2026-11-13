@@ -11,6 +11,8 @@ public record TurnoCanceladoEvent(
         String nombreComercio,
         LocalDate fecha,
         LocalTime hora,
-        String motivo
+        String motivo,
+        /* true si lo canceló el comercio (o un admin) y no el propio cliente */
+        boolean canceladoPorComercio
 ) {
 }
