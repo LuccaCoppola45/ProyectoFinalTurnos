@@ -58,6 +58,15 @@ public class NotificacionesListener {
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void alPedirRecuperarPassword(RecuperarPasswordEvent evento) {
+        Context contexto = new Context();
+        contexto.setVariable("nombreUsuario", evento.nombreUsuario());
+        contexto.setVariable("minutosDeValidez", evento.minutosDeValidez());
+        contexto.setVariable("linkRestablecer", frontUrl + "/restablecer-password?token=" + evento.token());
+        canal.enviar(evento.destinatario(), "Recuperá tu contraseña", "email/recuperar-password", contexto);
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void alResolverSolicitud(SolicitudResueltaEvent evento) {
         Context contexto = new Context();
         contexto.setVariable("solicitudId", evento.solicitudId());

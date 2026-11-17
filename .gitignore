@@ -44,3 +44,6 @@ application-dev.properties
 # Credenciales de prueba locales
 docs/usuarios-prueba.md
 /docs
+
+# Dump local de la base
+proyectofinal.sql

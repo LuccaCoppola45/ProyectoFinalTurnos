@@ -15,6 +15,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import com.example.ProyectoFinalTurnos.features.comercio.ComercioEntity;
 
@@ -45,6 +46,13 @@ public class UsuarioEntity implements UserDetails{
 
     @Column(nullable = false)
     private String password;
+
+    @JsonIgnore
+    @Column(unique = true)
+    private String resetPasswordToken;
+
+    @JsonIgnore
+    private LocalDateTime resetPasswordExpira;
 
     @ManyToMany
     @JoinTable(

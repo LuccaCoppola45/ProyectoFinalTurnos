@@ -1,5 +1,7 @@
 package com.example.ProyectoFinalTurnos.features.auth;
 
+import com.example.ProyectoFinalTurnos.features.auth.dtos.OlvidePasswordRequest;
+import com.example.ProyectoFinalTurnos.features.auth.dtos.RestablecerPasswordRequest;
 import com.example.ProyectoFinalTurnos.features.usuario.Dtos.LoginResponseDTO;
 import com.example.ProyectoFinalTurnos.features.usuario.Dtos.LoginResquestDTO;
 import com.example.ProyectoFinalTurnos.features.usuario.Dtos.UsuarioRequest;
@@ -29,5 +31,15 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginResquestDTO request) {
         return ResponseEntity.ok(authService.login(request));
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> olvidePassword(@Valid @RequestBody OlvidePasswordRequest request) {
+        return ResponseEntity.ok(authService.solicitarRecuperacion(request));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> restablecerPassword(@Valid @RequestBody RestablecerPasswordRequest request) {
+        return ResponseEntity.ok(authService.restablecerPassword(request));
     }
 }
