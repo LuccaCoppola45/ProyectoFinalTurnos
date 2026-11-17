@@ -30,6 +30,19 @@ public class NotificacionesListener {
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void alConfirmarTurno(TurnoConfirmadoEvent evento) {
+        Context contexto = new Context();
+        contexto.setVariable("frontUrl", frontUrl);
+        contexto.setVariable("turnoId", evento.turnoId());
+        contexto.setVariable("nombreUsuario", evento.nombreUsuario());
+        contexto.setVariable("nombreServicio", evento.nombreServicio());
+        contexto.setVariable("nombreComercio", evento.nombreComercio());
+        contexto.setVariable("fecha", evento.fecha());
+        contexto.setVariable("hora", evento.hora());
+        canal.enviar(evento.destinatario(), "Turno confirmado", "email/turno-confirmado", contexto);
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void alCancelarTurno(TurnoCanceladoEvent evento) {
         Context contexto = new Context();
         contexto.setVariable("frontUrl", frontUrl);

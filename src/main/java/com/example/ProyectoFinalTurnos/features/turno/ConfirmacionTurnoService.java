@@ -7,6 +7,7 @@ import com.example.ProyectoFinalTurnos.exceptions.turno.TurnoPastDateException;
 import com.example.ProyectoFinalTurnos.features.cancelacion.CancelacionEntity;
 import com.example.ProyectoFinalTurnos.features.cancelacion.CancelacionRepository;
 import com.example.ProyectoFinalTurnos.features.notificacion.TurnoCanceladoEvent;
+import com.example.ProyectoFinalTurnos.features.notificacion.TurnoConfirmadoEvent;
 import com.example.ProyectoFinalTurnos.features.turno.Dtos.ConfirmacionTurnoResponse;
 import com.example.ProyectoFinalTurnos.model.enums.EstadoTurno;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +49,15 @@ public class ConfirmacionTurnoService {
         if (asiste) {
             turno.setEstado(EstadoTurno.CONFIRMADO);
             turnoRepository.save(turno);
+            eventPublisher.publishEvent(new TurnoConfirmadoEvent(
+                    turno.getIdTurno(),
+                    turno.getUsuario().getEmail(),
+                    turno.getUsuario().getNombre(),
+                    turno.getServicio().getNombre(),
+                    turno.getComercio().getNombre(),
+                    turno.getFecha(),
+                    turno.getHoraInicio()
+            ));
         } else {
             cancelar(turno);
         }
